@@ -121,7 +121,10 @@ Deno.serve(async (req) => {
 
     const browser = parseBrowser(userAgent);
     const os = parseOS(userAgent);
-    const country = req.headers.get("cf-ipcountry") || null;
+    const deviceType = parseDevice(userAgent);
+    const country = req.headers.get("cf-ipcountry") || req.headers.get("x-country") || null;
+    const region = req.headers.get("cf-region") || req.headers.get("x-region") || null;
+    const city = req.headers.get("cf-ipcity") || req.headers.get("x-city") || null;
 
     if (event_name) {
       await supabase.from("custom_events").insert({
@@ -136,8 +139,11 @@ Deno.serve(async (req) => {
         pathname: currentPathname,
         referrer: referrer || null,
         country,
+        region,
+        city,
         browser,
         os,
+        device_type: deviceType,
         screen_size: screen_size || null,
         session_hash: sessionHash,
         utm_source: utm_source || null,
@@ -188,8 +194,15 @@ function parseBrowser(ua: string): string {
 function parseOS(ua: string): string {
   if (ua.includes("Windows")) return "Windows";
   if (ua.includes("Mac OS")) return "macOS";
-  if (ua.includes("Linux")) return "Linux";
+  if (ua.includes("Linux") && !ua.includes("Android")) return "Linux";
   if (ua.includes("Android")) return "Android";
   if (ua.includes("iPhone") || ua.includes("iPad")) return "iOS";
+  if (ua.includes("CrOS")) return "Chrome OS";
   return "Other";
+}
+
+function parseDevice(ua: string): string {
+  if (/Mobi|Android.*Mobile|iPhone/i.test(ua)) return "Mobile";
+  if (/iPad|Android(?!.*Mobile)|Tablet/i.test(ua)) return "Tablet";
+  return "Desktop";
 }

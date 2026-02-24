@@ -192,11 +192,14 @@ export type Database = {
       pageviews: {
         Row: {
           browser: string | null
+          city: string | null
           country: string | null
+          device_type: string | null
           id: string
           os: string | null
           pathname: string
           referrer: string | null
+          region: string | null
           screen_size: string | null
           session_hash: string | null
           site_id: string
@@ -207,11 +210,14 @@ export type Database = {
         }
         Insert: {
           browser?: string | null
+          city?: string | null
           country?: string | null
+          device_type?: string | null
           id?: string
           os?: string | null
           pathname?: string
           referrer?: string | null
+          region?: string | null
           screen_size?: string | null
           session_hash?: string | null
           site_id: string
@@ -222,11 +228,14 @@ export type Database = {
         }
         Update: {
           browser?: string | null
+          city?: string | null
           country?: string | null
+          device_type?: string | null
           id?: string
           os?: string | null
           pathname?: string
           referrer?: string | null
+          region?: string | null
           screen_size?: string | null
           session_hash?: string | null
           site_id?: string
