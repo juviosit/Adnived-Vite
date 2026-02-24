@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
+import { Trash2, Eye } from "lucide-react";
 import { toast } from "sonner";
 
 type SiteRow = {
@@ -17,6 +18,7 @@ type SiteRow = {
 };
 
 const AdminSites = () => {
+  const navigate = useNavigate();
   const [sites, setSites] = useState<SiteRow[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -72,7 +74,10 @@ const AdminSites = () => {
                     <TableCell className="text-muted-foreground">
                       {new Date(s.created_at).toLocaleDateString()}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="flex gap-1">
+                      <Button variant="ghost" size="icon" onClick={() => navigate(`/sites/${s.id}`)}>
+                        <Eye className="h-4 w-4 text-muted-foreground" />
+                      </Button>
                       <Button variant="ghost" size="icon" onClick={() => deleteSite(s.id)}>
                         <Trash2 className="h-4 w-4 text-destructive" />
                       </Button>
