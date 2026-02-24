@@ -153,6 +153,7 @@ export type Database = {
       }
       goals: {
         Row: {
+          conversion_value: number
           created_at: string
           goal_type: string
           goal_value: string
@@ -161,6 +162,7 @@ export type Database = {
           site_id: string
         }
         Insert: {
+          conversion_value?: number
           created_at?: string
           goal_type: string
           goal_value: string
@@ -169,6 +171,7 @@ export type Database = {
           site_id: string
         }
         Update: {
+          conversion_value?: number
           created_at?: string
           goal_type?: string
           goal_value?: string
