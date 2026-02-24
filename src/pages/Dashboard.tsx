@@ -1,180 +1,20 @@
-import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/contexts/AuthContext";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart3, Plus, ExternalLink, Globe } from "lucide-react";
-import { toast } from "sonner";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-
-type Site = {
-  id: string;
-  domain: string;
-  name: string | null;
-  created_at: string;
-};
+import { useState } from "react";
+import DashboardLayout from "@/components/dashboard/DashboardLayout";
+import SitesTab from "@/components/dashboard/SitesTab";
+import PlanTab from "@/components/dashboard/PlanTab";
+import SettingsTab from "@/components/dashboard/SettingsTab";
 
 const Dashboard = () => {
-  const { user, signOut } = useAuth();
-  const [sites, setSites] = useState<Site[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [domain, setDomain] = useState("");
-  const [siteName, setSiteName] = useState("");
-  const [adding, setAdding] = useState(false);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const navigate = useNavigate();
-
-  const fetchSites = async () => {
-    const { data, error } = await supabase
-      .from("sites")
-      .select("id, domain, name, created_at")
-      .order("created_at", { ascending: false });
-
-    if (error) {
-      toast.error("Failed to load sites");
-    } else {
-      setSites(data || []);
-    }
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchSites();
-  }, []);
-
-  const handleAddSite = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!user) return;
-    setAdding(true);
-    const { error } = await supabase.from("sites").insert({
-      domain: domain.replace(/^https?:\/\//, "").replace(/\/$/, ""),
-      name: siteName || null,
-      user_id: user.id,
-    });
-    setAdding(false);
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success("Site added!");
-      setDomain("");
-      setSiteName("");
-      setDialogOpen(false);
-      fetchSites();
-    }
-  };
+  const [activeTab, setActiveTab] = useState("sites");
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border/50 bg-background">
-        <div className="container flex h-14 items-center justify-between">
-          <Link to="/dashboard" className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
-              <BarChart3 className="h-4 w-4 text-primary-foreground" />
-            </div>
-            <span className="font-bold text-foreground">Insight</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-muted-foreground">{user?.email}</span>
-            <Button variant="ghost" size="sm" onClick={signOut}>Sign out</Button>
-          </div>
-        </div>
-      </header>
-
-      <div className="container py-8">
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">My Websites</h1>
-            <p className="text-muted-foreground">Manage your tracked websites</p>
-          </div>
-          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="gap-2">
-                <Plus className="h-4 w-4" />
-                Add website
-              </Button>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Add a new website</DialogTitle>
-              </DialogHeader>
-              <form onSubmit={handleAddSite} className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="domain">Domain</Label>
-                  <Input
-                    id="domain"
-                    placeholder="example.com"
-                    value={domain}
-                    onChange={(e) => setDomain(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="siteName">Display name (optional)</Label>
-                  <Input
-                    id="siteName"
-                    placeholder="My Website"
-                    value={siteName}
-                    onChange={(e) => setSiteName(e.target.value)}
-                  />
-                </div>
-                <Button type="submit" className="w-full" disabled={adding}>
-                  {adding ? "Adding..." : "Add website"}
-                </Button>
-              </form>
-            </DialogContent>
-          </Dialog>
-        </div>
-
-        {loading ? (
-          <div className="flex justify-center py-12">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
-          </div>
-        ) : sites.length === 0 ? (
-          <Card className="border-dashed">
-            <CardContent className="flex flex-col items-center justify-center py-12">
-              <Globe className="mb-4 h-12 w-12 text-muted-foreground/50" />
-              <h3 className="mb-2 text-lg font-medium text-foreground">No websites yet</h3>
-              <p className="mb-6 text-sm text-muted-foreground">Add your first website to start tracking analytics</p>
-              <Button className="gap-2" onClick={() => setDialogOpen(true)}>
-                <Plus className="h-4 w-4" />
-                Add your first website
-              </Button>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {sites.map((site) => (
-              <Card
-                key={site.id}
-                className="cursor-pointer transition-all hover:border-primary/30 hover:shadow-md"
-                onClick={() => navigate(`/sites/${site.id}`)}
-              >
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <CardTitle className="text-base">{site.name || site.domain}</CardTitle>
-                      <CardDescription className="flex items-center gap-1">
-                        <ExternalLink className="h-3 w-3" />
-                        {site.domain}
-                      </CardDescription>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-xs text-muted-foreground">
-                    Added {new Date(site.created_at).toLocaleDateString()}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
+    <DashboardLayout activeTab={activeTab} onTabChange={setActiveTab}>
+      {{
+        sites: <SitesTab />,
+        plan: <PlanTab />,
+        settings: <SettingsTab />,
+      }}
+    </DashboardLayout>
   );
 };
 
