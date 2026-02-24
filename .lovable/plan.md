@@ -1,87 +1,91 @@
 
 
-## Analytics SaaS Platform — Plausible-Style
+# Events Setup: URL-Based Conversion Tracking
 
-A privacy-friendly, cookie-free web analytics platform where users sign up, add their websites, embed a lightweight tracking script, and view clean dashboards with full metrics.
+## Overview
+Add a "Goals" (events) management UI to the site analytics page, allowing users to configure URL-based triggers. When a site visitor lands on a matching URL, it automatically fires as a conversion event. The tracking edge function will be updated to check for matching goals on every pageview and auto-record them as custom events.
 
 ---
 
-### 1. Landing Page & Marketing Site
-- Hero section with value proposition: "Simple, privacy-friendly analytics"
-- Feature highlights with icons (real-time, no cookies, lightweight script, GDPR-friendly)
-- Live demo dashboard preview
-- Pricing section (free tier + paid plans)
-- Call-to-action buttons for sign up / login
+## How It Works
 
-### 2. Authentication & Onboarding
-- Sign up / login with email and password (Supabase Auth)
-- Email verification flow
-- Password reset flow with dedicated reset page
-- Post-signup onboarding: guided "Add your first website" flow
+1. User creates a goal in the site analytics page (e.g., name: "Signup completed", URL: "/thank-you")
+2. When any visitor hits that URL on the tracked site, the tracking script automatically records a `custom_event` with the goal name
+3. The analytics page shows goal conversion counts alongside pageview data
 
-### 3. Site Management
-- **Add a site**: Enter domain name, get a unique site ID and tracking snippet
-- **Site list dashboard**: See all registered sites with quick stats (today's visitors)
-- **Site settings**: Edit domain, delete site, manage shared access
-- **Tracking snippet**: Auto-generated `<script>` tag users copy into their website
+---
 
-### 4. Tracking Script & Data Collection
-- Lightweight edge function endpoint that receives pageview events (URL, referrer, screen size, country, browser, OS)
-- No cookies — uses a daily-rotating hash of IP + User-Agent for unique visitor counting
-- Events stored in Supabase database with site_id, timestamp, and all dimensions
-- Support for custom events (button clicks, form submissions, file downloads)
+## Implementation Steps
 
-### 5. Analytics Dashboard (per site)
-- **Top metrics bar**: Unique visitors, total visits, pageviews, views per visit, bounce rate, visit duration — each with % change vs previous period
-- **Time-series chart**: Line/area chart of visitors over time (recharts) with granularity toggle (hours/days/months)
-- **Date range picker**: Today, last 7 days, last 30 days, last 12 months, custom range, with comparison to previous period
-- **Real-time view**: Current visitors count, live updating every 30 seconds
-- **Breakdown panels** (below chart):
-  - **Top Pages**: Most visited pages with visit counts
-  - **Top Sources/Referrers**: Where traffic comes from (direct, social, search, referral)
-  - **Locations**: Countries and cities with visitor counts (map optional)
-  - **Devices**: Browser, OS, and screen size breakdown
-  - **UTM Campaigns**: Channel grouping for utm_source, utm_medium, utm_campaign
+### 1. Update the Track Edge Function (`supabase/functions/track/index.ts`)
 
-### 6. Goals & Conversions
-- Create goals: pageview goals (specific URL visited) or custom event goals
-- Goal conversion rate displayed on dashboard
-- Revenue tracking: attach monetary value to conversion events
+After inserting a pageview, query the `goals` table for the current site where `goal_type = 'page_visit'` and `goal_value` matches the current `pathname`. For each match, insert a `custom_event` with `event_name` set to the goal's name (derived from goal_value or a new `name` column).
 
-### 7. Conversion Funnels
-- Define multi-step funnels (e.g., Landing → Signup → Purchase)
-- Visual funnel chart showing drop-off at each step with conversion percentages
+**Problem**: The `goals` table doesn't have a `name` column -- it only has `goal_type` and `goal_value`. We need to add a `name` column so users can label their goals (e.g., "Signup completed" for URL "/thank-you").
 
-### 8. Filtering & Segmentation
-- Click any metric to filter the entire dashboard (e.g., click "Chrome" to see only Chrome users)
-- Combine multiple filters (country + source + page)
-- Save filter combinations as named segments
+### 2. Database Migration
 
-### 9. Data Export & Sharing
-- Export dashboard data as CSV
-- Public/shared dashboard links (optional, toggled per site)
-- API access via edge functions for programmatic data retrieval
+Add a `name` column to the `goals` table:
 
-### 10. Settings & Account
-- Profile management (name, email)
-- Billing placeholder page
-- Team members: invite others to view a site's analytics (viewer/admin roles)
-- User roles table with RLS for secure multi-tenant access
+```sql
+ALTER TABLE public.goals ADD COLUMN name text NOT NULL DEFAULT '';
+```
 
-### 11. Database Architecture
-- **profiles** table (linked to auth.users)
-- **sites** table (domain, site_id, owner)
-- **site_members** table (shared access with roles)
-- **user_roles** table (admin/user roles — separate from profiles)
-- **pageviews** table (site_id, timestamp, pathname, referrer, country, browser, os, screen_size, session_hash)
-- **custom_events** table (site_id, event_name, properties, timestamp)
-- **goals** table (site_id, goal_type, goal_value)
-- **funnels** table + **funnel_steps** table
-- Full RLS policies ensuring users only see their own sites' data
+### 3. Create Goals Management Component (`src/components/analytics/GoalsPanel.tsx`)
 
-### 12. Design & Style
-- Clean, minimal design inspired by Plausible's aesthetic
-- Light mode with subtle purple/indigo accent color
-- Card-based layout for metric panels
-- Responsive — works on desktop and mobile
+A new component rendered within the `SiteAnalytics` page that:
+- Lists all configured goals for the site (from the `goals` table)
+- Shows a form to add a new goal: name (text) + URL path (text, goal_type="page_visit")
+- Delete button for each goal
+- Displays conversion count for each goal (count of matching `custom_events`)
+
+### 4. Update Site Analytics Page (`src/pages/SiteAnalytics.tsx`)
+
+- Import and render the `GoalsPanel` component below the existing breakdown cards
+- Fetch `custom_events` for the site to display goal conversion metrics
+- Add a "Goals" section with conversion counts per goal
+
+### 5. Update Track Edge Function Logic
+
+In the POST handler, after inserting the pageview:
+
+```
+// After pageview insert, check for matching goals
+const { data: matchingGoals } = await supabase
+  .from("goals")
+  .select("id, name, goal_value")
+  .eq("site_id", site.id)
+  .eq("goal_type", "page_visit");
+
+for (const goal of matchingGoals || []) {
+  if (pathname === goal.goal_value || pathname.startsWith(goal.goal_value)) {
+    await supabase.from("custom_events").insert({
+      site_id: site.id,
+      event_name: `goal:${goal.name}`,
+      properties: { goal_id: goal.id, pathname },
+    });
+  }
+}
+```
+
+This runs server-side so no client changes are needed -- goals fire automatically on matching pageviews.
+
+---
+
+## Technical Details
+
+### Database Changes
+- Add `name` text column to `goals` table (non-nullable, default empty string)
+- No new RLS policies needed -- existing policies already cover goals CRUD for site owners/members and admin access
+
+### Files Modified
+| File | Change |
+|------|--------|
+| `supabase/functions/track/index.ts` | Add goal-matching logic after pageview insert |
+| `src/pages/SiteAnalytics.tsx` | Add GoalsPanel section, fetch custom_events data |
+| New: `src/components/analytics/GoalsPanel.tsx` | Goals CRUD UI with conversion counts |
+| Migration SQL | Add `name` column to `goals` table |
+
+### Edge Function Insert Permissions
+The track function uses the service role key, so it can insert into `custom_events` without RLS restrictions. The `custom_events` table currently has no INSERT policy for regular users, which is correct -- events are only created server-side by the tracker.
 
