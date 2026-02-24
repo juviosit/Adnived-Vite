@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import GoalsPanel from "@/components/analytics/GoalsPanel";
 import OverviewSection from "@/components/analytics/OverviewSection";
+import FunnelsPanel from "@/components/analytics/FunnelsPanel";
 import { cn } from "@/lib/utils";
 
 type Section = "overview" | "goals" | "funnels";
@@ -137,11 +138,7 @@ const SiteAnalytics = () => {
         <main className="p-6">
           {activeSection === "overview" && siteId && <OverviewSection siteId={siteId} />}
           {activeSection === "goals" && siteId && <GoalsPanel siteId={siteId} />}
-          {activeSection === "funnels" && (
-            <div className="flex items-center justify-center py-20">
-              <p className="text-muted-foreground">Funnels coming soon</p>
-            </div>
-          )}
+          {activeSection === "funnels" && siteId && <FunnelsPanel siteId={siteId} />}
         </main>
       </div>
     </div>
