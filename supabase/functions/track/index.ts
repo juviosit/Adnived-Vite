@@ -3,12 +3,73 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
+  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Cache-Control": "public, max-age=86400",
 };
+
+// Lightweight tracking script (~800 bytes minified)
+const TRACKER_SCRIPT = `(function(){
+  "use strict";
+  var d=document,w=window,l=w.location;
+  var s=d.currentScript;
+  var domain=s&&s.getAttribute("data-domain");
+  if(!domain)return;
+  var endpoint=s.src.split("?")[0];
+
+  function getUTM(p){try{return new URL(l.href).searchParams.get(p)||undefined}catch(e){return undefined}}
+
+  function send(evt,props){
+    var payload={
+      domain:domain,
+      pathname:l.pathname,
+      referrer:d.referrer||undefined,
+      screen_size:w.innerWidth+"x"+w.innerHeight,
+      utm_source:getUTM("utm_source"),
+      utm_medium:getUTM("utm_medium"),
+      utm_campaign:getUTM("utm_campaign")
+    };
+    if(evt){payload.event_name=evt;payload.properties=props||{}}
+    try{
+      if(navigator.sendBeacon){
+        navigator.sendBeacon(endpoint,JSON.stringify(payload));
+      }else{
+        var x=new XMLHttpRequest();
+        x.open("POST",endpoint,true);
+        x.setRequestHeader("Content-Type","application/json");
+        x.send(JSON.stringify(payload));
+      }
+    }catch(e){}
+  }
+
+  // Track initial pageview
+  send();
+
+  // SPA support: track pushState/replaceState navigations
+  var origPush=history.pushState;
+  var origReplace=history.replaceState;
+  history.pushState=function(){origPush.apply(this,arguments);send()};
+  history.replaceState=function(){origReplace.apply(this,arguments);send()};
+  w.addEventListener("popstate",function(){send()});
+
+  // Expose for custom events: window.insight("eventName", {props})
+  w.insight=function(evt,props){send(evt,props)};
+})();`;
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
+  }
+
+  // GET = serve the tracking script
+  if (req.method === "GET") {
+    return new Response(TRACKER_SCRIPT, {
+      status: 200,
+      headers: {
+        ...corsHeaders,
+        "Content-Type": "application/javascript; charset=utf-8",
+        "Cache-Control": "public, max-age=86400",
+      },
+    });
   }
 
   if (req.method !== "POST") {
@@ -20,10 +81,10 @@ Deno.serve(async (req) => {
 
   try {
     const body = await req.json();
-    const { site_id, pathname, referrer, screen_size, utm_source, utm_medium, utm_campaign, event_name, properties } = body;
+    const { domain, pathname, referrer, screen_size, utm_source, utm_medium, utm_campaign, event_name, properties } = body;
 
-    if (!site_id) {
-      return new Response(JSON.stringify({ error: "site_id required" }), {
+    if (!domain) {
+      return new Response(JSON.stringify({ error: "domain required" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
@@ -34,11 +95,11 @@ Deno.serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // Verify site exists
+    // Look up site by domain
     const { data: site } = await supabase
       .from("sites")
-      .select("id, domain")
-      .eq("id", site_id)
+      .select("id")
+      .eq("domain", domain)
       .single();
 
     if (!site) {
@@ -48,34 +109,29 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Generate daily-rotating session hash from IP + User-Agent
+    // Generate daily-rotating session hash from IP + User-Agent (privacy-friendly, no cookies)
     const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
     const userAgent = req.headers.get("user-agent") || "";
     const today = new Date().toISOString().split("T")[0];
     const encoder = new TextEncoder();
-    const data = encoder.encode(`${ip}|${userAgent}|${today}|${site_id}`);
+    const data = encoder.encode(`${ip}|${userAgent}|${today}|${site.id}`);
     const hashBuffer = await crypto.subtle.digest("SHA-256", data);
     const hashArray = Array.from(new Uint8Array(hashBuffer));
     const sessionHash = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
 
-    // Parse User-Agent for browser/OS
     const browser = parseBrowser(userAgent);
     const os = parseOS(userAgent);
-
-    // Determine country from Cloudflare headers if available
     const country = req.headers.get("cf-ipcountry") || null;
 
     if (event_name) {
-      // Custom event
       await supabase.from("custom_events").insert({
-        site_id,
+        site_id: site.id,
         event_name,
         properties: properties || {},
       });
     } else {
-      // Pageview
       await supabase.from("pageviews").insert({
-        site_id,
+        site_id: site.id,
         pathname: pathname || "/",
         referrer: referrer || null,
         country,
@@ -89,11 +145,12 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Return 202 Accepted (non-blocking for the client)
     return new Response(JSON.stringify({ ok: true }), {
-      status: 200,
+      status: 202,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
-  } catch (err) {
+  } catch (_err) {
     return new Response(JSON.stringify({ error: "Internal error" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
