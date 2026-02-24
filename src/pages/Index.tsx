@@ -1,8 +1,13 @@
 import Header from "@/components/landing/Header";
 import HeroSection from "@/components/landing/HeroSection";
+import WhySwitchSection from "@/components/landing/WhySwitchSection";
 import FeaturesSection from "@/components/landing/FeaturesSection";
-import DemoDashboard from "@/components/landing/DemoDashboard";
+import SetupSection from "@/components/landing/SetupSection";
+import PrivacySection from "@/components/landing/PrivacySection";
 import PricingSection from "@/components/landing/PricingSection";
+import TestimonialsSection from "@/components/landing/TestimonialsSection";
+import FAQSection from "@/components/landing/FAQSection";
+import CTASection from "@/components/landing/CTASection";
 import Footer from "@/components/landing/Footer";
 
 const Index = () => {
@@ -11,9 +16,14 @@ const Index = () => {
       <Header />
       <main>
         <HeroSection />
+        <WhySwitchSection />
         <FeaturesSection />
-        <DemoDashboard />
+        <SetupSection />
+        <PrivacySection />
         <PricingSection />
+        <TestimonialsSection />
+        <FAQSection />
+        <CTASection />
       </main>
       <Footer />
     </div>

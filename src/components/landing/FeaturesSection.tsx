@@ -1,73 +1,79 @@
-import { BarChart3, Globe, Smartphone, Target, TrendingUp, Users, Zap, Lock } from "lucide-react";
+import { Shield, Activity, Zap, Globe, Smartphone, Target, Bell, Download } from "lucide-react";
+import { motion } from "framer-motion";
 
 const features = [
   {
-    icon: BarChart3,
-    title: "Real-time Dashboard",
-    description: "See visitors on your site right now. Live-updating metrics with zero delay.",
+    icon: Shield,
+    title: "Privacy by Design",
+    description: "No personal data collection. No IP addresses, sessions, or cookies stored. Your visitors stay anonymous.",
   },
   {
-    icon: Lock,
-    title: "Privacy First",
-    description: "No cookies, no personal data. Fully compliant with GDPR, CCPA, and PECR.",
+    icon: Activity,
+    title: "Real-time Insights",
+    description: "Live visitor tracking with instant updates. See who's on your site right now and what they're doing.",
   },
   {
     icon: Zap,
-    title: "Lightweight Script",
-    description: "Under 1KB tracking script that won't slow down your website.",
+    title: "Lightning Fast",
+    description: "Under 1kb tracking script that won't slow down your site. Performance matters, and we know it.",
   },
   {
     icon: Globe,
-    title: "Traffic Sources",
-    description: "Know where your visitors come from — search, social, referrals, and direct.",
-  },
-  {
-    icon: Smartphone,
-    title: "Device Breakdown",
-    description: "Browser, OS, and screen size analytics to optimize your site for every device.",
+    title: "Geographic Data",
+    description: "See visitor locations by continent, country, city, and language preferences.",
   },
   {
     icon: Target,
-    title: "Goals & Funnels",
-    description: "Track conversions, set up goals, and visualize multi-step funnels.",
+    title: "Behavior Analytics",
+    description: "Track pages visited, landing pages, and complete user journeys through your site.",
   },
   {
-    icon: TrendingUp,
-    title: "UTM Campaigns",
-    description: "Full campaign tracking with utm_source, utm_medium, and utm_campaign breakdowns.",
+    icon: Smartphone,
+    title: "Technology Reports",
+    description: "OS, browsers, screen resolutions, and device breakdowns to optimize every experience.",
   },
   {
-    icon: Users,
-    title: "Team Access",
-    description: "Invite team members to view analytics. Role-based permissions for full control.",
+    icon: Bell,
+    title: "Smart Notifications",
+    description: "Email alerts for performance changes and custom event triggers.",
+  },
+  {
+    icon: Download,
+    title: "Easy Export",
+    description: "Download your data as CSV anytime. Your data, your control.",
   },
 ];
 
 const FeaturesSection = () => {
   return (
-    <section id="features" className="border-t border-border/50 py-24">
+    <section id="features" className="border-t border-border/50 bg-muted/30 py-24">
       <div className="container">
-        <div className="mx-auto mb-16 max-w-2xl text-center">
+        <div className="mx-auto mb-4 text-center">
+          <p className="mb-2 text-sm font-medium text-primary">Why adnived Analytics?</p>
           <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground">
-            Everything you need, nothing you don't
+            Analytics that respects everyone
           </h2>
-          <p className="text-lg text-muted-foreground">
-            Clean metrics that matter. No bloated dashboards, no confusing reports.
+          <p className="mx-auto max-w-2xl text-muted-foreground">
+            Built from the ground up with privacy as a core principle, not an afterthought.
           </p>
         </div>
 
-        <div className="mx-auto grid max-w-5xl gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {features.map((feature) => (
-            <div
+        <div className="mx-auto mt-16 grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {features.map((feature, i) => (
+            <motion.div
               key={feature.title}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.05 }}
               className="group rounded-xl border border-border/50 bg-card p-6 transition-all hover:border-primary/20 hover:shadow-md"
             >
-              <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-accent text-accent-foreground">
+              <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                 <feature.icon className="h-5 w-5" />
               </div>
               <h3 className="mb-2 font-semibold text-foreground">{feature.title}</h3>
               <p className="text-sm leading-relaxed text-muted-foreground">{feature.description}</p>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>
