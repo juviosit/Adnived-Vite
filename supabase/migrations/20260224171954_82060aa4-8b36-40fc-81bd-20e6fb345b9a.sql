@@ -1,0 +1,1 @@
+ALTER TABLE public.goals ADD COLUMN conversion_value numeric NOT NULL DEFAULT 0;
