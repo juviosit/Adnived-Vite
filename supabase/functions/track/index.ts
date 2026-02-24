@@ -130,9 +130,10 @@ Deno.serve(async (req) => {
         properties: properties || {},
       });
     } else {
+      const currentPathname = pathname || "/";
       await supabase.from("pageviews").insert({
         site_id: site.id,
-        pathname: pathname || "/",
+        pathname: currentPathname,
         referrer: referrer || null,
         country,
         browser,
@@ -143,6 +144,23 @@ Deno.serve(async (req) => {
         utm_medium: utm_medium || null,
         utm_campaign: utm_campaign || null,
       });
+
+      // Check for matching goals and auto-record conversions
+      const { data: matchingGoals } = await supabase
+        .from("goals")
+        .select("id, name, goal_value")
+        .eq("site_id", site.id)
+        .eq("goal_type", "page_visit");
+
+      for (const goal of matchingGoals || []) {
+        if (currentPathname === goal.goal_value || currentPathname.startsWith(goal.goal_value)) {
+          await supabase.from("custom_events").insert({
+            site_id: site.id,
+            event_name: `goal:${goal.name}`,
+            properties: { goal_id: goal.id, pathname: currentPathname },
+          });
+        }
+      }
     }
 
     // Return 202 Accepted (non-blocking for the client)

@@ -157,6 +157,7 @@ export type Database = {
           goal_type: string
           goal_value: string
           id: string
+          name: string
           site_id: string
         }
         Insert: {
@@ -164,6 +165,7 @@ export type Database = {
           goal_type: string
           goal_value: string
           id?: string
+          name?: string
           site_id: string
         }
         Update: {
@@ -171,6 +173,7 @@ export type Database = {
           goal_type?: string
           goal_value?: string
           id?: string
+          name?: string
           site_id?: string
         }
         Relationships: [

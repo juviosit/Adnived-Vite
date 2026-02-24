@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Area, AreaChart, XAxis, YAxis } from "recharts";
-import { ArrowLeft, ArrowUp, ArrowDown, Users, Eye, MousePointerClick, Clock, Copy, Code } from "lucide-react";
+import { ArrowLeft, Users, Eye, MousePointerClick, Clock, Copy, Code } from "lucide-react";
+import GoalsPanel from "@/components/analytics/GoalsPanel";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
@@ -235,6 +236,11 @@ const SiteAnalytics = () => {
               )}
             </CardContent>
           </Card>
+        </div>
+
+        {/* Goals */}
+        <div className="mt-6">
+          <GoalsPanel siteId={siteId!} />
         </div>
       </div>
     </div>
