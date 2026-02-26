@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, ChevronUp, Download } from "lucide-react";
+import { ChevronDown, ChevronUp, Download, Maximize2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface BreakdownDetailsProps {
@@ -52,9 +52,9 @@ export default function BreakdownDetails({ title, data, columns, extraData, onEx
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="ghost" size="sm" className="w-full text-xs text-muted-foreground hover:text-foreground">
-          Details →
-        </Button>
+        <button className="p-1 text-muted-foreground hover:text-foreground transition-colors rounded" title="View details">
+          <Maximize2 className="h-4 w-4" />
+        </button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
