@@ -11,7 +11,7 @@ const faqs = [
   },
   {
     q: "How accurate is the data without tracking individuals?",
-    a: "Very accurate. We use privacy-friendly techniques to measure unique visitors, page views, and engagement without identifying individuals. Our approach is trusted by thousands of sites.",
+    a: "Very accurate. We use privacy-friendly techniques like daily-rotating hashed identifiers to measure unique visitors, page views, and engagement without identifying individuals.",
   },
   {
     q: "Is adnived compliant with GDPR and other privacy laws?",

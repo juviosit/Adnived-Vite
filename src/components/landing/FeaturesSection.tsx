@@ -5,12 +5,12 @@ const features = [
   {
     icon: Shield,
     title: "Privacy by Design",
-    description: "No personal data collection. No IP addresses, sessions, or cookies stored. Your visitors stay anonymous.",
+    description: "No cookies, no sessions, no personal data. Visitor IPs are hashed and never stored. Your visitors stay anonymous.",
   },
   {
     icon: Activity,
     title: "Real-time Insights",
-    description: "Live visitor tracking with instant updates. See who's on your site right now and what they're doing.",
+    description: "Live visitor tracking with instant updates. See who's on your site right now and what they're viewing.",
   },
   {
     icon: Zap,
@@ -20,12 +20,12 @@ const features = [
   {
     icon: Globe,
     title: "Geographic Data",
-    description: "See visitor locations by continent, country, city, and language preferences.",
+    description: "See visitor locations by country, region, and city — all resolved without storing personal data.",
   },
   {
     icon: Target,
-    title: "Behavior Analytics",
-    description: "Track pages visited, landing pages, and complete user journeys through your site.",
+    title: "Goals & Funnels",
+    description: "Set up conversion goals and multi-step funnels to understand how visitors move through your site.",
   },
   {
     icon: Smartphone,
@@ -34,8 +34,8 @@ const features = [
   },
   {
     icon: Bell,
-    title: "Smart Notifications",
-    description: "Email alerts for performance changes and custom event triggers.",
+    title: "UTM Campaign Tracking",
+    description: "Full UTM parameter support — track source, medium, campaign, term, and content automatically.",
   },
   {
     icon: Download,
