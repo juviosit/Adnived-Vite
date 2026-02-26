@@ -31,7 +31,7 @@ const CTASection = () => {
 
           <Button size="lg" className="gap-2 px-8" asChild>
             <Link to="/signup">
-              Request Access
+              Start for Free
               <ArrowRight className="h-4 w-4" />
             </Link>
           </Button>
