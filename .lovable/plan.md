@@ -1,137 +1,82 @@
 
 
-# Make adnived analytics Match Plausible Analytics
+# World Map + Sidebar Navigation for Breakdown Panels
 
-## Overview
+## 1. World Map in Locations Section
 
-After analyzing Plausible's open-source codebase, documentation, and live demo dashboard, here's a comprehensive plan to bring adnived analytics to feature parity. Many core features already exist (metrics, sources, pages, locations, technology, goals, funnels). This plan focuses on the gaps.
+Add an SVG-based world map to the Countries tab in the Locations breakdown panel, showing visitor distribution by country with color intensity based on visitor count.
 
-## Current State vs Plausible
+**Approach:**
+- Create a new `WorldMap.tsx` component using an inline simplified SVG world map with ISO country code paths
+- Color each country path based on visitor count using a gradient from light to dark primary color
+- Show tooltip on hover with country name and visitor count
+- Place the map above the country breakdown list in the Locations panel
+- Use a lightweight approach (no external map library) -- a pre-built SVG with ~180 country paths mapped by ISO alpha-2 codes
+- The `topCountries` data already provides country names; we'll need a name-to-ISO mapping to match SVG paths
 
-| Feature | adnived analytics | Plausible | Gap |
-|---------|-------------------|-----------|-----|
-| Top metrics strip | Yes | Yes | -- |
-| % change comparison | Yes | Yes | -- |
-| Sources/Pages two-column | Yes | Yes | -- |
-| Entry/Exit pages | Yes | Yes | -- |
-| Channels/UTM tabs | Yes | Yes | -- |
-| Locations (country/region/city) | Yes | Yes | -- |
-| Technology (browser/OS/device) | Yes | Yes | -- |
-| Goals + conversions | Yes | Yes | -- |
-| Funnels | Yes | Yes | -- |
-| Realtime visitors badge | Yes | Yes | -- |
-| **Clickable metric switching on chart** | No | Yes | **New** |
-| **Realtime 30-min graph** | No | Yes | **New** |
-| **Auto-refresh realtime (30s)** | No | Yes | **New** |
-| **Chart interval toggle (Days/Hours/Weeks)** | No | Yes | **New** |
-| **"Details" expandable views** | No | Yes | **New** |
-| **Public shared dashboards** | Schema exists, no UI | Yes | **New** |
-| **CSV/data export** | No | Yes | **New** |
-| **Site settings page** | No (inline only) | Yes | **New** |
-| **Source favicons** | No | Yes | **New** |
-| **UTM Term and Content** | No | Yes | **New** |
-| **Scroll depth tracking** | No | Yes | Deferred |
-| **Email reports** | No | Yes | Deferred |
+**Files:**
+- Create: `src/components/analytics/WorldMap.tsx`
+- Edit: `src/components/analytics/OverviewSection.tsx` (render WorldMap above country list)
 
-## Implementation Plan
+## 2. Sidebar Navigation for Each Dashboard Section
 
-### 1. Clickable Metric Switching on Chart
+Expand the sidebar in `SiteAnalytics.tsx` to include each breakdown panel as its own navigable section, giving users quick access to full-page views.
 
-In Plausible, clicking any metric (Unique Visitors, Total Visits, Pageviews, etc.) switches the chart to display that metric over time. The selected metric is underlined.
+**New sidebar structure:**
+```
+Traffic
+  Realtime
+  Overview
 
-**Changes:**
-- `OverviewSection.tsx`: Add `activeMetric` state, highlight the selected metric in the strip, and change the chart `dataKey` to render the selected metric's time series (computing visitors, visits, pageviews, bounce rate, etc. per bucket).
+Acquisition
+  Sources
+  Campaigns
 
-### 2. Realtime 30-Minute Graph with Auto-Refresh
+Content
+  Pages
 
-Plausible shows a dedicated realtime view with a 30-minute graph updated every 30 seconds.
+Audience
+  Locations (with map)
+  Technology
 
-**Changes:**
-- `OverviewSection.tsx`: When `preset === "realtime"`, render a 30-minute chart with 1-minute buckets, auto-refresh the data every 30 seconds using `setInterval`, and show "Last 30 minutes" label.
+Behavior
+  Goals
+  Funnels
 
-### 3. Chart Interval Toggle (Hours/Days/Weeks/Months)
+Site
+  Settings
+```
 
-Plausible lets users toggle chart granularity. For "Last 30 days" you can pick Days or Weeks; for "Today" you can pick Minutes or Hours.
+**Implementation:**
+- Add new section types: `"sources"`, `"campaigns"`, `"pages"`, `"locations"`, `"technology"`
+- Each renders the relevant breakdown as a full-page view with the date range picker and filter bar
+- Extract shared date range/filter state from `OverviewSection` into `SiteAnalytics` or create dedicated full-page wrapper components
+- For simplicity, create a new `BreakdownPage.tsx` component that wraps a single breakdown type with its own date picker, data fetching, and the BreakdownDetails modal -- reusing the same data-fetching logic
 
-**Changes:**
-- `OverviewSection.tsx`: Add an interval selector dropdown next to the chart title. Available options depend on the date range. Recompute chart buckets based on selected interval.
-
-### 4. "Details" Expandable Views with Sorting
-
-Each breakdown panel in Plausible has a "Details" link that opens a full list with extra columns (bounce rate, visit duration per source/page).
-
-**Changes:**
-- Create a new `BreakdownDetails` dialog/modal component that shows the full list (not limited to top 10) with additional computed columns.
-- Add a "Details" button at the bottom of each breakdown section in `OverviewSection.tsx`.
-- Support sorting by clicking column headers (visitors, bounce rate, duration).
-
-### 5. Public Shared Dashboards
-
-The `sites` table already has a `public_share` boolean column. Need UI to toggle it and a public route to view the dashboard without auth.
-
-**Changes:**
-- Add a "Visibility" toggle in site settings (new section in `SiteAnalytics.tsx` header or a settings dialog).
-- Create a new route `/share/:siteId` that renders `OverviewSection` without requiring authentication, gated by `public_share = true`.
-- Add an RLS policy allowing anonymous SELECT on pageviews when the site's `public_share` is true.
-- New page: `src/pages/SharedDashboard.tsx`.
-
-### 6. CSV Export
-
-Plausible allows downloading chart data and breakdown lists as CSV.
-
-**Changes:**
-- Add a download icon button next to the chart and each breakdown panel.
-- Utility function to convert data arrays to CSV and trigger browser download.
-
-### 7. Source Favicons
-
-Plausible shows favicons next to referral sources using DuckDuckGo's favicon API.
-
-**Changes:**
-- In the `BreakdownList` component, prepend an `<img>` tag using `https://icons.duckduckgo.com/ip3/{domain}.ico` for source items.
-- Parse the referrer URL to extract the domain for the favicon lookup.
-
-### 8. UTM Term and Content Tracking
-
-Plausible tracks `utm_term` and `utm_content` in addition to source/medium/campaign.
-
-**Changes:**
-- **Database migration**: Add `utm_term` and `utm_content` columns to the `pageviews` table.
-- **Edge function** (`track/index.ts`): Parse and store `utm_term` and `utm_content` from the query string.
-- **Tracker script**: Send `utm_term` and `utm_content` in the payload.
-- **OverviewSection.tsx**: Add "Term" and "Content" sub-tabs under the Campaigns tab.
-
-### 9. Site Settings Page
-
-A dedicated settings page per site for managing domain, visibility, shared links, and danger zone (delete site).
-
-**Changes:**
-- Add a "Settings" nav item to the sidebar in `SiteAnalytics.tsx`.
-- Create `src/components/analytics/SiteSettingsPanel.tsx` with sections for: General (name, domain), Visibility (public share toggle, share link), Danger Zone (delete site).
+**Files:**
+- Create: `src/components/analytics/BreakdownPage.tsx` (reusable full-page view for a single breakdown type)
+- Edit: `src/pages/SiteAnalytics.tsx` (expanded nav items, render new sections)
+- Edit: `src/components/analytics/OverviewSection.tsx` (add WorldMap to locations panel)
 
 ## Technical Details
 
-### Database Migration
-```sql
-ALTER TABLE public.pageviews 
-  ADD COLUMN IF NOT EXISTS utm_term text,
-  ADD COLUMN IF NOT EXISTS utm_content text;
-```
+### WorldMap Component
+- SVG paths for countries stored as a constant map of `{ [isoCode]: svgPathD }`
+- Uses a compact world map SVG (Natural Earth projection, simplified paths)
+- Country name to ISO code mapping for matching pageview `country` field values
+- Hover state shows a floating tooltip with country name + visitor count
+- Color scale: `hsl(var(--primary))` with opacity from 0.1 (low) to 1.0 (high) based on visitor proportion
 
-### Files to Create
-- `src/pages/SharedDashboard.tsx` -- public shared dashboard page
-- `src/components/analytics/SiteSettingsPanel.tsx` -- per-site settings
-- `src/components/analytics/BreakdownDetails.tsx` -- full breakdown modal with sorting
+### BreakdownPage Component
+- Props: `siteId`, `breakdownType` (sources/campaigns/pages/locations/technology)
+- Includes its own date range picker (same preset logic as OverviewSection)
+- Fetches pageviews, computes the relevant breakdown
+- Shows the full list (not limited to top 10) with sorting
+- For locations type, renders WorldMap at the top
+- Includes filter bar and CSV export
 
-### Files to Modify
-- `src/components/analytics/OverviewSection.tsx` -- clickable metrics, realtime graph, interval toggle, details buttons, CSV export, favicons, UTM term/content tabs
-- `src/pages/SiteAnalytics.tsx` -- add Settings nav item
-- `src/App.tsx` -- add `/share/:siteId` route
-- `supabase/functions/track/index.ts` -- add utm_term/utm_content to tracker script and storage
-
-### Deferred (Out of Scope)
-- Scroll depth tracking (requires significant tracker changes)
-- Automated email reports (requires scheduled functions + email service)
-- Keyboard shortcuts
-- Browser/OS version drilldown
+### Sidebar Changes
+- Expand `Section` type union to include new values
+- Add icons: `Link2` for Sources, `Megaphone` for Campaigns, `FileText` for Pages, `Globe` for Locations, `Monitor` for Technology
+- Each new section renders `<BreakdownPage siteId={siteId} breakdownType="..." />`
 
