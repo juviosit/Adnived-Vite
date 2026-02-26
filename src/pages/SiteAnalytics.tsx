@@ -5,6 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
   ArrowLeft, Copy, Code, BarChart3, Target, GitBranch, Menu, X, Radio, Settings,
+  Link2, Megaphone, FileText, Globe, Monitor,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -13,13 +14,19 @@ import GoalsPanel from "@/components/analytics/GoalsPanel";
 import OverviewSection from "@/components/analytics/OverviewSection";
 import FunnelsPanel from "@/components/analytics/FunnelsPanel";
 import SiteSettingsPanel from "@/components/analytics/SiteSettingsPanel";
+import BreakdownPage from "@/components/analytics/BreakdownPage";
 import { cn } from "@/lib/utils";
 
-type Section = "realtime" | "overview" | "goals" | "funnels" | "settings";
+type Section = "realtime" | "overview" | "sources" | "campaigns" | "pages" | "locations" | "technology" | "goals" | "funnels" | "settings";
 
 const NAV_ITEMS: { section: Section; label: string; icon: React.ElementType; group: string }[] = [
   { section: "realtime", label: "Realtime", icon: Radio, group: "Traffic" },
   { section: "overview", label: "Overview", icon: BarChart3, group: "Traffic" },
+  { section: "sources", label: "Sources", icon: Link2, group: "Acquisition" },
+  { section: "campaigns", label: "Campaigns", icon: Megaphone, group: "Acquisition" },
+  { section: "pages", label: "Pages", icon: FileText, group: "Content" },
+  { section: "locations", label: "Locations", icon: Globe, group: "Audience" },
+  { section: "technology", label: "Technology", icon: Monitor, group: "Audience" },
   { section: "goals", label: "Goals", icon: Target, group: "Behavior" },
   { section: "funnels", label: "Funnels", icon: GitBranch, group: "Behavior" },
   { section: "settings", label: "Settings", icon: Settings, group: "Site" },
@@ -202,6 +209,11 @@ const SiteAnalytics = () => {
         <main className="p-4 md:p-6">
           {activeSection === "realtime" && siteId && <OverviewSection siteId={siteId} defaultPreset="realtime" />}
           {activeSection === "overview" && siteId && <OverviewSection siteId={siteId} />}
+          {activeSection === "sources" && siteId && <BreakdownPage siteId={siteId} breakdownType="sources" />}
+          {activeSection === "campaigns" && siteId && <BreakdownPage siteId={siteId} breakdownType="campaigns" />}
+          {activeSection === "pages" && siteId && <BreakdownPage siteId={siteId} breakdownType="pages" />}
+          {activeSection === "locations" && siteId && <BreakdownPage siteId={siteId} breakdownType="locations" />}
+          {activeSection === "technology" && siteId && <BreakdownPage siteId={siteId} breakdownType="technology" />}
           {activeSection === "goals" && siteId && <GoalsPanel siteId={siteId} />}
           {activeSection === "funnels" && siteId && <FunnelsPanel siteId={siteId} />}
           {activeSection === "settings" && site && (
