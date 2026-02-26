@@ -260,6 +260,98 @@ export type Database = {
           },
         ]
       }
+      payment_settings: {
+        Row: {
+          app_id: string
+          app_token: string
+          callback_url: string
+          created_at: string
+          currency: string
+          hash_salt: string
+          id: string
+          is_test_mode: boolean
+          provider: string
+          redirect_url: string
+          updated_at: string
+        }
+        Insert: {
+          app_id?: string
+          app_token?: string
+          callback_url?: string
+          created_at?: string
+          currency?: string
+          hash_salt?: string
+          id?: string
+          is_test_mode?: boolean
+          provider?: string
+          redirect_url?: string
+          updated_at?: string
+        }
+        Update: {
+          app_id?: string
+          app_token?: string
+          callback_url?: string
+          created_at?: string
+          currency?: string
+          hash_salt?: string
+          id?: string
+          is_test_mode?: boolean
+          provider?: string
+          redirect_url?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      payment_transactions: {
+        Row: {
+          additional_data: string | null
+          amount_cents: number
+          created_at: string
+          currency: string
+          id: string
+          onepay_transaction_id: string | null
+          order_reference: string
+          plan_id: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          additional_data?: string | null
+          amount_cents: number
+          created_at?: string
+          currency?: string
+          id?: string
+          onepay_transaction_id?: string | null
+          order_reference: string
+          plan_id: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          additional_data?: string | null
+          amount_cents?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          onepay_transaction_id?: string | null
+          order_reference?: string
+          plan_id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_transactions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       plans: {
         Row: {
           created_at: string
