@@ -15,6 +15,7 @@ import { format, subDays, subHours, subMinutes, differenceInDays, differenceInSe
 import { cn } from "@/lib/utils";
 import { exportToCSV } from "@/lib/csv-export";
 import BreakdownDetails from "./BreakdownDetails";
+import WorldMap from "./WorldMap";
 import type { DateRange } from "react-day-picker";
 
 type RangePreset = "realtime" | "24h" | "7d" | "30d" | "lifetime" | "custom";
@@ -549,7 +550,12 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
               onExportCSV={() => handleExportBreakdown("locations", locTab === "countries" ? topCountries : locTab === "regions" ? topRegions : topCities)}
             />
           </PanelHeader>
-          {locTab === "countries" && <BreakdownList data={topCountries} onFilter={(v) => addFilter("country", v)} />}
+          {locTab === "countries" && (
+            <>
+              <WorldMap data={topCountries} />
+              <BreakdownList data={topCountries} onFilter={(v) => addFilter("country", v)} />
+            </>
+          )}
           {locTab === "regions" && <BreakdownList data={topRegions} onFilter={(v) => addFilter("region", v)} />}
           {locTab === "cities" && <BreakdownList data={topCities} onFilter={(v) => addFilter("city", v)} />}
         </BreakdownPanel>
