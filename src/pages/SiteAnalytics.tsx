@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
-  ArrowLeft, Copy, Code, BarChart3, Target, GitBranch, Menu, X, Radio,
+  ArrowLeft, Copy, Code, BarChart3, Target, GitBranch, Menu, X, Radio, Settings,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -12,21 +12,23 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import GoalsPanel from "@/components/analytics/GoalsPanel";
 import OverviewSection from "@/components/analytics/OverviewSection";
 import FunnelsPanel from "@/components/analytics/FunnelsPanel";
+import SiteSettingsPanel from "@/components/analytics/SiteSettingsPanel";
 import { cn } from "@/lib/utils";
 
-type Section = "realtime" | "overview" | "goals" | "funnels";
+type Section = "realtime" | "overview" | "goals" | "funnels" | "settings";
 
 const NAV_ITEMS: { section: Section; label: string; icon: React.ElementType; group: string }[] = [
   { section: "realtime", label: "Realtime", icon: Radio, group: "Traffic" },
   { section: "overview", label: "Overview", icon: BarChart3, group: "Traffic" },
   { section: "goals", label: "Goals", icon: Target, group: "Behavior" },
   { section: "funnels", label: "Funnels", icon: GitBranch, group: "Behavior" },
+  { section: "settings", label: "Settings", icon: Settings, group: "Site" },
 ];
 
 const SiteAnalytics = () => {
   const { siteId } = useParams<{ siteId: string }>();
   const { signOut } = useAuth();
-  const [site, setSite] = useState<{ id: string; domain: string; name: string | null } | null>(null);
+  const [site, setSite] = useState<{ id: string; domain: string; name: string | null; public_share: boolean } | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeSection, setActiveSection] = useState<Section>("overview");
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -34,15 +36,19 @@ const SiteAnalytics = () => {
 
   useEffect(() => {
     if (!siteId) return;
-    supabase
-      .from("sites")
-      .select("id, domain, name")
-      .eq("id", siteId)
-      .single()
-      .then(({ data }) => {
-        if (data) setSite(data);
-        setLoading(false);
-      });
+    const fetchSite = () => {
+      supabase
+        .from("sites")
+        .select("id, domain, name, public_share")
+        .eq("id", siteId)
+        .single()
+        .then(({ data }) => {
+          if (data) setSite(data);
+          setLoading(false);
+        });
+    };
+    fetchSite();
+    (window as any).__refetchSite = fetchSite;
   }, [siteId]);
 
   // Realtime current visitors (distinct sessions in last 5 minutes)
@@ -198,6 +204,11 @@ const SiteAnalytics = () => {
           {activeSection === "overview" && siteId && <OverviewSection siteId={siteId} />}
           {activeSection === "goals" && siteId && <GoalsPanel siteId={siteId} />}
           {activeSection === "funnels" && siteId && <FunnelsPanel siteId={siteId} />}
+          {activeSection === "settings" && site && (
+            <SiteSettingsPanel site={site} onUpdate={() => {
+              supabase.from("sites").select("id, domain, name, public_share").eq("id", site.id).single().then(({ data }) => { if (data) setSite(data); });
+            }} />
+          )}
         </main>
       </div>
     </div>
