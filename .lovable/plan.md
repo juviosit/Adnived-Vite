@@ -1,49 +1,43 @@
 
 
-# World Map Legend + Navbar Improvements
+# Add Tracking Snippet to Settings + Plausible-Style Improvements
 
-## 1. Add Color Scale Legend to World Map
+## 1. Add Tracking Snippet Card to Site Settings
 
-Add a horizontal gradient legend below the map showing "Low" to "High" visitor intensity.
+Add a new "Tracking Snippet" card to `SiteSettingsPanel.tsx`, placed as the first card (above General), matching Plausible's settings layout where the snippet is prominently shown in site settings.
 
-**File: `src/components/analytics/WorldMap.tsx`**
-- Add a legend bar below the map SVG, inside the existing container div
-- Render a horizontal gradient from `hsl(var(--primary) / 0.2)` to `hsl(var(--primary) / 1.0)`
-- Labels: "Low" on the left, "High" on the right
-- Compact styling: small height (8px), rounded, with text-xs labels
+**Design (Plausible-inspired):**
+- Card titled "Tracking Snippet" with description "Add this snippet to your website"
+- Instruction text: "Paste this snippet into the `<head>` section of your site."
+- Code block with the full `<script>` tag, dynamically using the site's current domain
+- Copy button in the top-right corner of the code block
+- The snippet URL uses `VITE_SUPABASE_PROJECT_ID` env var to build the endpoint URL
+- Note below explaining that the snippet will automatically track pageviews once installed
 
-## 2. Change "Access Platform" to "Sign In"
+**Snippet format:**
+```
+<script defer data-domain="{site.domain}" src="https://{projectId}.supabase.co/functions/v1/track"></script>
+```
 
-**File: `src/components/landing/Header.tsx`**
-- Change button text from "Access Platform" to "Sign In"
-- Remove the `ExternalLink` icon (sign-in is internal, not external)
+The `data-domain` attribute updates dynamically based on the site's domain field.
 
-## 3. Add Branded Navbar to Dashboard Layout
+**File: `src/components/analytics/SiteSettingsPanel.tsx`**
+- Add `Code` icon import from lucide-react
+- Add a new "Tracking Snippet" Card as the first section
+- Include a code block with the snippet and a Copy button
+- Remove the tracking snippet dialog from the SiteAnalytics header (since it now lives in settings) -- OR keep both for quick access
 
-The `DashboardLayout` (used by the main user dashboard) currently has a minimal header. Add the "adnived analytics" branding to match the landing page header.
+## 2. Keep Header Snippet Button (Quick Access)
 
-**File: `src/components/dashboard/DashboardLayout.tsx`**
-- Already shows the logo icon + "adnived" text -- add "analytics" subtitle text to match the landing page branding pattern
+Keep the existing "Tracking snippet" button in the `SiteAnalytics.tsx` header as a convenient shortcut. Both locations serve different purposes: header for quick copy, settings for detailed setup instructions.
 
-## 4. Add Branded Navbar to Site Analytics
+No changes needed to `SiteAnalytics.tsx`.
 
-The `SiteAnalytics` page sidebar header only shows a back arrow and site name. Add the platform branding.
-
-**File: `src/pages/SiteAnalytics.tsx`**
-- In the sidebar header, replace the plain back-arrow + site name with the "adnived" logo/brand link (linking to `/dashboard`), and move the site name below or keep it as a secondary label
-- In the mobile sheet header, apply the same branding
-
-## 5. Ensure Admin Layout Has Consistent Branding
-
-**File: `src/components/admin/AdminLayout.tsx`**
-- Already shows "adnived Admin" branding with the logo icon -- this is consistent. No changes needed.
-
-## Technical Summary
+## Technical Details
 
 | File | Change |
 |------|--------|
-| `src/components/analytics/WorldMap.tsx` | Add gradient legend bar below the map |
-| `src/components/landing/Header.tsx` | "Access Platform" -> "Sign In", remove ExternalLink icon |
-| `src/components/dashboard/DashboardLayout.tsx` | Add "analytics" text after "adnived" in header |
-| `src/pages/SiteAnalytics.tsx` | Add branded logo in sidebar header alongside site name |
+| `src/components/analytics/SiteSettingsPanel.tsx` | Add "Tracking Snippet" card at top with dynamic domain, code block, copy button |
+
+The tracking snippet already uses `site.domain` in `SiteAnalytics.tsx` (line 80). The same pattern will be used in the settings panel, reading `VITE_SUPABASE_PROJECT_ID` from env and building the snippet string with the site's current domain. When the domain is updated and saved, the snippet in settings will reflect the new domain immediately since it reads from the `site.domain` prop.
 
