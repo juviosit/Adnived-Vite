@@ -134,11 +134,18 @@ const SiteAnalytics = () => {
     <div className="flex min-h-screen bg-background">
       {/* Desktop Sidebar */}
       <aside className="sticky top-0 hidden md:flex h-screen w-56 shrink-0 flex-col border-r border-border/50 bg-sidebar-background">
-        <div className="flex h-14 items-center gap-2 border-b border-border/50 px-4">
-          <Link to="/dashboard" className="text-muted-foreground hover:text-foreground transition-colors">
-            <ArrowLeft className="h-4 w-4" />
+        <div className="flex flex-col border-b border-border/50 px-4">
+          <Link to="/dashboard" className="flex h-14 items-center gap-2">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
+              <BarChart3 className="h-4 w-4 text-primary-foreground" />
+            </div>
+            <span className="font-bold text-foreground">adnived</span>
+            <span className="text-sm text-muted-foreground">analytics</span>
           </Link>
-          <span className="truncate text-sm font-semibold text-foreground">{site.name || site.domain}</span>
+          <div className="flex items-center gap-2 pb-3">
+            <ArrowLeft className="h-3.5 w-3.5 text-muted-foreground" />
+            <span className="truncate text-xs font-medium text-muted-foreground">{site.name || site.domain}</span>
+          </div>
         </div>
         {sidebarNav}
       </aside>
@@ -156,12 +163,19 @@ const SiteAnalytics = () => {
                   </Button>
                 </SheetTrigger>
                 <SheetContent side="left" className="w-56 p-0 bg-sidebar-background">
-                  <div className="flex h-14 items-center gap-2 border-b border-border/50 px-4">
-                    <Link to="/dashboard" className="text-muted-foreground hover:text-foreground transition-colors">
-                      <ArrowLeft className="h-4 w-4" />
-                    </Link>
-                    <span className="truncate text-sm font-semibold text-foreground">{site.name || site.domain}</span>
-                  </div>
+                   <div className="flex flex-col border-b border-border/50 px-4">
+                     <Link to="/dashboard" className="flex h-14 items-center gap-2">
+                       <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
+                         <BarChart3 className="h-4 w-4 text-primary-foreground" />
+                       </div>
+                       <span className="font-bold text-foreground">adnived</span>
+                       <span className="text-sm text-muted-foreground">analytics</span>
+                     </Link>
+                     <div className="flex items-center gap-2 pb-3">
+                       <ArrowLeft className="h-3.5 w-3.5 text-muted-foreground" />
+                       <span className="truncate text-xs font-medium text-muted-foreground">{site.name || site.domain}</span>
+                     </div>
+                   </div>
                   {sidebarNav}
                 </SheetContent>
               </Sheet>
