@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
-  ArrowLeft, Copy, Code, BarChart3, Target, GitBranch, Menu, X,
+  ArrowLeft, Copy, Code, BarChart3, Target, GitBranch, Menu, X, Radio,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
@@ -14,9 +14,10 @@ import OverviewSection from "@/components/analytics/OverviewSection";
 import FunnelsPanel from "@/components/analytics/FunnelsPanel";
 import { cn } from "@/lib/utils";
 
-type Section = "overview" | "goals" | "funnels";
+type Section = "realtime" | "overview" | "goals" | "funnels";
 
 const NAV_ITEMS: { section: Section; label: string; icon: React.ElementType; group: string }[] = [
+  { section: "realtime", label: "Realtime", icon: Radio, group: "Traffic" },
   { section: "overview", label: "Overview", icon: BarChart3, group: "Traffic" },
   { section: "goals", label: "Goals", icon: Target, group: "Behavior" },
   { section: "funnels", label: "Funnels", icon: GitBranch, group: "Behavior" },
@@ -193,6 +194,7 @@ const SiteAnalytics = () => {
         </header>
 
         <main className="p-4 md:p-6">
+          {activeSection === "realtime" && siteId && <OverviewSection siteId={siteId} defaultPreset="realtime" />}
           {activeSection === "overview" && siteId && <OverviewSection siteId={siteId} />}
           {activeSection === "goals" && siteId && <GoalsPanel siteId={siteId} />}
           {activeSection === "funnels" && siteId && <FunnelsPanel siteId={siteId} />}

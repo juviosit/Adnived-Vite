@@ -21,6 +21,7 @@ type RangePreset = "realtime" | "24h" | "7d" | "30d" | "lifetime" | "custom";
 
 interface OverviewSectionProps {
   siteId: string;
+  defaultPreset?: RangePreset;
 }
 
 interface Filter {
@@ -28,8 +29,8 @@ interface Filter {
   value: string;
 }
 
-export default function OverviewSection({ siteId }: OverviewSectionProps) {
-  const [preset, setPreset] = useState<RangePreset>("30d");
+export default function OverviewSection({ siteId, defaultPreset = "30d" }: OverviewSectionProps) {
+  const [preset, setPreset] = useState<RangePreset>(defaultPreset);
   const [customRange, setCustomRange] = useState<DateRange | undefined>();
   const [pageviews, setPageviews] = useState<any[]>([]);
   const [prevPageviews, setPrevPageviews] = useState<any[]>([]);
