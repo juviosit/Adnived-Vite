@@ -7,10 +7,23 @@ import {
 } from "react-simple-maps";
 import { COUNTRY_NAME_TO_ISO } from "./worldMapData";
 
-const GEO_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
+const GEO_URL = "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson";
 
 interface WorldMapProps {
   data: [string, number][];
+}
+
+// Build a reverse lookup: normalize names for flexible matching
+function buildNameLookup(data: [string, number][]): Record<string, { count: number; name: string }> {
+  const map: Record<string, { count: number; name: string }> = {};
+  data.forEach(([name, count]) => {
+    // Store by original name (lowercased for matching)
+    map[name.toLowerCase()] = { count, name };
+    // Also store by ISO code if available
+    const iso = COUNTRY_NAME_TO_ISO[name];
+    if (iso) map[iso.toLowerCase()] = { count, name };
+  });
+  return map;
 }
 
 function WorldMapInner({ data }: WorldMapProps) {
@@ -21,32 +34,29 @@ function WorldMapInner({ data }: WorldMapProps) {
     y: number;
   } | null>(null);
 
-  const countByIso = useMemo(() => {
-    const map: Record<string, { count: number; name: string }> = {};
-    data.forEach(([name, count]) => {
-      const iso = COUNTRY_NAME_TO_ISO[name] || name;
-      if (iso) map[iso] = { count, name };
-    });
-    return map;
-  }, [data]);
+  const nameLookup = useMemo(() => buildNameLookup(data), [data]);
 
   const maxCount = useMemo(
     () => Math.max(1, ...data.map(([, c]) => c)),
     [data]
   );
 
-  const getColor = (isoA3: string, isoA2: string, geoName: string): string => {
-    const entry =
-      countByIso[isoA2] ||
-      countByIso[isoA3] ||
-      countByIso[geoName];
+  const findEntry = (geoName: string) => {
+    // Try direct name match first
+    const byName = nameLookup[geoName.toLowerCase()];
+    if (byName) return byName;
+    // Try ISO code from the geo name (some geo names are country names we have mapped)
+    const iso = COUNTRY_NAME_TO_ISO[geoName];
+    if (iso) return nameLookup[iso.toLowerCase()];
+    return null;
+  };
+
+  const getColor = (geoName: string): string => {
+    const entry = findEntry(geoName);
     if (!entry) return "hsl(var(--muted))";
     const intensity = 0.2 + (entry.count / maxCount) * 0.8;
     return `hsl(var(--primary) / ${intensity})`;
   };
-
-  const getEntry = (isoA3: string, isoA2: string, geoName: string) =>
-    countByIso[isoA2] || countByIso[isoA3] || countByIso[geoName];
 
   return (
     <div className="relative w-full mb-3 rounded-lg overflow-hidden border border-border bg-card">
@@ -64,12 +74,12 @@ function WorldMapInner({ data }: WorldMapProps) {
           <Geographies geography={GEO_URL}>
             {({ geographies }) =>
               geographies.map((geo) => {
-                const { ISO_A2, ISO_A3, NAME } = geo.properties;
+                const geoName = geo.properties.name || "";
                 return (
                   <Geography
                     key={geo.rsmKey}
                     geography={geo}
-                    fill={getColor(ISO_A3, ISO_A2, NAME)}
+                    fill={getColor(geoName)}
                     stroke="hsl(var(--border))"
                     strokeWidth={0.4}
                     style={{
@@ -82,7 +92,7 @@ function WorldMapInner({ data }: WorldMapProps) {
                       pressed: { outline: "none" },
                     }}
                     onMouseEnter={(e) => {
-                      const entry = getEntry(ISO_A3, ISO_A2, NAME);
+                      const entry = findEntry(geoName);
                       if (!entry) return;
                       const rect = (
                         e.currentTarget as SVGElement
@@ -97,7 +107,7 @@ function WorldMapInner({ data }: WorldMapProps) {
                       });
                     }}
                     onMouseMove={(e) => {
-                      const entry = getEntry(ISO_A3, ISO_A2, NAME);
+                      const entry = findEntry(geoName);
                       if (!entry) {
                         setTooltip(null);
                         return;

@@ -45,7 +45,7 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
   const dateRange = useMemo(() => {
     const now = new Date();
     switch (preset) {
-      case "realtime": return { from: subMinutes(now, 30), to: now };
+      case "realtime": return { from: subMinutes(now, 5), to: now };
       case "24h": return { from: subHours(now, 24), to: now };
       case "7d": return { from: subDays(now, 7), to: now };
       case "30d": return { from: subDays(now, 30), to: now };
@@ -110,7 +110,7 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
     const fetchPV = async () => {
       setLoading(true);
       const now = new Date();
-      const from = preset === "realtime" ? subMinutes(now, 30) : dateRange.from;
+      const from = preset === "realtime" ? subMinutes(now, 5) : dateRange.from;
       const to = now;
 
       let query = supabase.from("pageviews").select("*").eq("site_id", siteId).order("timestamp", { ascending: true });
@@ -236,7 +236,7 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
 
     if (preset === "realtime") {
       const buckets: Record<string, any[]> = {};
-      for (let i = 29; i >= 0; i--) { buckets[format(subMinutes(now, i), "HH:mm")] = []; }
+      for (let i = 4; i >= 0; i--) { buckets[format(subMinutes(now, i), "HH:mm")] = []; }
       filteredPageviews.forEach((pv) => { const key = format(new Date(pv.timestamp), "HH:mm"); if (key in buckets) buckets[key].push(pv); });
       return Object.entries(buckets).map(([date, pvs]) => ({ date, ...bucketPvs(pvs) }));
     }
@@ -320,7 +320,7 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
 
   const rangeLabel = useMemo(() => {
     switch (preset) {
-      case "realtime": return "Last 30 minutes";
+      case "realtime": return "Last 5 minutes";
       case "24h": return "Last 24 hours";
       case "7d": return "Last 7 days";
       case "30d": return "Last 30 days";
