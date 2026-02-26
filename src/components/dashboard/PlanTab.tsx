@@ -26,6 +26,12 @@ type Subscription = {
   current_period_end: string;
 };
 
+const formatHits = (hits: number): string => {
+  if (hits >= 1_000_000) return `${(hits / 1_000_000).toFixed(hits % 1_000_000 === 0 ? 0 : 1)}M`;
+  if (hits >= 1_000) return `${(hits / 1_000).toFixed(hits % 1_000 === 0 ? 0 : 1)}K`;
+  return hits.toString();
+};
+
 const PlanTab = () => {
   const { user } = useAuth();
   const [plans, setPlans] = useState<Plan[]>([]);
@@ -133,7 +139,7 @@ const PlanTab = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-3">
-                <Feature label={plan.max_hits ? `${(plan.max_hits / 1000).toFixed(0)}K pageviews` : "Unlimited pageviews"} />
+                <Feature label={plan.max_hits ? `${formatHits(plan.max_hits)} pageviews` : "Unlimited pageviews"} />
                 <Feature label={plan.max_sites ? `${plan.max_sites} site${plan.max_sites > 1 ? "s" : ""}` : "Unlimited sites"} />
                 {plan.slug !== "free" && <Feature label="Team members" />}
                 {plan.slug === "max" && <Feature label="Priority support" />}

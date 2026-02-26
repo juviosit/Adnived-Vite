@@ -113,7 +113,7 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
       const from = preset === "realtime" ? subMinutes(now, 5) : dateRange.from;
       const to = now;
 
-      let query = supabase.from("pageviews").select("*").eq("site_id", siteId).order("timestamp", { ascending: true });
+      let query = supabase.from("pageviews").select("*").eq("site_id", siteId).order("timestamp", { ascending: true }).limit(10000);
       if (from) query = query.gte("timestamp", from.toISOString());
       query = query.lte("timestamp", to.toISOString());
       const { data } = await query;
