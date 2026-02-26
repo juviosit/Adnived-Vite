@@ -27,8 +27,8 @@ export default function SiteSettingsPanel({ site, onUpdate }: SiteSettingsPanelP
   const [deleting, setDeleting] = useState(false);
   const [snippetCopied, setSnippetCopied] = useState(false);
 
-  const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
-  const trackingSnippet = `<script defer data-domain="${site.domain}" src="https://${projectId}.supabase.co/functions/v1/track"></script>`;
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+  const trackingSnippet = `<script defer data-domain="${site.domain}" src="${supabaseUrl}/functions/v1/track"></script>`;
 
   const shareUrl = `${window.location.origin}/share/${site.id}`;
 
