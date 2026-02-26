@@ -49,9 +49,17 @@ const SharedDashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border/50 bg-background/95 backdrop-blur">
-        <div className="flex h-14 items-center px-4 md:px-6">
-          <h1 className="text-lg font-bold text-foreground">{site.name || site.domain}</h1>
-          {site.name && <span className="ml-3 text-xs text-muted-foreground">{site.domain}</span>}
+        <div className="flex h-14 items-center justify-between px-4 md:px-6">
+          <div className="flex items-center gap-3">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
+              <span className="text-xs font-bold text-primary-foreground">A</span>
+            </div>
+            <div>
+              <h1 className="text-lg font-bold text-foreground">{site.name || site.domain}</h1>
+              {site.name && <p className="text-xs text-muted-foreground">{site.domain}</p>}
+            </div>
+          </div>
+          <span className="text-xs text-muted-foreground">Powered by adnived analytics</span>
         </div>
       </header>
       <main className="p-4 md:p-6">

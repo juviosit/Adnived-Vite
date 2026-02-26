@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
   ArrowLeft, BarChart3, Target, GitBranch, Menu, Radio, Settings,
-  Link2, Megaphone, FileText, Globe, Monitor, LayoutDashboard,
+  Link2, Megaphone, FileText, Globe, Monitor, LayoutDashboard, Download,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import GoalsPanel from "@/components/analytics/GoalsPanel";
@@ -16,7 +16,7 @@ import BreakdownPage from "@/components/analytics/BreakdownPage";
 import { cn } from "@/lib/utils";
 import DownloadReportDialog from "@/components/analytics/DownloadReportDialog";
 
-type Section = "realtime" | "overview" | "sources" | "campaigns" | "pages" | "locations" | "technology" | "goals" | "funnels" | "settings";
+type Section = "realtime" | "overview" | "sources" | "campaigns" | "pages" | "locations" | "technology" | "goals" | "funnels" | "report" | "settings";
 
 const NAV_ITEMS: { section: Section; label: string; icon: React.ElementType; group: string }[] = [
   { section: "realtime", label: "Realtime", icon: Radio, group: "Traffic" },
@@ -28,6 +28,7 @@ const NAV_ITEMS: { section: Section; label: string; icon: React.ElementType; gro
   { section: "technology", label: "Technology", icon: Monitor, group: "Audience" },
   { section: "goals", label: "Goals", icon: Target, group: "Behavior" },
   { section: "funnels", label: "Funnels", icon: GitBranch, group: "Behavior" },
+  { section: "report", label: "Download Report", icon: Download, group: "Export" },
   { section: "settings", label: "Settings", icon: Settings, group: "Site" },
 ];
 
@@ -39,6 +40,7 @@ const SiteAnalytics = () => {
   const [activeSection, setActiveSection] = useState<Section>("overview");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [currentVisitors, setCurrentVisitors] = useState<number | null>(null);
+  const [reportOpen, setReportOpen] = useState(false);
 
   useEffect(() => {
     if (!siteId) return;
@@ -93,6 +95,11 @@ const SiteAnalytics = () => {
   }
 
   const handleNavClick = (section: Section) => {
+    if (section === "report") {
+      setReportOpen(true);
+      setMobileOpen(false);
+      return;
+    }
     setActiveSection(section);
     setMobileOpen(false);
   };
@@ -196,8 +203,12 @@ const SiteAnalytics = () => {
                   <span className="hidden sm:inline">Dashboard</span>
                 </Button>
               </Link>
+              <Button variant="ghost" size="sm" className="gap-1.5" onClick={() => setReportOpen(true)}>
+                <Download className="h-4 w-4" />
+                <span className="hidden sm:inline">Report</span>
+              </Button>
               {siteId && site && (
-                <DownloadReportDialog siteId={siteId} siteName={site.name || ""} siteDomain={site.domain} />
+                <DownloadReportDialog siteId={siteId} siteName={site.name || ""} siteDomain={site.domain} open={reportOpen} onOpenChange={setReportOpen} />
               )}
               <Button variant="ghost" size="sm" onClick={signOut}>Sign out</Button>
             </div>

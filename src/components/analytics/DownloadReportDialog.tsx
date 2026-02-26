@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
@@ -30,15 +31,17 @@ interface DownloadReportDialogProps {
   siteId: string;
   siteName: string;
   siteDomain: string;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
-export default function DownloadReportDialog({ siteId, siteName, siteDomain }: DownloadReportDialogProps) {
-  const [open, setOpen] = useState(false);
+export default function DownloadReportDialog({ siteId, siteName, siteDomain, open, onOpenChange }: DownloadReportDialogProps) {
   const [preset, setPreset] = useState<RangePreset>("30d");
   const [customRange, setCustomRange] = useState<DateRange | undefined>();
   const [selectedMetrics, setSelectedMetrics] = useState<Set<MetricId>>(
     new Set(METRIC_OPTIONS.map((m) => m.id))
   );
+  const [rowLimit, setRowLimit] = useState(15);
   const [generating, setGenerating] = useState(false);
 
   const toggleMetric = (id: MetricId) => {
@@ -79,7 +82,6 @@ export default function DownloadReportDialog({ siteId, siteName, siteDomain }: D
       const { data: pageviews } = await query;
       const pvs = pageviews || [];
 
-      // Compute metrics
       const sessions: Record<string, any[]> = {};
       pvs.forEach((pv) => { const k = pv.session_hash || pv.id; (sessions[k] ??= []).push(pv); });
 
@@ -102,17 +104,18 @@ export default function DownloadReportDialog({ siteId, siteName, siteDomain }: D
         return `${sec}s`;
       };
 
+      const limit = Math.max(1, Math.min(rowLimit, 100));
+
       const aggregate = (key: string, fallback = "(none)"): [string, number][] => {
         const map: Record<string, number> = {};
         pvs.forEach((pv: any) => { const v = pv[key] || fallback; map[v] = (map[v] || 0) + 1; });
-        return Object.entries(map).sort(([, a], [, b]) => b - a).slice(0, 15);
+        return Object.entries(map).sort(([, a], [, b]) => b - a).slice(0, limit);
       };
 
       const rangeLabel = preset === "custom" && customRange?.from && customRange?.to
         ? `${format(customRange.from, "MMM d, yyyy")} – ${format(customRange.to, "MMM d, yyyy")}`
         : presetLabels[preset];
 
-      // Build HTML
       let html = `<!DOCTYPE html><html><head><meta charset="utf-8"><title>Analytics Report – ${siteName || siteDomain}</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -128,8 +131,8 @@ export default function DownloadReportDialog({ siteId, siteName, siteDomain }: D
   th, td { text-align: left; padding: 8px 12px; font-size: 13px; }
   th { background: #f8f8f8; font-weight: 600; color: #666; text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px; }
   tr:not(:last-child) td { border-bottom: 1px solid #f0f0f0; }
-  td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
-  th:last-child { text-align: right; }
+  td:last-child, th:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+  td:nth-child(2), th:nth-child(2) { text-align: right; font-variant-numeric: tabular-nums; }
   .footer { margin-top: 40px; padding-top: 16px; border-top: 1px solid #e5e5e5; font-size: 11px; color: #999; }
   @media print { body { padding: 20px; } }
 </style></head><body>`;
@@ -137,7 +140,6 @@ export default function DownloadReportDialog({ siteId, siteName, siteDomain }: D
       html += `<h1>${siteName || siteDomain} – Analytics Report</h1>`;
       html += `<p class="subtitle">${rangeLabel} · Generated ${format(new Date(), "MMM d, yyyy 'at' h:mm a")}</p>`;
 
-      // Metric cards
       if (selectedMetrics.has("visitors") || selectedMetrics.has("bounce_rate") || selectedMetrics.has("duration")) {
         html += `<div class="metrics-grid">`;
         if (selectedMetrics.has("visitors")) {
@@ -156,7 +158,7 @@ export default function DownloadReportDialog({ siteId, siteName, siteDomain }: D
       const renderTable = (title: string, data: [string, number][], colLabel: string) => {
         if (data.length === 0) return "";
         const total = data.reduce((s, [, c]) => s + c, 0);
-        let t = `<h2>${title}</h2><table><thead><tr><th>${colLabel}</th><th>Visitors</th><th>%</th></tr></thead><tbody>`;
+        let t = `<h2>${title} (Top ${data.length})</h2><table><thead><tr><th>${colLabel}</th><th>Visitors</th><th>%</th></tr></thead><tbody>`;
         data.forEach(([name, count]) => {
           t += `<tr><td>${name}</td><td>${count.toLocaleString()}</td><td>${total > 0 ? ((count / total) * 100).toFixed(1) : 0}%</td></tr>`;
         });
@@ -175,27 +177,20 @@ export default function DownloadReportDialog({ siteId, siteName, siteDomain }: D
 
       html += `<div class="footer">Report generated by adnived analytics</div></body></html>`;
 
-      // Open print window
       const printWindow = window.open("", "_blank");
       if (printWindow) {
         printWindow.document.write(html);
         printWindow.document.close();
         setTimeout(() => printWindow.print(), 500);
       }
-      setOpen(false);
+      onOpenChange(false);
     } finally {
       setGenerating(false);
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="ghost" size="sm" className="gap-1.5">
-          <Download className="h-4 w-4" />
-          <span className="hidden sm:inline">Report</span>
-        </Button>
-      </DialogTrigger>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Download Report</DialogTitle>
@@ -231,6 +226,33 @@ export default function DownloadReportDialog({ siteId, siteName, siteDomain }: D
                 </PopoverContent>
               </Popover>
             )}
+          </div>
+
+          {/* Rows to show */}
+          <div className="space-y-2">
+            <Label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Rows per Table</Label>
+            <div className="flex items-center gap-2">
+              {[10, 15, 25, 50].map((n) => (
+                <Button
+                  key={n}
+                  variant={rowLimit === n ? "default" : "outline"}
+                  size="sm"
+                  className="h-8 px-3 text-xs"
+                  onClick={() => setRowLimit(n)}
+                >
+                  {n}
+                </Button>
+              ))}
+              <Input
+                type="number"
+                min={1}
+                max={100}
+                value={rowLimit}
+                onChange={(e) => setRowLimit(Math.max(1, Math.min(100, parseInt(e.target.value) || 15)))}
+                className="h-8 w-16 text-xs"
+              />
+            </div>
+            <p className="text-[11px] text-muted-foreground">Number of items shown in each breakdown table (1–100)</p>
           </div>
 
           {/* Metrics */}
