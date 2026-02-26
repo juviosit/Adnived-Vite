@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
   ArrowLeft, BarChart3, Target, GitBranch, Menu, Radio, Settings,
-  Link2, Megaphone, FileText, Globe, Monitor,
+  Link2, Megaphone, FileText, Globe, Monitor, LayoutDashboard,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import GoalsPanel from "@/components/analytics/GoalsPanel";
@@ -14,6 +14,7 @@ import FunnelsPanel from "@/components/analytics/FunnelsPanel";
 import SiteSettingsPanel from "@/components/analytics/SiteSettingsPanel";
 import BreakdownPage from "@/components/analytics/BreakdownPage";
 import { cn } from "@/lib/utils";
+import DownloadReportDialog from "@/components/analytics/DownloadReportDialog";
 
 type Section = "realtime" | "overview" | "sources" | "campaigns" | "pages" | "locations" | "technology" | "goals" | "funnels" | "settings";
 
@@ -189,6 +190,15 @@ const SiteAnalytics = () => {
               </div>
             </div>
             <div className="flex items-center gap-2 md:gap-3">
+              <Link to="/dashboard">
+                <Button variant="ghost" size="sm" className="gap-1.5">
+                  <LayoutDashboard className="h-4 w-4" />
+                  <span className="hidden sm:inline">Dashboard</span>
+                </Button>
+              </Link>
+              {siteId && site && (
+                <DownloadReportDialog siteId={siteId} siteName={site.name || ""} siteDomain={site.domain} />
+              )}
               <Button variant="ghost" size="sm" onClick={signOut}>Sign out</Button>
             </div>
           </div>

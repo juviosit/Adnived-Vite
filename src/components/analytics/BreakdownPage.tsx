@@ -49,7 +49,7 @@ export default function BreakdownPage({ siteId, breakdownType }: BreakdownPagePr
   useEffect(() => {
     const fetchPV = async () => {
       setLoading(true);
-      let query = supabase.from("pageviews").select("*").eq("site_id", siteId).order("timestamp", { ascending: true });
+      let query = supabase.from("pageviews").select("*").eq("site_id", siteId).order("timestamp", { ascending: true }).limit(10000);
       if (dateRange.from) query = query.gte("timestamp", dateRange.from.toISOString());
       query = query.lte("timestamp", dateRange.to.toISOString());
       const { data } = await query;
