@@ -2,7 +2,7 @@ import { Shield, Check } from "lucide-react";
 import { motion } from "framer-motion";
 
 const badges = ["GDPR compliant", "CCPA compliant", "PECR compliant", "No consent banners needed"];
-const points = ["No IP addresses stored", "No cookies or sessions", "No device fingerprinting"];
+const points = ["IPs are hashed, never stored", "No cookies or sessions", "No cross-site tracking"];
 
 const PrivacySection = () => {
   return (
@@ -14,7 +14,7 @@ const PrivacySection = () => {
             Built for a privacy-first world
           </h2>
           <p className="mx-auto max-w-2xl text-muted-foreground">
-            We don't collect personal data, period. No IP addresses, no device fingerprinting, no cross-site tracking. Just aggregated, anonymous insights.
+            We don't collect personal data, period. IP addresses are hashed and discarded daily, with no cookies, no device fingerprinting, and no cross-site tracking. Just aggregated, anonymous insights.
           </p>
         </div>
 
