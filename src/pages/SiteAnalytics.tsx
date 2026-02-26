@@ -29,6 +29,7 @@ const SiteAnalytics = () => {
   const [loading, setLoading] = useState(true);
   const [activeSection, setActiveSection] = useState<Section>("overview");
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [currentVisitors, setCurrentVisitors] = useState<number | null>(null);
 
   useEffect(() => {
     if (!siteId) return;
@@ -41,6 +42,24 @@ const SiteAnalytics = () => {
         if (data) setSite(data);
         setLoading(false);
       });
+  }, [siteId]);
+
+  // Realtime current visitors (distinct sessions in last 5 minutes)
+  useEffect(() => {
+    if (!siteId) return;
+    const fetchCurrent = async () => {
+      const fiveMinAgo = new Date(Date.now() - 5 * 60 * 1000).toISOString();
+      const { data } = await supabase
+        .from("pageviews")
+        .select("session_hash")
+        .eq("site_id", siteId)
+        .gte("timestamp", fiveMinAgo);
+      const unique = new Set(data?.map((d) => d.session_hash).filter(Boolean));
+      setCurrentVisitors(unique.size);
+    };
+    fetchCurrent();
+    const interval = setInterval(fetchCurrent, 30000); // refresh every 30s
+    return () => clearInterval(interval);
   }, [siteId]);
 
   const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
@@ -133,7 +152,15 @@ const SiteAnalytics = () => {
                 </SheetContent>
               </Sheet>
               <div>
-                <h1 className="text-lg font-bold text-foreground">{site.name || site.domain}</h1>
+                <div className="flex items-center gap-3">
+                  <h1 className="text-lg font-bold text-foreground">{site.name || site.domain}</h1>
+                  {currentVisitors !== null && (
+                    <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+                      {currentVisitors} current visitor{currentVisitors !== 1 ? "s" : ""}
+                    </span>
+                  )}
+                </div>
                 {site.name && <p className="text-xs text-muted-foreground">{site.domain}</p>}
               </div>
             </div>
