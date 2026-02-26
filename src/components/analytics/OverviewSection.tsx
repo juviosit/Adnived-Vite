@@ -1,19 +1,17 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Area, AreaChart, XAxis, YAxis, Bar, BarChart } from "recharts";
 import {
   Users, Eye, ArrowDownUp, Clock, CalendarDays, Monitor, Globe, Link2, Timer,
-  TrendingUp, TrendingDown, X, Search, Download,
+  TrendingUp, TrendingDown, X, Search, Download, Maximize2,
 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
-import { format, subDays, subHours, subMinutes, startOfDay, differenceInDays, differenceInSeconds, differenceInHours, differenceInWeeks, startOfWeek, startOfMonth } from "date-fns";
+import { format, subDays, subHours, subMinutes, differenceInDays, differenceInSeconds, differenceInHours, differenceInWeeks } from "date-fns";
 import { cn } from "@/lib/utils";
 import { exportToCSV } from "@/lib/csv-export";
 import BreakdownDetails from "./BreakdownDetails";
@@ -43,16 +41,6 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
   const [activeMetric, setActiveMetric] = useState<MetricKey>("visitors");
   const [chartInterval, setChartInterval] = useState<ChartInterval>("day");
 
-  // Auto-refresh for realtime
-  useEffect(() => {
-    if (preset !== "realtime") return;
-    const interval = setInterval(() => {
-      // Trigger re-fetch by updating dateRange dependency
-      setPageviews((prev) => [...prev]); // force re-render triggers useEffect below
-    }, 30000);
-    return () => clearInterval(interval);
-  }, [preset]);
-
   const dateRange = useMemo(() => {
     const now = new Date();
     switch (preset) {
@@ -71,7 +59,6 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
     return { from: new Date(dateRange.from.getTime() - duration), to: dateRange.from };
   }, [dateRange, preset]);
 
-  // Auto-set interval based on preset
   useEffect(() => {
     switch (preset) {
       case "realtime": setChartInterval("minute"); break;
@@ -91,7 +78,6 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
     }
   }, [preset, dateRange]);
 
-  // Available intervals for current preset
   const availableIntervals = useMemo((): ChartInterval[] => {
     switch (preset) {
       case "realtime": return ["minute"];
@@ -110,9 +96,8 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
     }
   }, [preset, dateRange]);
 
-  // Fetch data
   const [fetchTrigger, setFetchTrigger] = useState(0);
-  
+
   useEffect(() => {
     if (preset === "realtime") {
       const interval = setInterval(() => setFetchTrigger((t) => t + 1), 30000);
@@ -127,24 +112,19 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
       const from = preset === "realtime" ? subMinutes(now, 30) : dateRange.from;
       const to = now;
 
-      let query = supabase
-        .from("pageviews")
-        .select("*")
-        .eq("site_id", siteId)
-        .order("timestamp", { ascending: true });
+      let query = supabase.from("pageviews").select("*").eq("site_id", siteId).order("timestamp", { ascending: true });
       if (from) query = query.gte("timestamp", from.toISOString());
       query = query.lte("timestamp", to.toISOString());
       const { data } = await query;
       setPageviews(data || []);
 
       if (prevDateRange) {
-        let prevQuery = supabase
+        const { data: prevData } = await supabase
           .from("pageviews")
           .select("session_hash, pathname, referrer, timestamp")
           .eq("site_id", siteId)
           .gte("timestamp", prevDateRange.from.toISOString())
           .lte("timestamp", prevDateRange.to.toISOString());
-        const { data: prevData } = await prevQuery;
         setPrevPageviews(prevData || []);
       } else {
         setPrevPageviews([]);
@@ -154,7 +134,6 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
     fetchPV();
   }, [siteId, dateRange, prevDateRange, fetchTrigger]);
 
-  // Apply filters
   const filteredPageviews = useMemo(() => {
     if (filters.length === 0) return pageviews;
     return pageviews.filter((pv) =>
@@ -183,10 +162,7 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
   const totalPageviews = filteredPageviews.length;
   const sessions = useMemo(() => {
     const map: Record<string, any[]> = {};
-    filteredPageviews.forEach((pv) => {
-      const key = pv.session_hash || pv.id;
-      (map[key] ??= []).push(pv);
-    });
+    filteredPageviews.forEach((pv) => { const key = pv.session_hash || pv.id; (map[key] ??= []).push(pv); });
     return map;
   }, [filteredPageviews]);
 
@@ -215,7 +191,7 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
     return `${sec}s`;
   };
 
-  // Previous period metrics
+  // Previous period
   const prevSessions = useMemo(() => {
     const map: Record<string, any[]> = {};
     prevPageviews.forEach((pv) => { const key = pv.session_hash || "unknown"; (map[key] ??= []).push(pv); });
@@ -237,12 +213,12 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
     return Math.round(((current - previous) / previous) * 100);
   }
 
-  // Chart data with multi-metric support
+  // Chart data
   const chartData = useMemo(() => {
     if (filteredPageviews.length === 0 && !loading) return [];
     const now = new Date();
 
-    const bucketPvs = (key: string, pvs: any[]) => {
+    const bucketPvs = (pvs: any[]) => {
       const sessionMap: Record<string, any[]> = {};
       pvs.forEach((pv) => { const k = pv.session_hash || pv.id; (sessionMap[k] ??= []).push(pv); });
       return {
@@ -259,15 +235,9 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
 
     if (preset === "realtime") {
       const buckets: Record<string, any[]> = {};
-      for (let i = 29; i >= 0; i--) {
-        const key = format(subMinutes(now, i), "HH:mm");
-        buckets[key] = [];
-      }
-      filteredPageviews.forEach((pv) => {
-        const key = format(new Date(pv.timestamp), "HH:mm");
-        if (key in buckets) buckets[key].push(pv);
-      });
-      return Object.entries(buckets).map(([date, pvs]) => ({ date, ...bucketPvs(date, pvs) }));
+      for (let i = 29; i >= 0; i--) { buckets[format(subMinutes(now, i), "HH:mm")] = []; }
+      filteredPageviews.forEach((pv) => { const key = format(new Date(pv.timestamp), "HH:mm"); if (key in buckets) buckets[key].push(pv); });
+      return Object.entries(buckets).map(([date, pvs]) => ({ date, ...bucketPvs(pvs) }));
     }
 
     const from = dateRange.from || new Date(filteredPageviews[0]?.timestamp || Date.now());
@@ -283,42 +253,23 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
       }
     };
 
-    // Generate buckets
     const buckets: Record<string, any[]> = {};
     if (chartInterval === "hour") {
       const hours = differenceInHours(to, from);
-      for (let i = hours; i >= 0; i--) {
-        const key = formatKey(subHours(to, i));
-        buckets[key] = [];
-      }
+      for (let i = hours; i >= 0; i--) { buckets[formatKey(subHours(to, i))] = []; }
     } else if (chartInterval === "day") {
       const days = Math.max(1, differenceInDays(to, from));
-      for (let i = days; i >= 0; i--) {
-        const key = formatKey(subDays(to, i));
-        buckets[key] = [];
-      }
+      for (let i = days; i >= 0; i--) { buckets[formatKey(subDays(to, i))] = []; }
     } else if (chartInterval === "week") {
       const weeks = Math.max(1, differenceInWeeks(to, from));
-      for (let i = weeks; i >= 0; i--) {
-        const d = subDays(to, i * 7);
-        const key = formatKey(d);
-        buckets[key] = [];
-      }
+      for (let i = weeks; i >= 0; i--) { buckets[formatKey(subDays(to, i * 7))] = []; }
     } else if (chartInterval === "month") {
       let d = new Date(from);
-      while (d <= to) {
-        const key = formatKey(d);
-        buckets[key] = [];
-        d = new Date(d.getFullYear(), d.getMonth() + 1, 1);
-      }
+      while (d <= to) { buckets[formatKey(d)] = []; d = new Date(d.getFullYear(), d.getMonth() + 1, 1); }
     }
 
-    filteredPageviews.forEach((pv) => {
-      const key = formatKey(new Date(pv.timestamp));
-      if (key in buckets) buckets[key].push(pv);
-    });
-
-    return Object.entries(buckets).map(([date, pvs]) => ({ date, ...bucketPvs(date, pvs) }));
+    filteredPageviews.forEach((pv) => { const key = formatKey(new Date(pv.timestamp)); if (key in buckets) buckets[key].push(pv); });
+    return Object.entries(buckets).map(([date, pvs]) => ({ date, ...bucketPvs(pvs) }));
   }, [filteredPageviews, dateRange, preset, chartInterval, loading]);
 
   // Breakdowns
@@ -327,8 +278,7 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
     const entries: Record<string, number> = {};
     Object.values(sessions).forEach((pvs) => {
       const sorted = pvs.sort((a: any, b: any) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
-      const entry = sorted[0]?.pathname || "/";
-      entries[entry] = (entries[entry] || 0) + 1;
+      entries[sorted[0]?.pathname || "/"] = (entries[sorted[0]?.pathname || "/"] || 0) + 1;
     });
     return Object.entries(entries).sort(([, a], [, b]) => b - a).slice(0, 10) as [string, number][];
   }, [sessions]);
@@ -336,13 +286,12 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
     const exits: Record<string, number> = {};
     Object.values(sessions).forEach((pvs) => {
       const sorted = pvs.sort((a: any, b: any) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
-      const exit = sorted[sorted.length - 1]?.pathname || "/";
-      exits[exit] = (exits[exit] || 0) + 1;
+      exits[sorted[sorted.length - 1]?.pathname || "/"] = (exits[sorted[sorted.length - 1]?.pathname || "/"] || 0) + 1;
     });
     return Object.entries(exits).sort(([, a], [, b]) => b - a).slice(0, 10) as [string, number][];
   }, [sessions]);
 
-  const topSources = useMemo(() => aggregate(filteredPageviews, "referrer", "Direct"), [filteredPageviews]);
+  const topSources = useMemo(() => aggregate(filteredPageviews, "referrer", "Direct / None"), [filteredPageviews]);
   const topBrowsers = useMemo(() => aggregate(filteredPageviews, "browser", "Unknown"), [filteredPageviews]);
   const topOS = useMemo(() => aggregate(filteredPageviews, "os", "Unknown"), [filteredPageviews]);
   const topDevices = useMemo(() => aggregate(filteredPageviews, "device_type", "Desktop"), [filteredPageviews]);
@@ -351,7 +300,7 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
   const topCities = useMemo(() => aggregate(filteredPageviews, "city", "Unknown"), [filteredPageviews]);
   const channels = useMemo(() => {
     const map: Record<string, number> = {};
-    filteredPageviews.forEach((pv) => { map[deriveChannel(pv.utm_medium, pv.utm_source, pv.referrer)] = (map[deriveChannel(pv.utm_medium, pv.utm_source, pv.referrer)] || 0) + 1; });
+    filteredPageviews.forEach((pv) => { const ch = deriveChannel(pv.utm_medium, pv.utm_source, pv.referrer); map[ch] = (map[ch] || 0) + 1; });
     return Object.entries(map).sort(([, a], [, b]) => b - a).slice(0, 10) as [string, number][];
   }, [filteredPageviews]);
   const utmSources = useMemo(() => aggregate(filteredPageviews, "utm_source", "(none)"), [filteredPageviews]);
@@ -376,19 +325,14 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
       case "30d": return "Last 30 days";
       case "lifetime": return "Lifetime";
       case "custom":
-        if (customRange?.from && customRange?.to)
-          return `${format(customRange.from, "MMM d")} – ${format(customRange.to, "MMM d, yyyy")}`;
+        if (customRange?.from && customRange?.to) return `${format(customRange.from, "MMM d")} – ${format(customRange.to, "MMM d, yyyy")}`;
         return "Custom range";
     }
   }, [preset, customRange]);
 
   const metricLabel: Record<MetricKey, string> = {
-    visitors: "Unique Visitors",
-    visits: "Total Visits",
-    pageviews: "Pageviews",
-    views_per_visit: "Views per Visit",
-    bounce_rate: "Bounce Rate",
-    duration: "Visit Duration",
+    visitors: "Unique Visitors", visits: "Total Visits", pageviews: "Total Pageviews",
+    views_per_visit: "Views per Visit", bounce_rate: "Bounce Rate", duration: "Visit Duration",
   };
 
   const chartConfig = { [activeMetric]: { label: metricLabel[activeMetric], color: "hsl(var(--primary))" } };
@@ -396,77 +340,67 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
   const metrics: { key: MetricKey; label: string; value: string | number; change: number | null; invertColor?: boolean }[] = [
     { key: "visitors", label: "Unique Visitors", value: uniqueVisitors, change: pctChange(uniqueVisitors, prevUniqueVisitors) },
     { key: "visits", label: "Total Visits", value: totalVisits, change: pctChange(totalVisits, prevTotalVisits) },
-    { key: "pageviews", label: "Pageviews", value: totalPageviews, change: pctChange(totalPageviews, prevTotalPageviews) },
+    { key: "pageviews", label: "Total Pageviews", value: totalPageviews, change: pctChange(totalPageviews, prevTotalPageviews) },
     { key: "views_per_visit", label: "Views per Visit", value: viewsPerVisit.toFixed(2), change: pctChange(viewsPerVisit, prevViewsPerVisit) },
     { key: "bounce_rate", label: "Bounce Rate", value: `${bounceRate}%`, change: pctChange(bounceRate, prevBounceRate), invertColor: true },
     { key: "duration", label: "Visit Duration", value: formatDuration(avgDurationSec), change: null },
   ];
 
   const handleExportChart = () => {
-    const headers = ["Date", metricLabel[activeMetric]];
-    const rows = chartData.map((d: any) => [d.date, d[activeMetric]]);
-    exportToCSV(`chart-${activeMetric}`, headers, rows);
+    exportToCSV(`chart-${activeMetric}`, ["Date", metricLabel[activeMetric]], chartData.map((d: any) => [d.date, d[activeMetric]]));
   };
 
   const handleExportBreakdown = (title: string, data: [string, number][]) => {
     exportToCSV(title.toLowerCase().replace(/\s+/g, "-"), ["Name", "Count"], data.map(([n, c]) => [n, c]));
   };
 
-  return (
-    <div className="space-y-6">
-      {/* Date range selector + filters */}
-      <div className="flex flex-wrap items-center gap-2">
-        <Select value={preset} onValueChange={(v) => setPreset(v as RangePreset)}>
-          <SelectTrigger className="w-[160px]"><SelectValue /></SelectTrigger>
-          <SelectContent>
-            <SelectItem value="realtime">Realtime</SelectItem>
-            <SelectItem value="24h">Last 24 hours</SelectItem>
-            <SelectItem value="7d">Last 7 days</SelectItem>
-            <SelectItem value="30d">Last 30 days</SelectItem>
-            <SelectItem value="lifetime">Lifetime</SelectItem>
-            <SelectItem value="custom">Custom range</SelectItem>
-          </SelectContent>
-        </Select>
-        {preset === "custom" && (
-          <Popover>
-            <PopoverTrigger asChild>
-              <Button variant="outline" size="sm" className="gap-2">
-                <CalendarDays className="h-4 w-4" />
-                {customRange?.from && customRange?.to
-                  ? `${format(customRange.from, "MMM d")} – ${format(customRange.to, "MMM d")}`
-                  : "Pick dates"}
-              </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="start">
-              <Calendar mode="range" selected={customRange} onSelect={setCustomRange} numberOfMonths={2} disabled={(date) => date > new Date()} className={cn("p-3 pointer-events-auto")} />
-            </PopoverContent>
-          </Popover>
-        )}
-        {filters.length > 0 && (
-          <div className="flex flex-wrap items-center gap-1.5">
-            <Search className="h-3.5 w-3.5 text-muted-foreground" />
-            {filters.map((f, i) => (
-              <Badge key={i} variant="secondary" className="gap-1 text-xs">
-                <span className="text-muted-foreground">{f.type}:</span> {f.value}
-                <button onClick={() => removeFilter(i)} className="ml-0.5 hover:text-destructive"><X className="h-3 w-3" /></button>
-              </Badge>
-            ))}
-            <Button variant="ghost" size="sm" className="h-6 px-2 text-xs text-muted-foreground" onClick={() => setFilters([])}>Clear all</Button>
-          </div>
-        )}
-      </div>
+  // Active tab state for each panel
+  const [acqTab, setAcqTab] = useState("channels");
+  const [pagesTab, setPagesTab] = useState("top");
+  const [locTab, setLocTab] = useState("countries");
+  const [techTab, setTechTab] = useState("browsers");
+  const [utmTab, setUtmTab] = useState("utm_source");
 
-      {/* Clickable metric strip */}
-      <div className="flex flex-wrap gap-x-6 gap-y-2 rounded-lg border border-border bg-card p-4">
+  return (
+    <div className="space-y-4 animate-fade-in">
+      {/* Filter bar */}
+      {filters.length > 0 && (
+        <div className="flex flex-wrap items-center gap-1.5 rounded-lg bg-accent/50 px-3 py-2">
+          <Search className="h-3.5 w-3.5 text-muted-foreground" />
+          {filters.map((f, i) => (
+            <Badge key={i} variant="secondary" className="gap-1 text-xs font-medium">
+              <span className="text-muted-foreground">{f.type}:</span> {f.value}
+              <button onClick={() => removeFilter(i)} className="ml-0.5 hover:text-destructive transition-colors"><X className="h-3 w-3" /></button>
+            </Badge>
+          ))}
+          <button onClick={() => setFilters([])} className="text-xs text-muted-foreground hover:text-foreground transition-colors ml-1">Clear all</button>
+        </div>
+      )}
+
+      {/* Metric strip — Plausible-style: no card border, flat, with underline active state */}
+      <div className="flex flex-wrap items-start gap-x-8 gap-y-3 py-3 border-b border-border">
         {metrics.map((m) => (
           <button
             key={m.key}
             onClick={() => setActiveMetric(m.key)}
-            className={cn("group flex flex-col items-start text-left transition-all", activeMetric === m.key && "border-b-2 border-primary pb-0.5")}
+            className={cn(
+              "group flex flex-col items-start text-left pb-2 transition-all relative",
+              "after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:transition-all after:duration-200",
+              activeMetric === m.key
+                ? "after:bg-primary after:scale-x-100"
+                : "after:bg-transparent after:scale-x-0 hover:after:scale-x-100 hover:after:bg-border"
+            )}
           >
-            <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{m.label}</span>
-            <div className="flex items-baseline gap-1.5">
-              <span className="text-2xl font-bold tracking-tight text-foreground">{loading ? "…" : m.value}</span>
+            <span className={cn(
+              "text-[11px] font-semibold uppercase tracking-wider transition-colors",
+              activeMetric === m.key ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+            )}>
+              {m.label}
+            </span>
+            <div className="flex items-baseline gap-2 mt-0.5">
+              <span className="text-[26px] font-bold tracking-tight text-foreground leading-tight">
+                {loading ? "—" : m.value}
+              </span>
               {m.change !== null && m.change !== undefined && !loading && (
                 <ChangeIndicator value={m.change} invert={m.invertColor} />
               )}
@@ -475,173 +409,220 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
         ))}
       </div>
 
-      {/* Main chart */}
-      <Card>
-        <CardHeader className="pb-2">
-          <div className="flex items-center justify-between">
-            <CardTitle className="text-base font-medium">
-              {metricLabel[activeMetric]} — {rangeLabel}
-              {preset === "realtime" && <span className="ml-2 text-xs text-muted-foreground">(auto-refreshing)</span>}
-            </CardTitle>
-            <div className="flex items-center gap-2">
-              {availableIntervals.length > 1 && (
-                <Select value={chartInterval} onValueChange={(v) => setChartInterval(v as ChartInterval)}>
-                  <SelectTrigger className="h-7 w-[90px] text-xs"><SelectValue /></SelectTrigger>
-                  <SelectContent>
-                    {availableIntervals.map((iv) => (
-                      <SelectItem key={iv} value={iv} className="text-xs capitalize">{iv}s</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-              <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handleExportChart} title="Export CSV">
-                <Download className="h-3.5 w-3.5" />
-              </Button>
-            </div>
-          </div>
-        </CardHeader>
-        <CardContent>
-          {loading ? (
-            <div className="flex h-[260px] items-center justify-center">
-              <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
-            </div>
-          ) : preset === "realtime" ? (
-            <ChartContainer config={chartConfig} className="h-[260px] w-full">
-              <BarChart data={chartData} margin={{ top: 5, right: 5, bottom: 0, left: -20 }}>
-                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 10 }} interval="preserveStartEnd" />
-                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey={activeMetric} fill="hsl(var(--primary))" radius={[2, 2, 0, 0]} />
-              </BarChart>
-            </ChartContainer>
-          ) : (
-            <ChartContainer config={chartConfig} className="h-[260px] w-full">
-              <AreaChart data={chartData} margin={{ top: 5, right: 5, bottom: 0, left: -20 }}>
-                <defs>
-                  <linearGradient id="fillPV" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12 }} />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Area type="monotone" dataKey={activeMetric} stroke="hsl(var(--primary))" strokeWidth={2} fill="url(#fillPV)" />
-              </AreaChart>
-            </ChartContainer>
+      {/* Chart — borderless, fluid */}
+      <div className="relative">
+        <div className="flex items-center justify-end gap-2 mb-1">
+          <button onClick={handleExportChart} className="p-1.5 text-muted-foreground hover:text-foreground transition-colors rounded" title="Export CSV">
+            <Download className="h-4 w-4" />
+          </button>
+          {availableIntervals.length > 1 && (
+            <Select value={chartInterval} onValueChange={(v) => setChartInterval(v as ChartInterval)}>
+              <SelectTrigger className="h-7 w-[80px] text-xs border-border bg-transparent">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {availableIntervals.map((iv) => (
+                  <SelectItem key={iv} value={iv} className="text-xs capitalize">{iv === "minute" ? "Minutes" : `${iv.charAt(0).toUpperCase()}${iv.slice(1)}s`}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           )}
-        </CardContent>
-      </Card>
+          {preset === "realtime" && (
+            <span className="text-[11px] text-muted-foreground">auto-refreshing</span>
+          )}
+        </div>
 
-      {/* Two-column: Sources | Pages */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium flex items-center gap-2"><Link2 className="h-4 w-4" /> Acquisition</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="channels" className="w-full">
-              <TabsList className="mb-3">
-                <TabsTrigger value="channels">Channels</TabsTrigger>
-                <TabsTrigger value="sources">Sources</TabsTrigger>
-                <TabsTrigger value="campaigns" className="hidden sm:inline-flex">Campaigns</TabsTrigger>
-              </TabsList>
-              <TabsContent value="channels">
-                <BreakdownList data={channels} onFilter={(v) => addFilter("source", v)} />
-                <BreakdownDetails title="All Channels" data={channels} onExportCSV={() => handleExportBreakdown("channels", channels)} />
-              </TabsContent>
-              <TabsContent value="sources">
-                <BreakdownList data={topSources} onFilter={(v) => addFilter("source", v)} showFavicons />
-                <BreakdownDetails title="All Sources" data={topSources} onExportCSV={() => handleExportBreakdown("sources", topSources)} />
-              </TabsContent>
-              <TabsContent value="campaigns">
-                <Tabs defaultValue="utm_source" className="w-full">
-                  <TabsList className="mb-2 h-8">
-                    <TabsTrigger value="utm_source" className="text-xs">Source</TabsTrigger>
-                    <TabsTrigger value="utm_medium" className="text-xs">Medium</TabsTrigger>
-                    <TabsTrigger value="utm_campaign" className="text-xs">Campaign</TabsTrigger>
-                    <TabsTrigger value="utm_term" className="text-xs">Term</TabsTrigger>
-                    <TabsTrigger value="utm_content" className="text-xs">Content</TabsTrigger>
-                  </TabsList>
-                  <TabsContent value="utm_source"><BreakdownList data={utmSources} onFilter={(v) => addFilter("utm_source", v)} /></TabsContent>
-                  <TabsContent value="utm_medium"><BreakdownList data={utmMediums} onFilter={(v) => addFilter("utm_medium", v)} /></TabsContent>
-                  <TabsContent value="utm_campaign"><BreakdownList data={utmCampaigns} onFilter={(v) => addFilter("utm_campaign", v)} /></TabsContent>
-                  <TabsContent value="utm_term"><BreakdownList data={utmTerms} onFilter={(v) => addFilter("utm_term", v)} /></TabsContent>
-                  <TabsContent value="utm_content"><BreakdownList data={utmContents} onFilter={(v) => addFilter("utm_content", v)} /></TabsContent>
-                </Tabs>
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
+        {loading ? (
+          <div className="flex h-[280px] items-center justify-center">
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          </div>
+        ) : preset === "realtime" ? (
+          <ChartContainer config={chartConfig} className="h-[280px] w-full">
+            <BarChart data={chartData} margin={{ top: 5, right: 5, bottom: 0, left: -20 }}>
+              <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} interval="preserveStartEnd" />
+              <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+              <ChartTooltip content={<ChartTooltipContent />} />
+              <Bar dataKey={activeMetric} fill="hsl(var(--primary))" radius={[2, 2, 0, 0]} />
+            </BarChart>
+          </ChartContainer>
+        ) : (
+          <ChartContainer config={chartConfig} className="h-[280px] w-full">
+            <AreaChart data={chartData} margin={{ top: 5, right: 5, bottom: 0, left: -20 }}>
+              <defs>
+                <linearGradient id="fillPV" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.15} />
+                  <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <XAxis dataKey="date" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+              <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} />
+              <ChartTooltip content={<ChartTooltipContent />} />
+              <Area type="monotone" dataKey={activeMetric} stroke="hsl(var(--primary))" strokeWidth={2.5} fill="url(#fillPV)" />
+            </AreaChart>
+          </ChartContainer>
+        )}
+      </div>
 
-        <Card>
-          <CardHeader className="pb-2"><CardTitle className="text-base font-medium">Pages</CardTitle></CardHeader>
-          <CardContent>
-            <Tabs defaultValue="top" className="w-full">
-              <TabsList className="mb-3">
-                <TabsTrigger value="top">Top Pages</TabsTrigger>
-                <TabsTrigger value="entry">Entry Pages</TabsTrigger>
-                <TabsTrigger value="exit">Exit Pages</TabsTrigger>
-              </TabsList>
-              <TabsContent value="top">
-                <BreakdownList data={topPages} onFilter={(v) => addFilter("page", v)} label="Page" countLabel="Visitors" />
-                <BreakdownDetails title="All Pages" data={topPages} onExportCSV={() => handleExportBreakdown("pages", topPages)} />
-              </TabsContent>
-              <TabsContent value="entry">
-                <BreakdownList data={entryPages} onFilter={(v) => addFilter("page", v)} label="Page" countLabel="Entrances" />
-              </TabsContent>
-              <TabsContent value="exit">
-                <BreakdownList data={exitPages} onFilter={(v) => addFilter("page", v)} label="Page" countLabel="Exits" />
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
+      {/* Two-column: Sources | Pages — Plausible-style flat panels */}
+      <div className="grid gap-6 lg:grid-cols-2 pt-2">
+        <BreakdownPanel>
+          <PanelHeader>
+            <PlainTabs
+              tabs={[
+                { id: "channels", label: "Channels" },
+                { id: "sources", label: "Sources" },
+                { id: "campaigns", label: "Campaigns" },
+              ]}
+              active={acqTab}
+              onChange={setAcqTab}
+            />
+            <BreakdownDetails
+              title={acqTab === "channels" ? "All Channels" : acqTab === "sources" ? "All Sources" : "All Campaigns"}
+              data={acqTab === "channels" ? channels : acqTab === "sources" ? topSources : utmSources}
+              onExportCSV={() => handleExportBreakdown(acqTab, acqTab === "channels" ? channels : acqTab === "sources" ? topSources : utmSources)}
+            />
+          </PanelHeader>
+          {acqTab === "channels" && <BreakdownList data={channels} onFilter={(v) => addFilter("source", v)} />}
+          {acqTab === "sources" && <BreakdownList data={topSources} onFilter={(v) => addFilter("source", v)} showFavicons />}
+          {acqTab === "campaigns" && (
+            <>
+              <PlainTabs
+                tabs={[
+                  { id: "utm_source", label: "Source" },
+                  { id: "utm_medium", label: "Medium" },
+                  { id: "utm_campaign", label: "Campaign" },
+                  { id: "utm_term", label: "Term" },
+                  { id: "utm_content", label: "Content" },
+                ]}
+                active={utmTab}
+                onChange={setUtmTab}
+                size="sm"
+              />
+              {utmTab === "utm_source" && <BreakdownList data={utmSources} onFilter={(v) => addFilter("utm_source", v)} />}
+              {utmTab === "utm_medium" && <BreakdownList data={utmMediums} onFilter={(v) => addFilter("utm_medium", v)} />}
+              {utmTab === "utm_campaign" && <BreakdownList data={utmCampaigns} onFilter={(v) => addFilter("utm_campaign", v)} />}
+              {utmTab === "utm_term" && <BreakdownList data={utmTerms} onFilter={(v) => addFilter("utm_term", v)} />}
+              {utmTab === "utm_content" && <BreakdownList data={utmContents} onFilter={(v) => addFilter("utm_content", v)} />}
+            </>
+          )}
+        </BreakdownPanel>
+
+        <BreakdownPanel>
+          <PanelHeader>
+            <PlainTabs
+              tabs={[
+                { id: "top", label: "Top Pages" },
+                { id: "entry", label: "Entry Pages" },
+                { id: "exit", label: "Exit Pages" },
+              ]}
+              active={pagesTab}
+              onChange={setPagesTab}
+            />
+            <BreakdownDetails
+              title="All Pages"
+              data={pagesTab === "top" ? topPages : pagesTab === "entry" ? entryPages : exitPages}
+              onExportCSV={() => handleExportBreakdown("pages", pagesTab === "top" ? topPages : pagesTab === "entry" ? entryPages : exitPages)}
+            />
+          </PanelHeader>
+          {pagesTab === "top" && <BreakdownList data={topPages} onFilter={(v) => addFilter("page", v)} label="Page" countLabel="Visitors" />}
+          {pagesTab === "entry" && <BreakdownList data={entryPages} onFilter={(v) => addFilter("page", v)} label="Page" countLabel="Entrances" />}
+          {pagesTab === "exit" && <BreakdownList data={exitPages} onFilter={(v) => addFilter("page", v)} label="Page" countLabel="Exits" />}
+        </BreakdownPanel>
       </div>
 
       {/* Two-column: Locations | Technology */}
       <div className="grid gap-6 lg:grid-cols-2">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium flex items-center gap-2"><Globe className="h-4 w-4" /> Locations</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="countries" className="w-full">
-              <TabsList className="mb-3">
-                <TabsTrigger value="countries">Countries</TabsTrigger>
-                <TabsTrigger value="regions">Regions</TabsTrigger>
-                <TabsTrigger value="cities">Cities</TabsTrigger>
-              </TabsList>
-              <TabsContent value="countries">
-                <BreakdownList data={topCountries} onFilter={(v) => addFilter("country", v)} />
-                <BreakdownDetails title="All Countries" data={topCountries} onExportCSV={() => handleExportBreakdown("countries", topCountries)} />
-              </TabsContent>
-              <TabsContent value="regions"><BreakdownList data={topRegions} onFilter={(v) => addFilter("region", v)} /></TabsContent>
-              <TabsContent value="cities"><BreakdownList data={topCities} onFilter={(v) => addFilter("city", v)} /></TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
+        <BreakdownPanel>
+          <PanelHeader>
+            <PlainTabs
+              tabs={[
+                { id: "countries", label: "Countries" },
+                { id: "regions", label: "Regions" },
+                { id: "cities", label: "Cities" },
+              ]}
+              active={locTab}
+              onChange={setLocTab}
+            />
+            <BreakdownDetails
+              title="All Locations"
+              data={locTab === "countries" ? topCountries : locTab === "regions" ? topRegions : topCities}
+              onExportCSV={() => handleExportBreakdown("locations", locTab === "countries" ? topCountries : locTab === "regions" ? topRegions : topCities)}
+            />
+          </PanelHeader>
+          {locTab === "countries" && <BreakdownList data={topCountries} onFilter={(v) => addFilter("country", v)} />}
+          {locTab === "regions" && <BreakdownList data={topRegions} onFilter={(v) => addFilter("region", v)} />}
+          {locTab === "cities" && <BreakdownList data={topCities} onFilter={(v) => addFilter("city", v)} />}
+        </BreakdownPanel>
 
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base font-medium flex items-center gap-2"><Monitor className="h-4 w-4" /> Technology</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="browsers" className="w-full">
-              <TabsList className="mb-3">
-                <TabsTrigger value="browsers">Browsers</TabsTrigger>
-                <TabsTrigger value="os">OS</TabsTrigger>
-                <TabsTrigger value="devices">Devices</TabsTrigger>
-              </TabsList>
-              <TabsContent value="browsers">
-                <BreakdownList data={topBrowsers} onFilter={(v) => addFilter("browser", v)} />
-                <BreakdownDetails title="All Browsers" data={topBrowsers} onExportCSV={() => handleExportBreakdown("browsers", topBrowsers)} />
-              </TabsContent>
-              <TabsContent value="os"><BreakdownList data={topOS} onFilter={(v) => addFilter("os", v)} /></TabsContent>
-              <TabsContent value="devices"><BreakdownList data={topDevices} onFilter={(v) => addFilter("device", v)} /></TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
+        <BreakdownPanel>
+          <PanelHeader>
+            <PlainTabs
+              tabs={[
+                { id: "browsers", label: "Browsers" },
+                { id: "os", label: "OS" },
+                { id: "devices", label: "Devices" },
+              ]}
+              active={techTab}
+              onChange={setTechTab}
+            />
+            <BreakdownDetails
+              title="All Technology"
+              data={techTab === "browsers" ? topBrowsers : techTab === "os" ? topOS : topDevices}
+              onExportCSV={() => handleExportBreakdown("technology", techTab === "browsers" ? topBrowsers : techTab === "os" ? topOS : topDevices)}
+            />
+          </PanelHeader>
+          {techTab === "browsers" && <BreakdownList data={topBrowsers} onFilter={(v) => addFilter("browser", v)} />}
+          {techTab === "os" && <BreakdownList data={topOS} onFilter={(v) => addFilter("os", v)} />}
+          {techTab === "devices" && <BreakdownList data={topDevices} onFilter={(v) => addFilter("device", v)} />}
+        </BreakdownPanel>
       </div>
+    </div>
+  );
+}
+
+// ---- Layout components (Plausible-style) ----
+
+function BreakdownPanel({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="rounded-lg border border-border bg-card shadow-sm animate-fade-in">
+      <div className="p-4 space-y-3">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function PanelHeader({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex items-center justify-between">
+      {children}
+    </div>
+  );
+}
+
+function PlainTabs({ tabs, active, onChange, size = "default" }: {
+  tabs: { id: string; label: string }[];
+  active: string;
+  onChange: (id: string) => void;
+  size?: "default" | "sm";
+}) {
+  return (
+    <div className="flex items-center gap-1">
+      {tabs.map((tab) => (
+        <button
+          key={tab.id}
+          onClick={() => onChange(tab.id)}
+          className={cn(
+            "font-semibold uppercase tracking-wider transition-colors pb-1 border-b-2",
+            size === "sm" ? "text-[10px] px-1.5" : "text-[11px] px-2",
+            active === tab.id
+              ? "border-primary text-primary"
+              : "border-transparent text-muted-foreground hover:text-foreground"
+          )}
+        >
+          {tab.label}
+        </button>
+      ))}
     </div>
   );
 }
@@ -651,9 +632,13 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
 function ChangeIndicator({ value, invert }: { value: number; invert?: boolean }) {
   if (value === 0) return <span className="text-xs text-muted-foreground">0%</span>;
   const isPositive = invert ? value < 0 : value > 0;
+  const Icon = isPositive ? TrendingUp : TrendingDown;
   return (
-    <span className={cn("flex items-center gap-0.5 text-xs font-medium", isPositive ? "text-primary" : "text-destructive")}>
-      {isPositive ? <TrendingUp className="h-3 w-3" /> : <TrendingDown className="h-3 w-3" />}
+    <span className={cn(
+      "inline-flex items-center gap-0.5 text-xs font-semibold",
+      isPositive ? "text-primary" : "text-destructive"
+    )}>
+      <Icon className="h-3 w-3" />
       {Math.abs(value)}%
     </span>
   );
@@ -679,17 +664,14 @@ function deriveChannel(medium?: string | null, source?: string | null, referrer?
   if (m === "affiliate") return "Affiliate";
   if (m === "display") return "Display";
   if (m || s) return "Other Campaign";
-  if (!r || r === "direct") return "Direct";
+  if (!r || r === "direct") return "Direct / None";
   if (/google|bing|yahoo|duckduckgo|baidu|yandex/.test(r)) return "Organic Search";
   if (/facebook|twitter|linkedin|instagram|tiktok|reddit|youtube|pinterest/.test(r)) return "Social";
   return "Referral";
 }
 
 function extractDomain(url: string): string | null {
-  try {
-    const u = new URL(url.startsWith("http") ? url : `https://${url}`);
-    return u.hostname;
-  } catch { return null; }
+  try { return new URL(url.startsWith("http") ? url : `https://${url}`).hostname; } catch { return null; }
 }
 
 function BreakdownList({ data, onFilter, label = "Source", countLabel = "Visitors", showFavicons }: {
@@ -702,35 +684,38 @@ function BreakdownList({ data, onFilter, label = "Source", countLabel = "Visitor
   const max = data[0]?.[1] || 1;
   const total = data.reduce((sum, [, count]) => sum + count, 0);
 
-  if (data.length === 0) return <p className="text-sm text-muted-foreground">No data yet</p>;
+  if (data.length === 0) return <p className="text-sm text-muted-foreground py-4 text-center">No data yet</p>;
 
   return (
-    <div className="space-y-0.5">
-      <div className="flex items-center justify-between px-2.5 pb-1.5">
-        <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{label}</span>
-        <span className="text-[11px] font-medium uppercase tracking-wider text-muted-foreground">{countLabel}</span>
+    <div className="space-y-0">
+      <div className="flex items-center justify-between px-2 pb-2 pt-1">
+        <span className="text-[11px] font-medium text-muted-foreground">{label}</span>
+        <span className="text-[11px] font-medium text-muted-foreground">{countLabel}</span>
       </div>
       {data.map(([name, count]) => {
         const pct = total > 0 ? ((count / total) * 100).toFixed(1) : "0";
         const domain = showFavicons ? extractDomain(name) : null;
         return (
-          <button key={name} onClick={() => onFilter?.(name)} className="group relative w-full text-left">
-            <div className="absolute inset-y-0 left-0 rounded bg-primary/10 transition-all group-hover:bg-primary/20" style={{ width: `${(count / max) * 100}%` }} />
-            <div className="relative flex items-center justify-between px-2.5 py-1.5">
+          <button key={name} onClick={() => onFilter?.(name)} className="group relative w-full text-left transition-colors">
+            <div
+              className="absolute inset-y-0 left-0 rounded-r bg-primary/[0.08] transition-all group-hover:bg-primary/[0.14]"
+              style={{ width: `${(count / max) * 100}%` }}
+            />
+            <div className="relative flex items-center justify-between px-2 py-[7px]">
               <div className="flex items-center gap-2 truncate">
                 {domain && (
                   <img
                     src={`https://icons.duckduckgo.com/ip3/${domain}.ico`}
                     alt=""
-                    className="h-4 w-4 shrink-0"
+                    className="h-4 w-4 shrink-0 rounded-sm"
                     onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
                   />
                 )}
-                <span className="truncate text-sm text-foreground">{name}</span>
+                <span className="truncate text-[13px] text-foreground">{name}</span>
               </div>
-              <div className="ml-4 flex shrink-0 items-center gap-2">
-                <span className="text-sm font-medium text-foreground">{formatNumber(count)}</span>
-                <span className="w-10 text-right text-xs text-muted-foreground">{pct}%</span>
+              <div className="ml-4 flex shrink-0 items-center gap-3">
+                <span className="text-[13px] font-medium text-foreground tabular-nums">{formatNumber(count)}</span>
+                <span className="w-[42px] text-right text-[11px] text-muted-foreground tabular-nums">{pct}%</span>
               </div>
             </div>
           </button>
