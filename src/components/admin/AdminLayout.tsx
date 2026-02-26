@@ -23,7 +23,7 @@ const AdminLayout = ({ children }: { children: React.ReactNode }) => {
           <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
             <BarChart3 className="h-4 w-4 text-primary-foreground" />
           </div>
-          <span className="font-bold text-sidebar-foreground">Insight Admin</span>
+          <span className="font-bold text-sidebar-foreground">adnived Admin</span>
         </div>
         <nav className="flex-1 space-y-1 p-3">
           {navItems.map((item) => {

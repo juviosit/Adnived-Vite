@@ -22,7 +22,7 @@ const DashboardLayout = ({ activeTab, onTabChange, children }: DashboardLayoutPr
             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
               <BarChart3 className="h-4 w-4 text-primary-foreground" />
             </div>
-            <span className="font-bold text-foreground">Insight</span>
+            <span className="font-bold text-foreground">adnived</span>
           </Link>
           <div className="flex items-center gap-3">
             <span className="text-sm text-muted-foreground">{user?.email}</span>
