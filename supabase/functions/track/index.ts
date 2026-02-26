@@ -274,7 +274,6 @@ Deno.serve(async (req) => {
     }
 
     // Generate daily-rotating session hash from IP + User-Agent (privacy-friendly, no cookies)
-    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
     const userAgent = req.headers.get("user-agent") || "";
     const today = new Date().toISOString().split("T")[0];
     const encoder = new TextEncoder();
