@@ -75,7 +75,7 @@ const HeroSection = () => {
                   <span className="h-3 w-3 rounded-full bg-chart-3/60" />
                 </div>
                 <div className="flex-1 text-center">
-                  <span className="rounded-md bg-background/80 px-4 py-1 text-xs text-muted-foreground">analytics.adnived.com</span>
+                  <span className="rounded-md bg-background/80 px-4 py-1 text-xs text-muted-foreground">app.insight-analytics.com</span>
                 </div>
               </div>
 

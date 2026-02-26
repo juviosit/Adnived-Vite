@@ -10,8 +10,7 @@ const Footer = () => {
             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
               <BarChart3 className="h-4 w-4 text-primary-foreground" />
             </div>
-            <span className="font-bold text-foreground">adnived</span>
-            <span className="text-muted-foreground">analytics</span>
+            <span className="font-bold text-foreground">Insight</span>
           </div>
 
           <nav className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
@@ -23,7 +22,7 @@ const Footer = () => {
           </nav>
 
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} adnived analytics
+            © {new Date().getFullYear()} Insight
           </p>
         </div>
       </div>
