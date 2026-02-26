@@ -4,11 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
-  ArrowLeft, Copy, Code, BarChart3, Target, GitBranch, Menu, X, Radio, Settings,
+  ArrowLeft, BarChart3, Target, GitBranch, Menu, Radio, Settings,
   Link2, Megaphone, FileText, Globe, Monitor,
 } from "lucide-react";
-import { toast } from "sonner";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import GoalsPanel from "@/components/analytics/GoalsPanel";
 import OverviewSection from "@/components/analytics/OverviewSection";
@@ -76,8 +74,6 @@ const SiteAnalytics = () => {
     return () => clearInterval(interval);
   }, [siteId]);
 
-  const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
-  const trackingSnippet = `<script defer data-domain="${site?.domain}" src="https://${projectId}.supabase.co/functions/v1/track"></script>`;
 
   if (loading) {
     return (
@@ -193,28 +189,6 @@ const SiteAnalytics = () => {
               </div>
             </div>
             <div className="flex items-center gap-2 md:gap-3">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button variant="outline" size="sm" className="gap-2">
-                    <Code className="h-4 w-4" />
-                    <span className="hidden sm:inline">Tracking snippet</span>
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Install tracking snippet</DialogTitle>
-                  </DialogHeader>
-                  <p className="text-sm text-muted-foreground">
-                    Add this snippet to the <code>&lt;head&gt;</code> of your website:
-                  </p>
-                  <div className="relative rounded-lg bg-muted p-4">
-                    <code className="text-xs break-all">{trackingSnippet}</code>
-                    <Button variant="ghost" size="icon" className="absolute right-2 top-2" onClick={() => { navigator.clipboard.writeText(trackingSnippet); toast.success("Copied to clipboard!"); }}>
-                      <Copy className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
               <Button variant="ghost" size="sm" onClick={signOut}>Sign out</Button>
             </div>
           </div>
