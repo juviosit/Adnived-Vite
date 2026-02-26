@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { Copy, ExternalLink, Trash2, AlertTriangle } from "lucide-react";
+import { Copy, ExternalLink, Trash2, AlertTriangle, Code, CheckCheck } from "lucide-react";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
@@ -25,6 +25,10 @@ export default function SiteSettingsPanel({ site, onUpdate }: SiteSettingsPanelP
   const [publicShare, setPublicShare] = useState(site.public_share);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [snippetCopied, setSnippetCopied] = useState(false);
+
+  const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+  const trackingSnippet = `<script defer data-domain="${site.domain}" src="https://${projectId}.supabase.co/functions/v1/track"></script>`;
 
   const shareUrl = `${window.location.origin}/share/${site.id}`;
 
@@ -55,8 +59,44 @@ export default function SiteSettingsPanel({ site, onUpdate }: SiteSettingsPanelP
     }
   };
 
+  const copySnippet = () => {
+    navigator.clipboard.writeText(trackingSnippet);
+    setSnippetCopied(true);
+    toast.success("Snippet copied to clipboard!");
+    setTimeout(() => setSnippetCopied(false), 2000);
+  };
+
   return (
     <div className="max-w-2xl space-y-6">
+      {/* Tracking Snippet */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base flex items-center gap-2">
+            <Code className="h-4 w-4" /> Tracking Snippet
+          </CardTitle>
+          <CardDescription>Add this snippet to your website to start collecting analytics</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <p className="text-sm text-muted-foreground">
+            Paste this snippet into the <code className="rounded bg-muted px-1 py-0.5 text-xs font-mono">&lt;head&gt;</code> section of your site.
+          </p>
+          <div className="relative rounded-lg border border-border bg-muted p-4">
+            <code className="block text-xs font-mono break-all text-foreground pr-10">{trackingSnippet}</code>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute right-2 top-2 h-8 w-8"
+              onClick={copySnippet}
+            >
+              {snippetCopied ? <CheckCheck className="h-4 w-4 text-primary" /> : <Copy className="h-4 w-4" />}
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground">
+            The snippet will automatically track pageviews once installed. It updates with your domain above.
+          </p>
+        </CardContent>
+      </Card>
+
       {/* General */}
       <Card>
         <CardHeader>
