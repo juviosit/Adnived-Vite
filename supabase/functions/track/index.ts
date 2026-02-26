@@ -169,6 +169,9 @@ function resolveGeo(
   return { country: null, region: null, city: null };
 }
 
+// In-memory rate limiter (per isolate)
+const rateLimiter = new Map<string, { count: number; resetAt: number }>();
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -197,11 +200,58 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const { domain, pathname, referrer, screen_size, timezone, utm_source, utm_medium, utm_campaign, utm_term, utm_content, event_name, properties } = body;
 
-    if (!domain) {
+    if (!domain || typeof domain !== "string") {
       return new Response(JSON.stringify({ error: "domain required" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
+    }
+
+    // Input length validation
+    if (domain.length > 255) {
+      return new Response(JSON.stringify({ error: "domain too long" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+    if (pathname && pathname.length > 2048) {
+      return new Response(JSON.stringify({ error: "pathname too long" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+    if (referrer && referrer.length > 2048) {
+      return new Response(JSON.stringify({ error: "referrer too long" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+    if (event_name && (typeof event_name !== "string" || event_name.length > 255)) {
+      return new Response(JSON.stringify({ error: "invalid event_name" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+    const utmFields = [utm_source, utm_medium, utm_campaign, utm_term, utm_content];
+    if (utmFields.some((f) => f && (typeof f !== "string" || f.length > 255))) {
+      return new Response(JSON.stringify({ error: "UTM parameter too long" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+    if (properties && JSON.stringify(properties).length > 10000) {
+      return new Response(JSON.stringify({ error: "properties too large" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    // Simple IP-based rate limiting (100 requests/minute per IP)
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+    const now = Date.now();
+    const limit = rateLimiter.get(ip);
+    if (limit) {
+      if (now < limit.resetAt) {
+        if (limit.count >= 100) {
+          return new Response(JSON.stringify({ error: "rate limit exceeded" }), {
+            status: 429,
+            headers: { ...corsHeaders, "Content-Type": "application/json", "Retry-After": "60" },
+          });
+        }
+        limit.count++;
+      } else {
+        rateLimiter.set(ip, { count: 1, resetAt: now + 60000 });
+      }
+    } else {
+      rateLimiter.set(ip, { count: 1, resetAt: now + 60000 });
+    }
+    // Cleanup old entries periodically
+    if (rateLimiter.size > 10000) {
+      for (const [key, val] of rateLimiter) {
+        if (now > val.resetAt) rateLimiter.delete(key);
+      }
     }
 
     const supabase = createClient(
