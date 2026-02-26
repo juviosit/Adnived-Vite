@@ -13,6 +13,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import SiteAnalytics from "./pages/SiteAnalytics";
+import SharedDashboard from "./pages/SharedDashboard";
 import AdminOverview from "./pages/admin/AdminOverview";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminSites from "./pages/admin/AdminSites";
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/sites/:siteId" element={<ProtectedRoute><SiteAnalytics /></ProtectedRoute>} />
+            <Route path="/share/:siteId" element={<SharedDashboard />} />
             <Route path="/admin" element={<AdminRoute><AdminOverview /></AdminRoute>} />
             <Route path="/admin/users" element={<AdminRoute><AdminUsers /></AdminRoute>} />
             <Route path="/admin/sites" element={<AdminRoute><AdminSites /></AdminRoute>} />

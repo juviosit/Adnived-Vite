@@ -28,7 +28,9 @@ const TRACKER_SCRIPT = `(function(){
       timezone:tz,
       utm_source:getUTM("utm_source"),
       utm_medium:getUTM("utm_medium"),
-      utm_campaign:getUTM("utm_campaign")
+      utm_campaign:getUTM("utm_campaign"),
+      utm_term:getUTM("utm_term"),
+      utm_content:getUTM("utm_content")
     };
     if(evt){payload.event_name=evt;payload.properties=props||{}}
     try{
@@ -193,7 +195,7 @@ Deno.serve(async (req) => {
 
   try {
     const body = await req.json();
-    const { domain, pathname, referrer, screen_size, timezone, utm_source, utm_medium, utm_campaign, event_name, properties } = body;
+    const { domain, pathname, referrer, screen_size, timezone, utm_source, utm_medium, utm_campaign, utm_term, utm_content, event_name, properties } = body;
 
     if (!domain) {
       return new Response(JSON.stringify({ error: "domain required" }), {
@@ -259,6 +261,8 @@ Deno.serve(async (req) => {
         utm_source: utm_source || null,
         utm_medium: utm_medium || null,
         utm_campaign: utm_campaign || null,
+        utm_term: utm_term || null,
+        utm_content: utm_content || null,
       });
 
       // Check for matching goals and auto-record conversions
