@@ -5,11 +5,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, ExternalLink, Globe, Send } from "lucide-react";
+import { Plus, ExternalLink, Globe } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import AccessRequestsPanel from "./AccessRequestsPanel";
 
 type Site = {
   id: string;
@@ -26,9 +25,6 @@ const SitesTab = () => {
   const [siteName, setSiteName] = useState("");
   const [adding, setAdding] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [domainConflict, setDomainConflict] = useState(false);
-  const [conflictSiteId, setConflictSiteId] = useState<string | null>(null);
-  const [requesting, setRequesting] = useState(false);
   const navigate = useNavigate();
 
   const fetchSites = async () => {
@@ -55,7 +51,6 @@ const SitesTab = () => {
     e.preventDefault();
     if (!user) return;
     setAdding(true);
-    setDomainConflict(false);
 
     const cleaned = cleanDomain(domain);
 
@@ -68,23 +63,8 @@ const SitesTab = () => {
     setAdding(false);
 
     if (error) {
-      // Unique constraint violation → domain exists
       if (error.code === "23505") {
-        // Look up the existing site to get its ID
-        const { data: existingSite } = await supabase
-          .from("sites")
-          .select("id")
-          .eq("domain", cleaned)
-          .limit(1);
-
-        // The query may return empty if RLS blocks it (user doesn't own it)
-        // In that case we need a different approach - use an edge function or just show the message
-        if (existingSite && existingSite.length > 0) {
-          setConflictSiteId(existingSite[0].id);
-        } else {
-          setConflictSiteId(null);
-        }
-        setDomainConflict(true);
+        toast.error("This domain is already registered");
       } else {
         toast.error(error.message);
       }
@@ -97,62 +77,8 @@ const SitesTab = () => {
     }
   };
 
-  const handleRequestAccess = async () => {
-    if (!user) return;
-    setRequesting(true);
-
-    const cleaned = cleanDomain(domain);
-
-    // We need the site_id. If we couldn't get it via RLS, use an edge function
-    // For now, try a direct lookup via a function
-    if (conflictSiteId) {
-      const { error } = await supabase.from("access_requests").insert({
-        domain: cleaned,
-        site_id: conflictSiteId,
-        requester_id: user.id,
-      });
-
-      setRequesting(false);
-      if (error) {
-        if (error.code === "23505") {
-          toast.error("You have already requested access to this domain");
-        } else {
-          toast.error(error.message);
-        }
-      } else {
-        toast.success("Access request sent! The site owner will review your request.");
-        setDomain("");
-        setSiteName("");
-        setDialogOpen(false);
-        setDomainConflict(false);
-      }
-    } else {
-      // Can't see the site due to RLS - use the lookup edge function
-      const { data, error } = await supabase.functions.invoke("request-site-access", {
-        body: { domain: cleaned },
-      });
-
-      setRequesting(false);
-      if (error) {
-        toast.error("Failed to send request");
-      } else if (data?.error) {
-        toast.error(data.error);
-      } else {
-        toast.success("Access request sent! The site owner will review your request.");
-        setDomain("");
-        setSiteName("");
-        setDialogOpen(false);
-        setDomainConflict(false);
-      }
-    }
-  };
-
   const resetDialog = (open: boolean) => {
     setDialogOpen(open);
-    if (!open) {
-      setDomainConflict(false);
-      setConflictSiteId(null);
-    }
   };
 
   if (loading) {
@@ -182,62 +108,30 @@ const SitesTab = () => {
               <DialogHeader>
                 <DialogTitle>Add a new website</DialogTitle>
               </DialogHeader>
-              {!domainConflict ? (
-                <form onSubmit={handleAddSite} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="domain">Domain</Label>
-                    <Input
-                      id="domain"
-                      placeholder="example.com"
-                      value={domain}
-                      onChange={(e) => setDomain(e.target.value)}
-                      required
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="siteName">Display name (optional)</Label>
-                    <Input
-                      id="siteName"
-                      placeholder="My Website"
-                      value={siteName}
-                      onChange={(e) => setSiteName(e.target.value)}
-                    />
-                  </div>
-                  <Button type="submit" className="w-full" disabled={adding}>
-                    {adding ? "Adding..." : "Add website"}
-                  </Button>
-                </form>
-              ) : (
-                <div className="space-y-4">
-                  <div className="rounded-lg border border-border bg-muted/50 p-4 text-center">
-                    <Globe className="mx-auto mb-3 h-10 w-10 text-muted-foreground" />
-                    <p className="mb-1 font-medium text-foreground">
-                      Domain already registered
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      <strong>{cleanDomain(domain)}</strong> is already tracked by another user.
-                      You can request access from the site owner.
-                    </p>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      className="flex-1"
-                      onClick={() => setDomainConflict(false)}
-                    >
-                      Try another domain
-                    </Button>
-                    <Button
-                      className="flex-1 gap-2"
-                      onClick={handleRequestAccess}
-                      disabled={requesting}
-                    >
-                      <Send className="h-4 w-4" />
-                      {requesting ? "Sending..." : "Request access"}
-                    </Button>
-                  </div>
+              <form onSubmit={handleAddSite} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="domain">Domain</Label>
+                  <Input
+                    id="domain"
+                    placeholder="example.com"
+                    value={domain}
+                    onChange={(e) => setDomain(e.target.value)}
+                    required
+                  />
                 </div>
-              )}
+                <div className="space-y-2">
+                  <Label htmlFor="siteName">Display name (optional)</Label>
+                  <Input
+                    id="siteName"
+                    placeholder="My Website"
+                    value={siteName}
+                    onChange={(e) => setSiteName(e.target.value)}
+                  />
+                </div>
+                <Button type="submit" className="w-full" disabled={adding}>
+                  {adding ? "Adding..." : "Add website"}
+                </Button>
+              </form>
             </DialogContent>
           </Dialog>
         </div>
@@ -284,7 +178,6 @@ const SitesTab = () => {
         )}
       </div>
 
-      <AccessRequestsPanel />
     </div>
   );
 };
