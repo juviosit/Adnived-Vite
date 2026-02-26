@@ -1,1 +1,7 @@
 project_id = "vyscrpvmxwlpcjqhwulo"
+
+[functions.create-payment]
+verify_jwt = false
+
+[functions.onepay-callback]
+verify_jwt = false

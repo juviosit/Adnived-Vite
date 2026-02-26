@@ -1,12 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Check, Zap } from "lucide-react";
+import { Check, Zap, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+
+declare global {
+  interface Window {
+    onePayData?: Record<string, unknown>;
+  }
+}
 
 type Plan = {
   id: string;
@@ -38,6 +44,7 @@ const PlanTab = () => {
   const [subscription, setSubscription] = useState<Subscription | null>(null);
   const [loading, setLoading] = useState(true);
   const [siteCount, setSiteCount] = useState(0);
+  const [processingPlanId, setProcessingPlanId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,6 +61,61 @@ const PlanTab = () => {
     };
     fetchData();
   }, [user]);
+
+  // Listen for OnePay events
+  useEffect(() => {
+    const handleSuccess = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      console.log("Payment SUCCESS:", detail);
+      toast.success("Payment successful! Your plan will be upgraded shortly.");
+      setProcessingPlanId(null);
+      // Refresh data after a short delay to allow callback to process
+      setTimeout(() => window.location.reload(), 3000);
+    };
+
+    const handleFail = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      console.log("Payment FAIL:", detail);
+      toast.error("Payment failed. Please try again.");
+      setProcessingPlanId(null);
+    };
+
+    window.addEventListener("onePaySuccess", handleSuccess);
+    window.addEventListener("onePayFail", handleFail);
+
+    return () => {
+      window.removeEventListener("onePaySuccess", handleSuccess);
+      window.removeEventListener("onePayFail", handleFail);
+    };
+  }, []);
+
+  const handleUpgrade = async (planId: string) => {
+    setProcessingPlanId(planId);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-payment", {
+        body: { plan_id: planId },
+      });
+
+      if (error) {
+        toast.error("Failed to initiate payment");
+        setProcessingPlanId(null);
+        return;
+      }
+
+      if (data?.error) {
+        toast.error(data.error);
+        setProcessingPlanId(null);
+        return;
+      }
+
+      // Set OnePay data and trigger payment overlay
+      window.onePayData = data.paymentData;
+    } catch (err) {
+      console.error("Payment error:", err);
+      toast.error("Something went wrong. Please try again.");
+      setProcessingPlanId(null);
+    }
+  };
 
   const currentPlan = plans.find((p) => p.id === subscription?.plan_id);
   const hitsUsed = subscription?.hits_used || 0;
@@ -144,14 +206,32 @@ const PlanTab = () => {
                 {plan.slug !== "free" && <Feature label="Team members" />}
                 {plan.slug === "max" && <Feature label="Priority support" />}
 
-                {!isCurrent && (
+                {!isCurrent && plan.price_cents > 0 && (
                   <Button
                     className="mt-4 w-full gap-2"
                     variant={plan.price_cents > (currentPlan?.price_cents || 0) ? "default" : "outline"}
-                    onClick={() => toast.info("Upgrade flow coming soon")}
+                    onClick={() => handleUpgrade(plan.id)}
+                    disabled={processingPlanId === plan.id}
                   >
-                    <Zap className="h-4 w-4" />
-                    {plan.price_cents > (currentPlan?.price_cents || 0) ? "Upgrade" : "Downgrade"}
+                    {processingPlanId === plan.id ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Zap className="h-4 w-4" />
+                    )}
+                    {processingPlanId === plan.id
+                      ? "Processing..."
+                      : plan.price_cents > (currentPlan?.price_cents || 0)
+                        ? "Upgrade"
+                        : "Switch Plan"}
+                  </Button>
+                )}
+                {!isCurrent && plan.price_cents === 0 && (
+                  <Button
+                    className="mt-4 w-full gap-2"
+                    variant="outline"
+                    onClick={() => toast.info("Contact support to downgrade to free")}
+                  >
+                    Downgrade
                   </Button>
                 )}
               </CardContent>
