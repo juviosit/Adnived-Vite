@@ -49,7 +49,7 @@ const FeaturesSection = () => {
     <section id="features" className="border-t border-border/50 bg-muted/30 py-24">
       <div className="container">
         <div className="mx-auto mb-4 text-center">
-          <p className="mb-2 text-sm font-medium text-primary">Why Insight?</p>
+          <p className="mb-2 text-sm font-medium text-primary">Why adnived analytics?</p>
           <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground">
             Analytics that respects everyone
           </h2>
