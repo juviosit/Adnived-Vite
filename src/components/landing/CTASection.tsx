@@ -17,7 +17,7 @@ const CTASection = () => {
             Ready to get insights without the guilt?
           </h2>
           <p className="mb-8 text-muted-foreground">
-            Join privacy-conscious businesses who trust adnived for their analytics.
+            Join privacy-conscious businesses who trust Insight for their analytics.
           </p>
 
           <div className="mb-8 flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">

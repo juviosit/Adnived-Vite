@@ -2,23 +2,23 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 
 const faqs = [
   {
-    q: "How is adnived analytics different from other analytics tools?",
-    a: "Unlike traditional tools built for advertisers, adnived focuses on privacy-first metrics. We don't use cookies, store IP addresses, or track individuals. You get clean, aggregated insights without the complexity.",
+    q: "How is Insight different from other analytics tools?",
+    a: "Unlike traditional tools built for advertisers, Insight focuses on privacy-first metrics. We don't use cookies, store IP addresses, or track individuals. You get clean, aggregated insights without the complexity.",
   },
   {
     q: "Do I need to show a cookie banner?",
-    a: "No! Since adnived doesn't use cookies or collect personal data, you don't need any cookie consent banners. This keeps your site clean and your visitors happy.",
+    a: "No! Since Insight doesn't use cookies or collect personal data, you don't need any cookie consent banners. This keeps your site clean and your visitors happy.",
   },
   {
     q: "How accurate is the data without tracking individuals?",
     a: "Very accurate. We use privacy-friendly techniques to measure unique visitors, page views, and engagement without identifying individuals. Our approach is trusted by thousands of sites.",
   },
   {
-    q: "Is adnived compliant with GDPR and other privacy laws?",
-    a: "Yes. adnived is fully compliant with GDPR, CCPA, and PECR out of the box. No extra configuration or legal reviews needed.",
+    q: "Is Insight compliant with GDPR and other privacy laws?",
+    a: "Yes. Insight is fully compliant with GDPR, CCPA, and PECR out of the box. No extra configuration or legal reviews needed.",
   },
   {
-    q: "How do I get started with adnived?",
+    q: "How do I get started with Insight?",
     a: "Just sign up, add your domain, and paste our one-line tracking script into your site's <head> tag. You'll see data within seconds.",
   },
   {
