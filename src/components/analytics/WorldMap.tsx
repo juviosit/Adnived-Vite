@@ -133,6 +133,13 @@ function WorldMapInner({ data }: WorldMapProps) {
         </ZoomableGroup>
       </ComposableMap>
 
+      {/* Legend */}
+      <div className="flex items-center gap-2 px-4 pb-3 pt-1">
+        <span className="text-xs text-muted-foreground">Low</span>
+        <div className="h-2 flex-1 rounded-full" style={{ background: "linear-gradient(to right, hsl(var(--primary) / 0.2), hsl(var(--primary) / 1.0))" }} />
+        <span className="text-xs text-muted-foreground">High</span>
+      </div>
+
       {tooltip && (
         <div
           className="pointer-events-none absolute z-50 rounded-md border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-md whitespace-nowrap"

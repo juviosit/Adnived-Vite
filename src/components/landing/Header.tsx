@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { BarChart3, ExternalLink } from "lucide-react";
+import { BarChart3 } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Header = () => {
@@ -21,11 +21,8 @@ const Header = () => {
         </nav>
 
         <div className="flex items-center gap-3">
-          <Button variant="ghost" size="sm" className="gap-1.5" asChild>
-            <Link to="/login">
-              Access Platform
-              <ExternalLink className="h-3.5 w-3.5" />
-            </Link>
+          <Button variant="ghost" size="sm" asChild>
+            <Link to="/login">Sign In</Link>
           </Button>
           <Button size="sm" asChild>
             <Link to="/signup">Sign Up Free</Link>
