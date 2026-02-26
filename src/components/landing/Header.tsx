@@ -28,7 +28,7 @@ const Header = () => {
             </Link>
           </Button>
           <Button size="sm" asChild>
-            <Link to="/signup">Request Access</Link>
+            <Link to="/signup">Sign Up Free</Link>
           </Button>
         </div>
       </div>
