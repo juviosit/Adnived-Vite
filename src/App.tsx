@@ -21,6 +21,7 @@ import AdminPlans from "./pages/admin/AdminPlans";
 import AdminPaymentSettings from "./pages/admin/AdminPaymentSettings";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
+import Docs from "./pages/Docs";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -48,6 +49,8 @@ const App = () => (
             <Route path="/admin/payments" element={<AdminRoute><AdminPaymentSettings /></AdminRoute>} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/terms" element={<Terms />} />
+            <Route path="/docs" element={<Docs />} />
+            <Route path="/docs/:slug" element={<Docs />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

@@ -18,6 +18,7 @@ const Header = () => {
           <a href="#features" className="text-sm text-muted-foreground transition-colors hover:text-foreground">Features</a>
           <a href="#pricing" className="text-sm text-muted-foreground transition-colors hover:text-foreground">Pricing</a>
           <a href="#privacy" className="text-sm text-muted-foreground transition-colors hover:text-foreground">Privacy</a>
+          <Link to="/docs" className="text-sm text-muted-foreground transition-colors hover:text-foreground">Docs</Link>
         </nav>
 
         <div className="flex items-center gap-3">
