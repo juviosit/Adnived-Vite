@@ -18,6 +18,8 @@ const Footer = () => {
             <a href="#features" className="transition-colors hover:text-foreground">Features</a>
             <a href="#pricing" className="transition-colors hover:text-foreground">Pricing</a>
             <a href="#privacy" className="transition-colors hover:text-foreground">Privacy</a>
+            <Link to="/privacy" className="transition-colors hover:text-foreground">Privacy Policy</Link>
+            <Link to="/terms" className="transition-colors hover:text-foreground">Terms</Link>
             <Link to="/login" className="transition-colors hover:text-foreground">Log in</Link>
             <Link to="/signup" className="transition-colors hover:text-foreground">Sign up</Link>
           </nav>
