@@ -47,16 +47,30 @@ const SitesTab = () => {
 
   useEffect(() => {
     if (!user) return;
-    const confirmed = user.email_confirmed_at;
-    const created = user.created_at;
-    if (confirmed && created) {
-      const confirmedAt = new Date(confirmed).getTime();
-      const createdAt = new Date(created).getTime();
-      const wasAutoConfirmed = Math.abs(confirmedAt - createdAt) < 2000;
-      setEmailVerified(!wasAutoConfirmed);
-    } else {
-      setEmailVerified(false);
-    }
+    // Check if user is admin — admins skip email verification
+    const checkVerification = async () => {
+      const { data: roleData } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .eq("role", "admin")
+        .maybeSingle();
+      if (roleData) {
+        setEmailVerified(true);
+        return;
+      }
+      const confirmed = user.email_confirmed_at;
+      const created = user.created_at;
+      if (confirmed && created) {
+        const confirmedAt = new Date(confirmed).getTime();
+        const createdAt = new Date(created).getTime();
+        const wasAutoConfirmed = Math.abs(confirmedAt - createdAt) < 2000;
+        setEmailVerified(!wasAutoConfirmed);
+      } else {
+        setEmailVerified(false);
+      }
+    };
+    checkVerification();
   }, [user]);
 
   const cleanDomain = (d: string) => d.replace(/^https?:\/\//, "").replace(/\/$/, "");

@@ -6,28 +6,43 @@ import { supabase } from "@/integrations/supabase/client";
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { session, loading } = useAuth();
   const location = useLocation();
-  const [planChecked, setPlanChecked] = useState(false);
+  const [checked, setChecked] = useState(false);
   const [planSelected, setPlanSelected] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     if (!session?.user) return;
-    // Skip plan check if we're already on select-plan
     if (location.pathname === "/select-plan") {
-      setPlanChecked(true);
+      setChecked(true);
       return;
     }
-    supabase
-      .from("profiles")
-      .select("plan_selected")
-      .eq("id", session.user.id)
-      .single()
-      .then(({ data }) => {
-        setPlanSelected(data?.plan_selected ?? false);
-        setPlanChecked(true);
-      });
+
+    const check = async () => {
+      const [profileRes, roleRes] = await Promise.all([
+        supabase
+          .from("profiles")
+          .select("plan_selected")
+          .eq("id", session.user.id)
+          .single(),
+        supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", session.user.id)
+          .eq("role", "admin")
+          .maybeSingle(),
+      ]);
+
+      const admin = !!roleRes.data;
+      setIsAdmin(admin);
+      // Admins always bypass plan selection
+      setPlanSelected(admin || (profileRes.data?.plan_selected ?? false));
+      setChecked(true);
+    };
+
+    check();
   }, [session, location.pathname]);
 
-  if (loading || (session && !planChecked)) {
+  if (loading || (session && !checked)) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
