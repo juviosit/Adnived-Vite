@@ -266,7 +266,7 @@ const MetricsDefinitions = () => (
     <Table
       headers={["Metric", "Definition"]}
       rows={[
-        ["Unique Visitors", "Counted using a daily-rotating hash. Not a cookie — resets each day."],
+        ["Unique Visitors", "Counted using a daily-rotating hash. Not a cookie; resets each day."],
         ["Total Pageviews", "The total number of pages viewed across all visitors."],
         ["Views per Visit", "Average number of pages viewed per session."],
         ["Bounce Rate", "Percentage of sessions with exactly one pageview."],
