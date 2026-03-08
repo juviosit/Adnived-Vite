@@ -11,14 +11,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { Badge } from "@/components/ui/badge";
-import { format, subDays, subHours, subMinutes, differenceInDays, differenceInSeconds, differenceInHours, differenceInWeeks } from "date-fns";
+import { format, subDays, subHours, subMinutes, subMonths, subYears, startOfDay, subWeeks as subWeeksFn, differenceInDays, differenceInSeconds, differenceInHours, differenceInWeeks } from "date-fns";
 import { cn } from "@/lib/utils";
 import { exportToCSV } from "@/lib/csv-export";
 import BreakdownDetails from "./BreakdownDetails";
 import WorldMap from "./WorldMap";
 import type { DateRange } from "react-day-picker";
 
-type RangePreset = "realtime" | "24h" | "7d" | "30d" | "lifetime" | "custom";
+type RangePreset = "realtime" | "today" | "yesterday" | "24h" | "48h" | "7d" | "14d" | "30d" | "3m" | "6m" | "12m" | "lifetime" | "custom";
 type MetricKey = "visitors" | "visits" | "pageviews" | "views_per_visit" | "bounce_rate" | "duration";
 type ChartInterval = "minute" | "hour" | "day" | "week" | "month";
 
@@ -46,9 +46,16 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
     const now = new Date();
     switch (preset) {
       case "realtime": return { from: subMinutes(now, 5), to: now };
+      case "today": return { from: startOfDay(now), to: now };
+      case "yesterday": { const y = subDays(now, 1); return { from: startOfDay(y), to: new Date(startOfDay(now).getTime() - 1) }; }
       case "24h": return { from: subHours(now, 24), to: now };
+      case "48h": return { from: subHours(now, 48), to: now };
       case "7d": return { from: subDays(now, 7), to: now };
+      case "14d": return { from: subDays(now, 14), to: now };
       case "30d": return { from: subDays(now, 30), to: now };
+      case "3m": return { from: subMonths(now, 3), to: now };
+      case "6m": return { from: subMonths(now, 6), to: now };
+      case "12m": return { from: subYears(now, 1), to: now };
       case "lifetime": return { from: null, to: now };
       case "custom": return { from: customRange?.from || subDays(now, 7), to: customRange?.to || now };
     }
@@ -63,9 +70,16 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
   useEffect(() => {
     switch (preset) {
       case "realtime": setChartInterval("minute"); break;
+      case "today": setChartInterval("hour"); break;
+      case "yesterday": setChartInterval("hour"); break;
       case "24h": setChartInterval("hour"); break;
+      case "48h": setChartInterval("hour"); break;
       case "7d": setChartInterval("day"); break;
+      case "14d": setChartInterval("day"); break;
       case "30d": setChartInterval("day"); break;
+      case "3m": setChartInterval("week"); break;
+      case "6m": setChartInterval("week"); break;
+      case "12m": setChartInterval("month"); break;
       case "lifetime": setChartInterval("month"); break;
       case "custom": {
         if (dateRange.from) {
@@ -82,9 +96,16 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
   const availableIntervals = useMemo((): ChartInterval[] => {
     switch (preset) {
       case "realtime": return ["minute"];
+      case "today": return ["hour"];
+      case "yesterday": return ["hour"];
       case "24h": return ["hour"];
+      case "48h": return ["hour", "day"];
       case "7d": return ["hour", "day"];
+      case "14d": return ["day", "week"];
       case "30d": return ["day", "week"];
+      case "3m": return ["day", "week", "month"];
+      case "6m": return ["week", "month"];
+      case "12m": return ["week", "month"];
       case "lifetime": return ["day", "week", "month"];
       case "custom": {
         if (!dateRange.from) return ["day", "week", "month"];
@@ -321,10 +342,17 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
   const rangeLabel = useMemo(() => {
     switch (preset) {
       case "realtime": return "Last 5 minutes";
+      case "today": return "Today";
+      case "yesterday": return "Yesterday";
       case "24h": return "Last 24 hours";
+      case "48h": return "Last 48 hours";
       case "7d": return "Last 7 days";
+      case "14d": return "Last 14 days";
       case "30d": return "Last 30 days";
-      case "lifetime": return "Lifetime";
+      case "3m": return "Last 3 months";
+      case "6m": return "Last 6 months";
+      case "12m": return "Last 12 months";
+      case "lifetime": return "All time";
       case "custom":
         if (customRange?.from && customRange?.to) return `${format(customRange.from, "MMM d")} – ${format(customRange.to, "MMM d, yyyy")}`;
         return "Custom range";
@@ -377,6 +405,56 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
           <button onClick={() => setFilters([])} className="text-xs text-muted-foreground hover:text-foreground transition-colors ml-1">Clear all</button>
         </div>
       )}
+
+      {/* Date range selector */}
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <Select value={preset} onValueChange={(v) => setPreset(v as RangePreset)}>
+            <SelectTrigger className="h-8 w-[160px] text-xs">
+              <CalendarDays className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
+              <SelectValue placeholder="Select range" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="realtime" className="text-xs">Realtime (5 min)</SelectItem>
+              <SelectItem value="today" className="text-xs">Today</SelectItem>
+              <SelectItem value="yesterday" className="text-xs">Yesterday</SelectItem>
+              <SelectItem value="24h" className="text-xs">Last 24 hours</SelectItem>
+              <SelectItem value="48h" className="text-xs">Last 48 hours</SelectItem>
+              <SelectItem value="7d" className="text-xs">Last 7 days</SelectItem>
+              <SelectItem value="14d" className="text-xs">Last 14 days</SelectItem>
+              <SelectItem value="30d" className="text-xs">Last 30 days</SelectItem>
+              <SelectItem value="3m" className="text-xs">Last 3 months</SelectItem>
+              <SelectItem value="6m" className="text-xs">Last 6 months</SelectItem>
+              <SelectItem value="12m" className="text-xs">Last 12 months</SelectItem>
+              <SelectItem value="lifetime" className="text-xs">All time</SelectItem>
+              <SelectItem value="custom" className="text-xs">Custom range</SelectItem>
+            </SelectContent>
+          </Select>
+
+          {preset === "custom" && (
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5">
+                  <CalendarDays className="h-3.5 w-3.5" />
+                  {customRange?.from && customRange?.to
+                    ? `${format(customRange.from, "MMM d")} – ${format(customRange.to, "MMM d")}`
+                    : "Pick dates"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="range"
+                  selected={customRange}
+                  onSelect={setCustomRange}
+                  numberOfMonths={2}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          )}
+        </div>
+        <span className="text-xs text-muted-foreground">{rangeLabel}</span>
+      </div>
 
       {/* Metric strip — Plausible-style: no card border, flat, with underline active state */}
       <div className="flex flex-wrap items-start gap-x-8 gap-y-3 py-3 border-b border-border">
