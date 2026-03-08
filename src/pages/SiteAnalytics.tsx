@@ -140,10 +140,10 @@ const SiteAnalytics = () => {
             </div>
             <span className="text-foreground tracking-tight"><span className="font-bold">adnived</span><span className="font-normal">Analytics</span></span>
           </Link>
-          <div className="flex items-center gap-2 pb-3">
-            <ArrowLeft className="h-3.5 w-3.5 text-muted-foreground" />
-            <span className="truncate text-xs font-medium text-muted-foreground">{site.name || site.domain}</span>
-          </div>
+          <Link to="/dashboard" className="flex items-center gap-2 pb-3 group">
+            <ArrowLeft className="h-3.5 w-3.5 text-muted-foreground group-hover:text-foreground transition-colors" />
+            <span className="truncate text-xs font-medium text-muted-foreground group-hover:text-foreground transition-colors">{site.name || site.domain}</span>
+          </Link>
         </div>
         {sidebarNav}
       </aside>
