@@ -10,6 +10,7 @@ const navItems = [
   { label: "Sites", to: "/admin/sites", icon: Globe },
   { label: "Plans", to: "/admin/plans", icon: CreditCard },
   { label: "Payments", to: "/admin/payments", icon: CreditCard },
+  { label: "Closures", to: "/admin/closure-requests", icon: Trash2 },
 ];
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
