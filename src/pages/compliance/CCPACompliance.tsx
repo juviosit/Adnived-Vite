@@ -103,12 +103,12 @@ const CCPACompliance = () => {
               </thead>
               <tbody>
                 {[
-                  ["Disclose data collection", "Minimal — no personal data collected from visitors"],
-                  ["\"Do Not Sell\" link", "Not required — no data is sold"],
-                  ["Honour opt-out requests", "N/A — nothing to opt out of"],
-                  ["Consumer access requests", "N/A — no personal data stored"],
-                  ["Consumer deletion requests", "N/A — nothing to delete"],
-                  ["Privacy policy update", "Simplified — can state no personal visitor data is collected"],
+                  ["Disclose data collection", "Minimal: no personal data collected from visitors"],
+                  ["\"Do Not Sell\" link", "Not required, no data is sold"],
+                  ["Honour opt-out requests", "N/A, nothing to opt out of"],
+                  ["Consumer access requests", "N/A, no personal data stored"],
+                  ["Consumer deletion requests", "N/A, nothing to delete"],
+                  ["Privacy policy update", "Simplified: can state no personal visitor data is collected"],
                 ].map(([req, status]) => (
                   <tr key={req} className="border-b border-border/40 last:border-0">
                     <td className="px-4 py-2.5 text-foreground">{req}</td>

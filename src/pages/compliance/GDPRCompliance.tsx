@@ -87,7 +87,7 @@ const GDPRCompliance = () => {
             ))}
           </div>
 
-          <h2>adnivedAnalytics vs Google Analytics — GDPR Comparison</h2>
+          <h2>adnivedAnalytics vs Google Analytics - GDPR Comparison</h2>
           <div className="my-4 overflow-hidden rounded-xl border border-border/60">
             <table className="w-full text-sm">
               <thead>

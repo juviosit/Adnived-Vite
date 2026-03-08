@@ -161,7 +161,7 @@ const AccessRequestsPanel = () => {
               People requesting access to your sites
               {!isPaidPlan && (
                 <span className="ml-1 text-destructive">
-                  — Upgrade to a paid plan to approve requests
+                  - Upgrade to a paid plan to approve requests
                 </span>
               )}
             </CardDescription>

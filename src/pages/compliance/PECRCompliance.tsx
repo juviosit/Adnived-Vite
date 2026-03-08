@@ -67,9 +67,9 @@ const PECRCompliance = () => {
 
           <div className="my-6 grid gap-4 sm:grid-cols-2">
             {[
-              { icon: CheckCircle, ok: true, label: "No cookies set", desc: "Zero cookies of any kind — session, persistent, or third-party" },
+              { icon: CheckCircle, ok: true, label: "No cookies set", desc: "Zero cookies of any kind: session, persistent, or third-party" },
               { icon: CheckCircle, ok: true, label: "No local storage", desc: "Nothing written to localStorage, sessionStorage, or IndexedDB" },
-              { icon: CheckCircle, ok: true, label: "No tracking pixels", desc: "Pure JavaScript — no hidden images or pixel trackers" },
+              { icon: CheckCircle, ok: true, label: "No tracking pixels", desc: "Pure JavaScript with no hidden images or pixel trackers" },
               { icon: CheckCircle, ok: true, label: "No device fingerprinting", desc: "No canvas, WebGL, or audio fingerprinting techniques" },
               { icon: CheckCircle, ok: true, label: "No consent pop-up needed", desc: "Load the script immediately without any consent mechanism" },
               { icon: CheckCircle, ok: true, label: "ICO guidance aligned", desc: "Follows ICO recommendations for privacy-preserving analytics" },
