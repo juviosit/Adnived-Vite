@@ -260,7 +260,7 @@ const SelectPlan = () => {
           )}
         </div>
 
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {plans.map((plan) => {
             const isPopular = plan.slug === "pro";
             const displayPrice = getDisplayPrice(plan);

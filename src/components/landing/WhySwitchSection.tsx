@@ -63,13 +63,13 @@ const WhySwitchSection = () => {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 rounded-2xl bg-card p-5"
+                className="flex flex-col gap-2 rounded-2xl bg-card p-5 md:grid md:grid-cols-[1fr_auto_1fr] md:items-center md:gap-4"
               >
                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
                   <X className="h-4 w-4 shrink-0 text-red-400" />
                   <span className="line-through">{item.bad}</span>
                 </div>
-                <ArrowRight className="h-4 w-4 text-muted-foreground/50" />
+                <ArrowRight className="hidden h-4 w-4 text-muted-foreground/50 md:block" />
                 <div className="flex items-center gap-3 text-sm font-medium text-foreground">
                   <Check className="h-4 w-4 shrink-0 text-green-600" />
                   {item.good}
