@@ -20,10 +20,9 @@ const testimonials = [
 
 const TestimonialsSection = () => {
   return (
-    <section className="border-t border-border/50 bg-muted/30 py-24">
+    <section className="py-24">
       <div className="container">
         <div className="mx-auto mb-4 text-center">
-          <p className="mb-2 text-sm font-medium text-primary">Testimonials</p>
           <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground">
             Loved by privacy-conscious teams
           </h2>
@@ -32,7 +31,7 @@ const TestimonialsSection = () => {
           </p>
         </div>
 
-        <div className="mx-auto mt-16 grid max-w-5xl gap-6 md:grid-cols-3">
+        <div className="mx-auto mt-16 grid max-w-5xl gap-4 md:grid-cols-3">
           {testimonials.map((t, i) => (
             <motion.div
               key={t.name}
@@ -40,7 +39,7 @@ const TestimonialsSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="rounded-2xl border border-border bg-card p-6"
+              className="rounded-2xl bg-card p-6"
             >
               <p className="mb-6 text-sm leading-relaxed text-muted-foreground italic">
                 "{t.quote}"

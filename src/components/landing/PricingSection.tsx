@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Check } from "lucide-react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -77,10 +76,9 @@ const PricingSection = () => {
   }, []);
 
   return (
-    <section id="pricing" className="border-t border-border/50 py-24">
+    <section id="pricing" className="py-24">
       <div className="container">
         <div className="mx-auto mb-4 text-center">
-          <p className="mb-2 text-sm font-medium text-primary">Simple, transparent pricing</p>
           <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground">
             Choose your plan
           </h2>
@@ -89,7 +87,7 @@ const PricingSection = () => {
           </p>
         </div>
 
-        <div className="mx-auto mt-16 grid max-w-5xl gap-8 lg:grid-cols-3">
+        <div className="mx-auto mt-16 grid max-w-5xl gap-6 lg:grid-cols-3">
           {plans.map((plan, i) => {
             const highlighted = plan.slug === "pro";
             const price = plan.price_cents === 0 ? "$0" : `$${plan.price_cents / 100}`;
@@ -108,44 +106,44 @@ const PricingSection = () => {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
               >
-                <Card
-                  className={`relative flex h-full flex-col border-border/50 ${
+                <div
+                  className={`relative flex h-full flex-col rounded-2xl p-8 ${
                     highlighted
-                      ? "border-primary shadow-lg shadow-primary/10 ring-1 ring-primary/20"
-                      : ""
+                      ? "bg-primary text-primary-foreground shadow-xl"
+                      : "bg-card"
                   }`}
                 >
                   {highlighted && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-primary px-3 py-0.5 text-xs font-medium text-primary-foreground">
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-orange-400 px-3 py-0.5 text-xs font-medium text-white">
                       Most popular
                     </div>
                   )}
-                  <CardHeader>
-                    <CardTitle className="text-lg">{plan.name}</CardTitle>
-                    <CardDescription>{descBySlug[plan.slug] || ""}</CardDescription>
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold">{plan.name}</h3>
+                    <p className={`text-sm mt-1 ${highlighted ? "text-primary-foreground/70" : "text-muted-foreground"}`}>
+                      {descBySlug[plan.slug] || ""}
+                    </p>
                     <div className="mt-4">
-                      <span className="text-4xl font-bold text-foreground">{price}</span>
-                      <span className="text-muted-foreground">/{period}</span>
+                      <span className="text-4xl font-bold">{price}</span>
+                      <span className={highlighted ? "text-primary-foreground/70" : "text-muted-foreground"}>/{period}</span>
                     </div>
-                  </CardHeader>
-                  <CardContent className="flex flex-1 flex-col">
-                    <ul className="mb-8 flex-1 space-y-3">
-                      {features.map((f) => (
-                        <li key={f} className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <Check className="h-4 w-4 shrink-0 text-primary" />
-                          {f}
-                        </li>
-                      ))}
-                    </ul>
-                    <Button
-                      className="w-full"
-                      variant={highlighted ? "default" : "outline"}
-                      asChild
-                    >
-                      <Link to="/signup">{ctaBySlug[plan.slug] || "Get Started"}</Link>
-                    </Button>
-                  </CardContent>
-                </Card>
+                  </div>
+                  <ul className="mb-8 flex-1 space-y-3">
+                    {features.map((f) => (
+                      <li key={f} className={`flex items-center gap-2 text-sm ${highlighted ? "text-primary-foreground/80" : "text-muted-foreground"}`}>
+                        <Check className={`h-4 w-4 shrink-0 ${highlighted ? "text-primary-foreground" : "text-green-600"}`} />
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                  <Button
+                    className={`w-full rounded-full ${highlighted ? "bg-primary-foreground text-primary hover:bg-primary-foreground/90" : ""}`}
+                    variant={highlighted ? "secondary" : "outline"}
+                    asChild
+                  >
+                    <Link to="/signup">{ctaBySlug[plan.slug] || "Get Started"}</Link>
+                  </Button>
+                </div>
               </motion.div>
             );
           })}

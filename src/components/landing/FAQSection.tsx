@@ -29,7 +29,7 @@ const faqs = [
 
 const FAQSection = () => {
   return (
-    <section className="border-t border-border/50 py-24">
+    <section className="py-24">
       <div className="container">
         <div className="mx-auto mb-12 max-w-2xl text-center">
           <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground">
@@ -43,7 +43,7 @@ const FAQSection = () => {
         <div className="mx-auto max-w-2xl">
           <Accordion type="single" collapsible className="space-y-2">
             {faqs.map((faq, i) => (
-              <AccordionItem key={i} value={`faq-${i}`} className="rounded-xl border border-border bg-card px-5">
+              <AccordionItem key={i} value={`faq-${i}`} className="rounded-2xl bg-card px-5 border-none">
                 <AccordionTrigger className="text-sm font-medium text-foreground hover:no-underline">
                   {faq.q}
                 </AccordionTrigger>

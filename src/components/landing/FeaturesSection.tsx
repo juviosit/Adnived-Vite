@@ -5,37 +5,37 @@ const features = [
   {
     icon: Shield,
     title: "Privacy by Design",
-    description: "No cookies, no sessions, no personal data. Visitor IPs are hashed and never stored. Your visitors stay anonymous.",
+    description: "No cookies, no sessions, no personal data. Visitor IPs are hashed and never stored.",
   },
   {
     icon: Activity,
     title: "Real-time Insights",
-    description: "Live visitor tracking with instant updates. See who's on your site right now and what they're viewing.",
+    description: "Live visitor tracking with instant updates. See who's on your site right now.",
   },
   {
     icon: Zap,
     title: "Lightning Fast",
-    description: "Under 1kb tracking script that won't slow down your site. Performance matters, and we know it.",
+    description: "Under 1kb tracking script that won't slow down your site.",
   },
   {
     icon: Globe,
     title: "Geographic Data",
-    description: "See visitor locations by country, region, and city — all resolved without storing personal data.",
+    description: "Visitor locations by country, region, and city — without storing personal data.",
   },
   {
     icon: Target,
     title: "Goals & Funnels",
-    description: "Set up conversion goals and multi-step funnels to understand how visitors move through your site.",
+    description: "Conversion goals and multi-step funnels to understand visitor journeys.",
   },
   {
     icon: Smartphone,
     title: "Technology Reports",
-    description: "OS, browsers, screen resolutions, and device breakdowns to optimize every experience.",
+    description: "OS, browsers, screen resolutions, and device breakdowns.",
   },
   {
     icon: Bell,
-    title: "UTM Campaign Tracking",
-    description: "Full UTM parameter support — track source, medium, campaign, term, and content automatically.",
+    title: "UTM Tracking",
+    description: "Full UTM parameter support — track source, medium, campaign automatically.",
   },
   {
     icon: Download,
@@ -46,10 +46,9 @@ const features = [
 
 const FeaturesSection = () => {
   return (
-    <section id="features" className="border-t border-border/50 bg-muted/30 py-24">
+    <section id="features" className="py-24">
       <div className="container">
         <div className="mx-auto mb-4 text-center">
-          <p className="mb-2 text-sm font-medium text-primary">Why adnived analytics?</p>
           <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground">
             Analytics that respects everyone
           </h2>
@@ -58,7 +57,7 @@ const FeaturesSection = () => {
           </p>
         </div>
 
-        <div className="mx-auto mt-16 grid max-w-5xl gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mx-auto mt-16 grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {features.map((feature, i) => (
             <motion.div
               key={feature.title}
@@ -66,9 +65,9 @@ const FeaturesSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.05 }}
-              className="group rounded-xl border border-border/50 bg-card p-6 transition-all hover:border-primary/20 hover:shadow-md"
+              className="group rounded-2xl bg-card p-6 transition-all hover:shadow-md"
             >
-              <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+              <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-accent text-foreground">
                 <feature.icon className="h-5 w-5" />
               </div>
               <h3 className="mb-2 font-semibold text-foreground">{feature.title}</h3>

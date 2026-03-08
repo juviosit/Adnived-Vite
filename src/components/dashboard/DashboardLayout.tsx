@@ -16,18 +16,17 @@ const DashboardLayout = ({ activeTab, onTabChange, children }: DashboardLayoutPr
 
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-border/50 bg-background">
+      <header className="border-b border-border/40 bg-background">
         <div className="container flex h-14 items-center justify-between">
-          <Link to="/dashboard" className="flex items-center gap-2">
-            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
+          <Link to="/dashboard" className="flex items-center gap-2.5">
+            <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-primary">
               <BarChart3 className="h-4 w-4 text-primary-foreground" />
             </div>
-            <span className="font-bold text-foreground">adnived</span>
-            <span className="text-sm text-muted-foreground">analytics</span>
+            <span className="font-bold text-foreground tracking-tight">adnived</span>
           </Link>
           <div className="flex items-center gap-3">
             <span className="text-sm text-muted-foreground">{user?.email}</span>
-            <Button variant="ghost" size="sm" onClick={signOut}>
+            <Button variant="ghost" size="sm" className="rounded-full" onClick={signOut}>
               Sign out
             </Button>
           </div>
