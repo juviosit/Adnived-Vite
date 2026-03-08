@@ -1,11 +1,14 @@
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import SitesTab from "@/components/dashboard/SitesTab";
 import PlanTab from "@/components/dashboard/PlanTab";
 import SettingsTab from "@/components/dashboard/SettingsTab";
 
 const Dashboard = () => {
-  const [activeTab, setActiveTab] = useState("sites");
+  const [searchParams] = useSearchParams();
+  const initialTab = searchParams.get("tab") || "sites";
+  const [activeTab, setActiveTab] = useState(initialTab);
 
   return (
     <DashboardLayout activeTab={activeTab} onTabChange={setActiveTab}>
