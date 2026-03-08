@@ -9,7 +9,7 @@ const CCPACompliance = () => {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: "CCPA Compliant Web Analytics — Respect California Privacy Rights",
+    headline: "CCPA Compliant Web Analytics - Respect California Privacy Rights",
     description:
       "Understand CCPA requirements for website analytics and how adnivedAnalytics helps you stay compliant without selling visitor data.",
     author: { "@type": "Organization", name: "adnivedAnalytics" },
