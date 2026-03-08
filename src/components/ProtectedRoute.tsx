@@ -12,10 +12,6 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     if (!session?.user) return;
-    if (location.pathname === "/select-plan") {
-      setChecked(true);
-      return;
-    }
 
     const check = async () => {
       const [profileRes, roleRes] = await Promise.all([
