@@ -1,63 +1,45 @@
 
 
-# Download Reports, Plan Display Fix, and E2E Polish
+## Fix Mobile Responsiveness
 
-## 1. Download PDF Reports Feature
+### Problems Identified
 
-Create a new "Download Report" dialog accessible from the site analytics page. Users can configure:
-- **Metrics to include**: Checkboxes for Visitors, Pageviews, Bounce Rate, Visit Duration, Sources, Pages, Countries, Technology
-- **Time period**: Same presets as overview (24h, 7d, 30d, Lifetime, Custom date range)
-- **Generate PDF**: Build an HTML report in-memory, render it using the browser's `window.print()` with a print-optimized stylesheet (no external PDF library needed)
+1. **`App.css` constraining layout**: `#root` has `max-width: 1280px`, `padding: 2rem`, and `text-align: center` — this is leftover Vite boilerplate causing horizontal constraints and padding issues on all pages. Not imported but may still apply since the element exists in `index.html`.
 
-### Implementation
+2. **Landing Header**: No mobile menu — nav links are hidden on mobile (`hidden md:flex`) but there's no hamburger menu to access them. The auth buttons (Log in + Get started) always show and can crowd the header on small screens.
 
-**New file: `src/components/analytics/DownloadReportDialog.tsx`**
-- Dialog with metric checkboxes (using existing Checkbox component)
-- Date range selector (reusing the same preset/calendar pattern from OverviewSection)
-- "Generate Report" button that:
-  1. Fetches pageview data for the selected period
-  2. Computes selected metrics (visitors, pageviews, bounce rate, etc.)
-  3. Computes breakdowns (sources, pages, countries) if selected
-  4. Opens a new window with a styled HTML report and triggers `window.print()` for PDF save
-- Report includes: site name, date range header, metric summary cards, breakdown tables
+3. **WhySwitchSection comparison grid**: Uses `grid-cols-[1fr_auto_1fr]` which gets cramped on mobile — the "bad vs good" comparison squeezes text.
 
-**Edit: `src/pages/SiteAnalytics.tsx`**
-- Add a "Download Report" button (with `Download` icon) in the header bar next to "Sign out"
-- Import and render the `DownloadReportDialog` component
+4. **Dashboard header**: Items can overflow on very small screens — UTM Builder button + sign out + email all compete for space.
 
-## 2. Fix Plan Display - Show Millions Instead of Thousands
+5. **SiteAnalytics**: Already has a mobile Sheet sidebar — looks reasonable but the header title + current visitors can overflow on small screens.
 
-The `PlanTab.tsx` currently formats max_hits as `${(plan.max_hits / 1000).toFixed(0)}K pageviews` which shows e.g. "1000K" for 1 million. Fix to use smart formatting.
+6. **SelectPlan page**: The 3-column plan grid only breaks at `md` — could be tight on tablets.
 
-**Edit: `src/components/dashboard/PlanTab.tsx`**
-- Add a `formatHits` helper (same pattern already exists in `PricingSection.tsx`):
-  - >= 1,000,000: show as `1M`, `10M`, etc.
-  - >= 1,000: show as `10K`, `100K`, etc.
-  - Otherwise: raw number
-- Update line 136 from `${(plan.max_hits / 1000).toFixed(0)}K pageviews` to use `formatHits(plan.max_hits)` + " pageviews"
-- Also update the current usage display (line 98) to use the same formatter for consistency
+### Plan
 
-## 3. End-to-End Polish and Fixes
+#### 1. Remove `App.css` boilerplate
+Delete or empty `src/App.css` — it's not imported anywhere but the `#root` styles may interfere. Clean it out completely.
 
-Based on codebase review, the following issues need attention:
+#### 2. Add mobile hamburger menu to landing Header
+- Add a Sheet/Drawer that opens on mobile (`md:hidden`) with all nav links (Features, Pricing, Privacy, UTM Builder, Docs) plus Log in / Get started buttons.
+- Keep desktop nav unchanged.
 
-**a. SharedDashboard consistency**
-- Review and ensure the shared (public) dashboard has proper branding and works without auth
+#### 3. Fix WhySwitchSection comparison cards for mobile
+- Change `grid-cols-[1fr_auto_1fr]` to stack vertically on mobile: single column with the arrow between rows, switching to the 3-column grid on `md` and up.
 
-**b. Navigation consistency**
-- The SiteAnalytics header has "Sign out" but no link back to dashboard (only in sidebar). Add a visible "Back to Dashboard" link in the main header for clarity.
+#### 4. Dashboard header mobile tweaks
+- Already hides email on mobile and UTM text on small screens — minor tweak to ensure no overflow by adding `overflow-hidden` and `min-w-0` where needed.
 
-**c. Supabase query limit awareness**
-- The pageview queries don't specify a limit, which means they default to Supabase's 1000-row limit. For sites with significant traffic, data will be silently truncated. Add `.limit(10000)` or paginated fetching for accuracy.
+#### 5. SiteAnalytics header mobile fix
+- Wrap the title + visitors info so it truncates properly on small screens instead of overflowing.
 
-### Technical Summary
+#### 6. General overflow prevention
+- Add `overflow-x-hidden` to the root layout wrapper or body to prevent horizontal scrolling on all pages.
 
-| File | Change |
-|------|--------|
-| `src/components/analytics/DownloadReportDialog.tsx` | New -- report config dialog with metric selection, date range, and PDF generation |
-| `src/pages/SiteAnalytics.tsx` | Add "Download Report" button in header |
-| `src/components/dashboard/PlanTab.tsx` | Fix hits formatting to show M for millions, add `formatHits` helper |
-| `src/components/analytics/OverviewSection.tsx` | Increase query limit to avoid silent data truncation |
-| `src/components/analytics/BreakdownPage.tsx` | Increase query limit to avoid silent data truncation |
-| `src/pages/SharedDashboard.tsx` | Review and ensure branding consistency |
+### Technical Details
+- **Header mobile menu**: Use the existing `Sheet` component (already in the project) with `side="left"` for the mobile nav drawer.
+- **WhySwitchSection**: On mobile, each comparison card becomes a vertical stack (bad item → arrow → good item). On `md+`, keeps current 3-column layout.
+- **Overflow**: Add `overflow-x-hidden` to `<html>` or `body` via `index.css` as a safety net.
+- Files to modify: `src/App.css`, `src/index.css`, `src/components/landing/Header.tsx`, `src/components/landing/WhySwitchSection.tsx`, `src/components/dashboard/DashboardLayout.tsx`, `src/pages/SiteAnalytics.tsx`
 
