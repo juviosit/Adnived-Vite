@@ -101,8 +101,8 @@ const UTMBuilder = () => {
   };
 
   const utmParams = [
-    { tag: "utm_source", desc: "Where the traffic comes from — Google, a newsletter, Twitter, etc." },
-    { tag: "utm_medium", desc: "How the link is delivered — CPC ads, email, organic social, etc." },
+    { tag: "utm_source", desc: "Where the traffic comes from: Google, a newsletter, Twitter, etc." },
+    { tag: "utm_medium", desc: "How the link is delivered: CPC ads, email, organic social, etc." },
     { tag: "utm_campaign", desc: "The specific promotion — spring_sale, product_launch, etc." },
     { tag: "utm_term", desc: "The paid keyword that triggered an ad (optional)." },
     { tag: "utm_content", desc: "Differentiates variations of the same ad or link (optional)." },
