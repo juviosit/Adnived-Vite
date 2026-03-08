@@ -443,7 +443,6 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
             </p>
           </div>
         )}
-        </div>
 
         {loading ? (
           <div className="flex h-[280px] items-center justify-center">
