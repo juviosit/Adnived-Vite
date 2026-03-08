@@ -57,6 +57,7 @@ const App = () => (
               <Route path="/admin/plans" element={<AdminRoute><AdminPlans /></AdminRoute>} />
               <Route path="/admin/payments" element={<AdminRoute><AdminPaymentSettings /></AdminRoute>} />
               <Route path="/admin/closure-requests" element={<AdminRoute><AdminClosureRequests /></AdminRoute>} />
+              <Route path="/admin/coupons" element={<AdminRoute><AdminCoupons /></AdminRoute>} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/why-no-social" element={<WhyNoSocial />} />
               <Route path="/terms" element={<Terms />} />
