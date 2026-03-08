@@ -30,6 +30,9 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import WhyNoSocial from "./pages/WhyNoSocial";
 import Docs from "./pages/Docs";
+import GDPRCompliance from "./pages/compliance/GDPRCompliance";
+import CCPACompliance from "./pages/compliance/CCPACompliance";
+import PECRCompliance from "./pages/compliance/PECRCompliance";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
