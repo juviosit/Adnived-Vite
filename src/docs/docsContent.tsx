@@ -335,16 +335,24 @@ const CustomEvents = () => (
   <>
     <P>Custom events let you track specific user interactions beyond page views.</P>
     <H2>Sending a custom event</H2>
-    <P>Use the global <Code>adnived</Code> function to send custom events from your website:</P>
+    <P>Use the global <Code>insight</Code> function to send custom events from your website:</P>
     <CodeBlock title="JavaScript">{`// Basic event
-adnived('Signup');
+window.insight('Signup');
 
 // Event with properties
-adnived('Purchase', { plan: 'pro', value: 29 });`}</CodeBlock>
+window.insight('Purchase', { plan: 'pro', value: 29 });`}</CodeBlock>
+
+    <H2>Automatic events</H2>
+    <P>adnived automatically tracks certain interactions without any extra code:</P>
+    <Ul>
+      <Li><strong>Phone clicks:</strong> Clicks on <Code>tel:</Code> links fire a <Code>Phone Click</Code> event</Li>
+      <Li><strong>Email clicks:</strong> Clicks on <Code>mailto:</Code> links fire an <Code>Email Click</Code> event</Li>
+    </Ul>
+    <P>See <DocLink to="phone-click-tracking">Phone & email click tracking</DocLink> for details.</P>
 
     <H2>Viewing events</H2>
     <P>Custom events appear in the <strong>Behavior → Goals</strong> section when you create a matching goal with the "Custom event" type.</P>
-    <Warning>The tracking script must be loaded before calling the <Code>adnived()</Code> function. Use <Code>defer</Code> or ensure the script is loaded first.</Warning>
+    <Warning>The tracking script must be loaded before calling <Code>window.insight()</Code>. Use the <Code>defer</Code> attribute and ensure your code runs after page load.</Warning>
   </>
 );
 
