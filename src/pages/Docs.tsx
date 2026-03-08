@@ -90,7 +90,7 @@ const DocsPage = () => {
               <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
                 <BarChart3 className="h-4 w-4 text-primary-foreground" />
               </div>
-              <span className="font-bold text-foreground">adnived</span>
+              <span className="text-foreground tracking-tight"><span className="font-bold">adnived</span><span className="font-normal">Analytics</span></span>
             </Link>
             <span className="text-sm font-medium text-muted-foreground">Docs</span>
           </div>
