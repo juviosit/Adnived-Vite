@@ -55,7 +55,9 @@ const App = () => (
               <Route path="/admin/sites" element={<AdminRoute><AdminSites /></AdminRoute>} />
               <Route path="/admin/plans" element={<AdminRoute><AdminPlans /></AdminRoute>} />
               <Route path="/admin/payments" element={<AdminRoute><AdminPaymentSettings /></AdminRoute>} />
+              <Route path="/admin/closure-requests" element={<AdminRoute><AdminClosureRequests /></AdminRoute>} />
               <Route path="/privacy" element={<Privacy />} />
+              <Route path="/why-no-social" element={<WhyNoSocial />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/docs" element={<Docs />} />
               <Route path="/docs/:slug" element={<Docs />} />
