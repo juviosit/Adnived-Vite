@@ -19,6 +19,7 @@ const Dashboard = () => {
       {{
         sites: <SitesTab />,
         plan: <PlanTab />,
+        referral: <ReferralTab />,
         settings: <SettingsTab />,
       }}
     </DashboardLayout>

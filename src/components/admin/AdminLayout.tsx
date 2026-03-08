@@ -12,6 +12,7 @@ const navItems = [
   { label: "Payments", to: "/admin/payments", icon: CreditCard },
   { label: "Coupons", to: "/admin/coupons", icon: Ticket },
   { label: "Closures", to: "/admin/closure-requests", icon: Trash2 },
+  { label: "Referrals", to: "/admin/referrals", icon: Gift },
 ];
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {

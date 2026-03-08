@@ -12,6 +12,7 @@ const Header = () => {
     { href: "#pricing", label: "Pricing", isAnchor: true },
     { href: "#privacy", label: "Privacy", isAnchor: true },
     { href: "/utm-builder", label: "UTM Builder", isAnchor: false },
+    { href: "/refer", label: "Refer & Earn", isAnchor: false },
     { href: "/docs", label: "Docs", isAnchor: false },
   ];
 
