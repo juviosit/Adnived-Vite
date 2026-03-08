@@ -149,15 +149,23 @@ const HeroSection = () => {
 
               {/* Animated bar chart */}
               <div className="flex items-end gap-1.5 rounded-xl border border-border/60 bg-background/60 p-4">
-                {bars.map((h, i) => (
-                  <motion.div
-                    key={i}
-                    className="flex-1 rounded-sm bg-foreground/20"
-                    animate={{ height: h }}
-                    transition={{ duration: 0.6, ease: "easeInOut" }}
-                    style={{ height: h }}
-                  />
-                ))}
+                {bars.map((h, i) => {
+                  const colors = [
+                    "bg-orange-400", "bg-rose-400", "bg-purple-400",
+                    "bg-orange-300", "bg-rose-300", "bg-purple-300",
+                    "bg-orange-500", "bg-rose-500", "bg-purple-500",
+                    "bg-orange-400", "bg-rose-400", "bg-purple-400",
+                  ];
+                  return (
+                    <motion.div
+                      key={i}
+                      className={`flex-1 rounded-sm ${colors[i]} opacity-80`}
+                      animate={{ height: h }}
+                      transition={{ duration: 0.6, ease: "easeInOut" }}
+                      style={{ height: h }}
+                    />
+                  );
+                })}
               </div>
             </div>
           </div>
