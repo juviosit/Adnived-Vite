@@ -429,9 +429,20 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
             </Select>
           )}
           {preset === "realtime" && (
-            <span className="text-[11px] text-muted-foreground">auto-refreshing</span>
+            <span className="text-[11px] text-muted-foreground">auto-refreshing every 30s</span>
           )}
         </div>
+
+        {preset === "realtime" && (
+          <div className="rounded-lg border border-border/50 bg-muted/30 px-4 py-3 text-sm text-muted-foreground">
+            <p className="font-medium text-foreground/80 mb-0.5">How realtime works</p>
+            <p className="text-xs leading-relaxed">
+              To protect your visitors' privacy, we don't use cookies or persistent identifiers. Instead, we count
+              unique visitors using anonymous, daily-rotating hashes — so this view refreshes periodically rather than
+              updating instantly. You're seeing activity from the last 5 minutes, updated every 30 seconds.
+            </p>
+          </div>
+        )}
 
         {loading ? (
           <div className="flex h-[280px] items-center justify-center">
