@@ -181,7 +181,7 @@ const VerifyInstallation = () => (
     <ol className="mb-4 space-y-2 pl-6 list-decimal text-sm text-muted-foreground">
       <li>Open your website in a browser</li>
       <li>Go to your adnived dashboard and select your site</li>
-      <li>Switch to the <strong>Realtime</strong> view — you should see your visit within seconds</li>
+      <li>Switch to the <strong>Realtime</strong> view. You should see your visit within seconds</li>
     </ol>
 
     <H2>Troubleshooting</H2>
