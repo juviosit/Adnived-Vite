@@ -121,7 +121,7 @@ const UTMBuilder = () => {
   ];
 
   const platformCards = [
-    { icon: Zap, title: "Blazing Fast", body: "Our tracking script is under 1 KB — it loads instantly and never slows your site down." },
+    { icon: Zap, title: "Blazing Fast", body: "Our tracking script is under 1 KB. It loads instantly and never slows your site down." },
     { icon: ShieldCheck, title: "Privacy First", body: "No cookies, no fingerprinting, no personal data. Fully GDPR and CCPA compliant." },
     { icon: Tag, title: "Automatic UTM Tracking", body: "Every UTM-tagged visit is captured and broken down automatically in your dashboard." },
   ];
