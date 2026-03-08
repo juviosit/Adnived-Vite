@@ -28,6 +28,9 @@ Website owners, marketers, and developers who want accurate analytics without co
 - **Refer & Earn** (https://adnived.com/refer): Referral program — invite friends and earn free months
 - **Privacy Policy** (https://adnived.com/privacy): How data is handled — no personal data collected, no cookies used
 - **Terms of Service** (https://adnived.com/terms): Usage terms for the platform
+- **GDPR Compliant Analytics** (https://adnived.com/gdpr-compliant-analytics): How adnivedAnalytics helps websites comply with GDPR without cookie banners
+- **CCPA Compliant Analytics** (https://adnived.com/ccpa-compliant-analytics): How adnivedAnalytics simplifies CCPA compliance by collecting no personal data
+- **PECR Compliant Analytics** (https://adnived.com/pecr-compliant-analytics): How adnivedAnalytics avoids PECR cookie consent requirements entirely
 - **Sign Up** (https://adnived.com/signup): Create a free account
 - **Log In** (https://adnived.com/login): Access your dashboard
 

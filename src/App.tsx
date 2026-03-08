@@ -30,6 +30,9 @@ import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import WhyNoSocial from "./pages/WhyNoSocial";
 import Docs from "./pages/Docs";
+import GDPRCompliance from "./pages/compliance/GDPRCompliance";
+import CCPACompliance from "./pages/compliance/CCPACompliance";
+import PECRCompliance from "./pages/compliance/PECRCompliance";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -67,6 +70,9 @@ const App = () => (
               <Route path="/terms" element={<Terms />} />
               <Route path="/docs" element={<Docs />} />
               <Route path="/docs/:slug" element={<Docs />} />
+              <Route path="/gdpr-compliant-analytics" element={<GDPRCompliance />} />
+              <Route path="/ccpa-compliant-analytics" element={<CCPACompliance />} />
+              <Route path="/pecr-compliant-analytics" element={<PECRCompliance />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>
