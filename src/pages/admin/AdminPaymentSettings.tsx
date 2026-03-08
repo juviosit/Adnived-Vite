@@ -181,7 +181,7 @@ const AdminPaymentSettings = () => {
                   <Label>Test Mode</Label>
                 </div>
                 {form.is_test_mode && (
-                  <Badge variant="secondary">Sandbox — no real charges</Badge>
+                  <Badge variant="secondary">Sandbox - no real charges</Badge>
                 )}
               </div>
 
