@@ -88,9 +88,13 @@ const AdminUsers = () => {
         .eq("id", user.sub_id);
       if (error) { toast.error(error.message); return; }
     } else {
+      // Use upsert to handle case where subscription exists but wasn't fetched
       const { error } = await supabase
         .from("user_subscriptions")
-        .insert({ user_id: user.id, plan_id: newPlanId });
+        .upsert(
+          { user_id: user.id, plan_id: newPlanId, hits_used: 0 },
+          { onConflict: "user_id" }
+        );
       if (error) { toast.error(error.message); return; }
     }
     toast.success("Plan updated");
