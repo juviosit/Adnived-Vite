@@ -342,10 +342,17 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
   const rangeLabel = useMemo(() => {
     switch (preset) {
       case "realtime": return "Last 5 minutes";
+      case "today": return "Today";
+      case "yesterday": return "Yesterday";
       case "24h": return "Last 24 hours";
+      case "48h": return "Last 48 hours";
       case "7d": return "Last 7 days";
+      case "14d": return "Last 14 days";
       case "30d": return "Last 30 days";
-      case "lifetime": return "Lifetime";
+      case "3m": return "Last 3 months";
+      case "6m": return "Last 6 months";
+      case "12m": return "Last 12 months";
+      case "lifetime": return "All time";
       case "custom":
         if (customRange?.from && customRange?.to) return `${format(customRange.from, "MMM d")} – ${format(customRange.to, "MMM d, yyyy")}`;
         return "Custom range";
