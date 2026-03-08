@@ -140,7 +140,7 @@ const AddWebsite = () => (
     <H2>Steps to add a site</H2>
     <ol className="mb-4 space-y-2 pl-6 list-decimal text-sm text-muted-foreground">
       <li>From your <Link to="/dashboard" className="text-primary hover:underline">dashboard</Link>, click <strong>"Add Site"</strong></li>
-      <li>Enter your domain name (e.g., <Code>example.com</Code>) — no <Code>https://</Code> prefix needed</li>
+      <li>Enter your domain name (e.g., <Code>example.com</Code>). No <Code>https://</Code> prefix needed</li>
       <li>Click <strong>Create</strong></li>
     </ol>
     <P>Your site will appear in the dashboard sidebar. Next, you'll need to <DocLink to="add-script">add the tracking script</DocLink>.</P>
