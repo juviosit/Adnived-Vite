@@ -111,8 +111,15 @@ const SelectPlan = () => {
           body: { plan_id: plan.id },
         });
 
-        if (error || data?.error) {
-          toast.error(data?.error || "Failed to initiate payment. Please try again.");
+        if (error) {
+          console.error("create-payment invoke error:", error);
+          toast.error("Failed to initiate payment. Please try again.");
+          setSelecting(null);
+          return;
+        }
+
+        if (data?.error) {
+          toast.error(data.error);
           setSelecting(null);
           return;
         }
@@ -121,7 +128,8 @@ const SelectPlan = () => {
         if (typeof window.onePay === "function") {
           window.onePay();
         } else {
-          toast.error("Payment gateway failed to load. Please refresh and try again.");
+          console.error("OnePay SDK not loaded. window.onePay is:", typeof window.onePay);
+          toast.error("Payment gateway failed to load. Please disable any ad blockers and refresh the page.");
           setSelecting(null);
         }
       }
