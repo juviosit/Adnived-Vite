@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { BarChart3, Users, Globe, CreditCard, LayoutDashboard, LogOut, Trash2, Ticket } from "lucide-react";
+import { BarChart3, Users, Globe, CreditCard, LayoutDashboard, LogOut, Trash2, Ticket, Gift } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
