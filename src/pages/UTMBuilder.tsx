@@ -109,7 +109,7 @@ const UTMBuilder = () => {
   ];
 
   const whyCards = [
-    { icon: Target, title: "Know What Converts", body: "See which channels actually drive sign-ups, purchases, or engagement — and stop guessing." },
+    { icon: Target, title: "Know What Converts", body: "See which channels actually drive sign-ups, purchases, or engagement. Stop guessing." },
     { icon: PieChart, title: "Allocate Budget Wisely", body: "Compare cost-per-click campaigns against organic and social to invest where ROI is highest." },
     { icon: Eye, title: "A/B Test Everything", body: "Use utm_content to tag link variations and see which creative or copy wins in real numbers." },
   ];
