@@ -8,6 +8,13 @@ import { Badge } from "@/components/ui/badge";
 import { Check, BarChart3, Zap, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
+declare global {
+  interface Window {
+    onePayData?: Record<string, unknown>;
+    onePay?: () => void;
+  }
+}
+
 type Plan = {
   id: string;
   name: string;
@@ -57,32 +64,68 @@ const SelectPlan = () => {
       });
   }, [user, navigate]);
 
+  // Listen for OnePay success/failure events
+  useEffect(() => {
+    const handleSuccess = async () => {
+      toast.success("Payment successful! Setting up your account...");
+      // Mark plan as selected and redirect
+      if (user) {
+        await supabase
+          .from("profiles")
+          .update({ plan_selected: true })
+          .eq("id", user.id);
+      }
+      setSelecting(null);
+      navigate("/dashboard", { replace: true });
+    };
+
+    const handleFail = () => {
+      toast.error("Payment failed. Please try again or choose a different plan.");
+      setSelecting(null);
+    };
+
+    window.addEventListener("onePaySuccess", handleSuccess);
+    window.addEventListener("onePayFail", handleFail);
+    return () => {
+      window.removeEventListener("onePaySuccess", handleSuccess);
+      window.removeEventListener("onePayFail", handleFail);
+    };
+  }, [user, navigate]);
+
   const handleSelectPlan = async (plan: Plan) => {
     if (!user) return;
     setSelecting(plan.id);
 
     try {
-      // If it's a paid plan, just mark plan as selected and redirect to dashboard
-      // where they can upgrade via the Plan tab. For free plan, just mark selected.
       if (plan.price_cents === 0) {
-        // Free plan is already assigned by trigger, just mark as selected
+        // Free plan — just mark as selected
         await supabase
           .from("profiles")
           .update({ plan_selected: true })
           .eq("id", user.id);
         navigate("/dashboard", { replace: true });
       } else {
-        // For paid plans, mark as selected and redirect to dashboard Plan tab
-        await supabase
-          .from("profiles")
-          .update({ plan_selected: true })
-          .eq("id", user.id);
-        toast.info(`You can complete your ${plan.name} upgrade from the Plan tab.`);
-        navigate("/dashboard?tab=plan", { replace: true });
+        // Paid plan — trigger OnePay payment
+        const { data, error } = await supabase.functions.invoke("create-payment", {
+          body: { plan_id: plan.id },
+        });
+
+        if (error || data?.error) {
+          toast.error(data?.error || "Failed to initiate payment. Please try again.");
+          setSelecting(null);
+          return;
+        }
+
+        window.onePayData = data.paymentData;
+        if (typeof window.onePay === "function") {
+          window.onePay();
+        } else {
+          toast.error("Payment gateway failed to load. Please refresh and try again.");
+          setSelecting(null);
+        }
       }
     } catch {
       toast.error("Something went wrong. Please try again.");
-    } finally {
       setSelecting(null);
     }
   };
@@ -178,7 +221,7 @@ const SelectPlan = () => {
                       <Zap className="h-4 w-4" />
                     ) : null}
                     {selecting === plan.id
-                      ? "Setting up..."
+                      ? "Processing..."
                       : plan.price_cents === 0
                         ? "Start Free"
                         : `Choose ${plan.name}`}
