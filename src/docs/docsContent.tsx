@@ -84,7 +84,7 @@ const Welcome = () => (
   <>
     <P>
       adnived analytics is an easy-to-use, lightweight, and privacy-friendly web analytics tool.
-      It helps you understand your website traffic without compromising visitor privacy — no cookies, no personal data, no consent banners needed.
+      It helps you understand your website traffic without compromising visitor privacy. No cookies, no personal data, no consent banners needed.
     </P>
 
     <H2>New to adnived? Start here</H2>
