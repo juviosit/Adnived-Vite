@@ -667,7 +667,7 @@ const PhoneClickTracking = () => (
       <Li>Go to your site dashboard → <strong>Goals</strong> tab.</Li>
       <Li>Click <strong>Add Goal</strong>.</Li>
       <Li>Set goal type to <strong>Custom Event</strong> and enter <Code>Phone Click</Code> as the event name.</Li>
-      <Li>Save — you'll now see conversion rates for phone clicks.</Li>
+      <Li>Save. You'll now see conversion rates for phone clicks.</Li>
     </Ul>
 
     <Tip>This works automatically with no code changes. Just make sure your phone numbers use proper <Code>tel:</Code> links instead of plain text.</Tip>
