@@ -23,7 +23,7 @@ const Footer = () => {
           </nav>
 
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} adnived
+            © {new Date().getFullYear()} adnivedAnalytics
           </p>
         </div>
       </div>
