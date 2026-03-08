@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import SitesTab from "@/components/dashboard/SitesTab";
 import PlanTab from "@/components/dashboard/PlanTab";
+import ReferralTab from "@/components/dashboard/ReferralTab";
 import SettingsTab from "@/components/dashboard/SettingsTab";
 
 const Dashboard = () => {
@@ -18,6 +19,7 @@ const Dashboard = () => {
       {{
         sites: <SitesTab />,
         plan: <PlanTab />,
+        referral: <ReferralTab />,
         settings: <SettingsTab />,
       }}
     </DashboardLayout>

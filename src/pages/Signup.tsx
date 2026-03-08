@@ -31,7 +31,24 @@ const Signup = () => {
       toast.error(error.message);
     } else {
       toast.success("Account created! Please verify your email to unlock all features.");
-      // With auto-confirm, user is signed in immediately — redirect to plan selection
+
+      // Check for referral code and try to complete it
+      const refCode = localStorage.getItem("referral_code");
+      if (refCode) {
+        try {
+          const { data: sessionData } = await supabase.auth.getSession();
+          const userId = sessionData?.session?.user?.id;
+          if (userId) {
+            await supabase.functions.invoke("complete-referral", {
+              body: { referral_code: refCode, user_id: userId },
+            });
+          }
+        } catch {
+          // Silently fail — trigger handles it as fallback
+        }
+        localStorage.removeItem("referral_code");
+      }
+
       navigate("/select-plan");
     }
   };

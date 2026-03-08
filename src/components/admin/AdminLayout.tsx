@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
-import { BarChart3, Users, Globe, CreditCard, LayoutDashboard, LogOut, Trash2, Ticket } from "lucide-react";
+import { BarChart3, Users, Globe, CreditCard, LayoutDashboard, LogOut, Trash2, Ticket, Gift } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -12,6 +12,7 @@ const navItems = [
   { label: "Payments", to: "/admin/payments", icon: CreditCard },
   { label: "Coupons", to: "/admin/coupons", icon: Ticket },
   { label: "Closures", to: "/admin/closure-requests", icon: Trash2 },
+  { label: "Referrals", to: "/admin/referrals", icon: Gift },
 ];
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {

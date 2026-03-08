@@ -49,6 +49,7 @@ const DashboardLayout = ({ activeTab, onTabChange, children }: DashboardLayoutPr
           <TabsList className="mb-8 h-11 p-1 bg-muted/50">
             <TabsTrigger value="sites" className="rounded-lg px-5 data-[state=active]:shadow-sm">Sites</TabsTrigger>
             <TabsTrigger value="plan" className="rounded-lg px-5 data-[state=active]:shadow-sm">Plan</TabsTrigger>
+            <TabsTrigger value="referral" className="rounded-lg px-5 data-[state=active]:shadow-sm">Referral</TabsTrigger>
             <TabsTrigger value="settings" className="rounded-lg px-5 data-[state=active]:shadow-sm">Settings</TabsTrigger>
           </TabsList>
           {Object.entries(children).map(([key, content]) => (
