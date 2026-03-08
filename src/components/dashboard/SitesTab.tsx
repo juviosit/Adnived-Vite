@@ -31,9 +31,11 @@ const SitesTab = () => {
   const navigate = useNavigate();
 
   const fetchSites = async () => {
+    if (!user) return;
     const { data, error } = await supabase
       .from("sites")
       .select("id, domain, name, created_at")
+      .eq("user_id", user.id)
       .order("created_at", { ascending: false });
     if (error) {
       toast.error("Failed to load sites");
