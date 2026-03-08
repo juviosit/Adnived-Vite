@@ -371,7 +371,7 @@ const FunnelAnalysis = () => (
     </ol>
     <H2>Reading funnel data</H2>
     <P>Each step shows the number of visitors who reached it and the drop-off rate from the previous step. This helps you identify where visitors are abandoning the process.</P>
-    <Tip>Keep funnels focused — 3-5 steps works best. Too many steps make analysis harder.</Tip>
+    <Tip>Keep funnels focused. 3-5 steps works best. Too many steps make analysis harder.</Tip>
   </>
 );
 
