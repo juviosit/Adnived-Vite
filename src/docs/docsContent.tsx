@@ -446,7 +446,7 @@ const GDPR = () => (
     <H2>How we comply</H2>
     <Ul>
       <Li>No personal data is collected or processed</Li>
-      <Li>No cookies are used — no consent mechanism needed</Li>
+      <Li>No cookies are used, so no consent mechanism is needed</Li>
       <Li>IP addresses are hashed with a daily-rotating salt and never stored raw</Li>
       <Li>All data is aggregated and cannot be used to identify individuals</Li>
       <Li>Data is stored securely with encryption at rest and in transit</Li>
