@@ -5,3 +5,6 @@ verify_jwt = false
 
 [functions.onepay-callback]
 verify_jwt = false
+
+[functions.update-payment-settings]
+verify_jwt = false

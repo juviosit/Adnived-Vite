@@ -9,19 +9,19 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { CreditCard, Eye, EyeOff, Save, TestTube } from "lucide-react";
+import { CreditCard, Save, TestTube, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 
-type PaymentSettings = {
+type PaymentSettingsSafe = {
   id: string;
   provider: string;
   app_id: string;
-  app_token: string;
-  hash_salt: string;
   currency: string;
   is_test_mode: boolean;
   redirect_url: string;
   callback_url: string;
+  app_token: string;
+  hash_salt: string;
 };
 
 type Transaction = {
@@ -37,17 +37,17 @@ type Transaction = {
 };
 
 const AdminPaymentSettings = () => {
-  const [settings, setSettings] = useState<PaymentSettings | null>(null);
+  const [settingsId, setSettingsId] = useState<string | null>(null);
+  const [hasToken, setHasToken] = useState(false);
+  const [hasSalt, setHasSalt] = useState(false);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [showToken, setShowToken] = useState(false);
-  const [showSalt, setShowSalt] = useState(false);
 
   const [form, setForm] = useState({
     app_id: "",
-    app_token: "",
-    hash_salt: "",
+    app_token: "", // only for new values, never pre-filled
+    hash_salt: "", // only for new values, never pre-filled
     currency: "LKR",
     is_test_mode: true,
     redirect_url: "",
@@ -60,7 +60,11 @@ const AdminPaymentSettings = () => {
 
   const fetchData = async () => {
     const [settingsRes, txRes] = await Promise.all([
-      supabase.from("payment_settings").select("*").limit(1).single(),
+      supabase
+        .from("payment_settings")
+        .select("id, provider, app_id, currency, is_test_mode, redirect_url, callback_url, app_token, hash_salt")
+        .limit(1)
+        .single(),
       supabase
         .from("payment_transactions")
         .select("*")
@@ -69,12 +73,14 @@ const AdminPaymentSettings = () => {
     ]);
 
     if (settingsRes.data) {
-      const s = settingsRes.data as unknown as PaymentSettings;
-      setSettings(s);
+      const s = settingsRes.data as unknown as PaymentSettingsSafe;
+      setSettingsId(s.id);
+      setHasToken(!!s.app_token && s.app_token.length > 0);
+      setHasSalt(!!s.hash_salt && s.hash_salt.length > 0);
       setForm({
         app_id: s.app_id,
-        app_token: s.app_token,
-        hash_salt: s.hash_salt,
+        app_token: "",
+        hash_salt: "",
         currency: s.currency,
         is_test_mode: s.is_test_mode,
         redirect_url: s.redirect_url,
@@ -88,33 +94,32 @@ const AdminPaymentSettings = () => {
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!settings) return;
+    if (!settingsId) return;
 
     setSaving(true);
-    const { error } = await supabase
-      .from("payment_settings")
-      .update({
+    const { data, error } = await supabase.functions.invoke("update-payment-settings", {
+      body: {
+        id: settingsId,
         app_id: form.app_id,
-        app_token: form.app_token,
-        hash_salt: form.hash_salt,
+        app_token: form.app_token, // empty string = don't change
+        hash_salt: form.hash_salt, // empty string = don't change
         currency: form.currency,
         is_test_mode: form.is_test_mode,
         redirect_url: form.redirect_url,
         callback_url: form.callback_url,
-      })
-      .eq("id", settings.id);
+      },
+    });
 
     setSaving(false);
     if (error) {
-      toast.error(error.message);
+      toast.error("Failed to save settings");
     } else {
       toast.success("Payment settings saved");
+      // Update configured status
+      if (form.app_token.trim()) setHasToken(true);
+      if (form.hash_salt.trim()) setHasSalt(true);
+      setForm((f) => ({ ...f, app_token: "", hash_salt: "" }));
     }
-  };
-
-  const maskValue = (val: string) => {
-    if (val.length <= 8) return "••••••••";
-    return val.slice(0, 4) + "••••" + val.slice(-4);
   };
 
   const statusColor = (status: string) => {
@@ -144,7 +149,6 @@ const AdminPaymentSettings = () => {
       </div>
 
       <div className="space-y-6">
-        {/* Settings Card */}
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
@@ -204,49 +208,39 @@ const AdminPaymentSettings = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="app_token">App Token</Label>
-                <div className="relative">
-                  <Input
-                    id="app_token"
-                    type={showToken ? "text" : "password"}
-                    value={form.app_token}
-                    onChange={(e) => setForm({ ...form, app_token: e.target.value })}
-                    placeholder="Paste your app token"
-                    className="pr-10"
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="absolute right-1 top-1 h-8 w-8"
-                    onClick={() => setShowToken(!showToken)}
-                  >
-                    {showToken ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </Button>
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="app_token">App Token</Label>
+                  {hasToken && (
+                    <Badge variant="outline" className="gap-1 text-xs">
+                      <ShieldCheck className="h-3 w-3" /> Configured
+                    </Badge>
+                  )}
                 </div>
+                <Input
+                  id="app_token"
+                  type="password"
+                  value={form.app_token}
+                  onChange={(e) => setForm({ ...form, app_token: e.target.value })}
+                  placeholder={hasToken ? "Leave empty to keep current value" : "Paste your app token"}
+                />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="hash_salt">Hash Salt</Label>
-                <div className="relative">
-                  <Input
-                    id="hash_salt"
-                    type={showSalt ? "text" : "password"}
-                    value={form.hash_salt}
-                    onChange={(e) => setForm({ ...form, hash_salt: e.target.value })}
-                    placeholder="Paste your hash salt"
-                    className="pr-10"
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className="absolute right-1 top-1 h-8 w-8"
-                    onClick={() => setShowSalt(!showSalt)}
-                  >
-                    {showSalt ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </Button>
+                <div className="flex items-center gap-2">
+                  <Label htmlFor="hash_salt">Hash Salt</Label>
+                  {hasSalt && (
+                    <Badge variant="outline" className="gap-1 text-xs">
+                      <ShieldCheck className="h-3 w-3" /> Configured
+                    </Badge>
+                  )}
                 </div>
+                <Input
+                  id="hash_salt"
+                  type="password"
+                  value={form.hash_salt}
+                  onChange={(e) => setForm({ ...form, hash_salt: e.target.value })}
+                  placeholder={hasSalt ? "Leave empty to keep current value" : "Paste your hash salt"}
+                />
               </div>
 
               <div className="grid gap-4 md:grid-cols-2">
@@ -280,7 +274,6 @@ const AdminPaymentSettings = () => {
           </CardContent>
         </Card>
 
-        {/* Recent Transactions */}
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">Recent Transactions</CardTitle>
