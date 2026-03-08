@@ -15,6 +15,7 @@ import Dashboard from "./pages/Dashboard";
 import SiteAnalytics from "./pages/SiteAnalytics";
 import SharedDashboard from "./pages/SharedDashboard";
 import UTMBuilder from "./pages/UTMBuilder";
+import SelectPlan from "./pages/SelectPlan";
 import AdminOverview from "./pages/admin/AdminOverview";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminSites from "./pages/admin/AdminSites";
