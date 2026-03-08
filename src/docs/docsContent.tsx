@@ -637,6 +637,7 @@ export const docContent: Record<string, ComponentType> = {
   realtime: Realtime,
   "goal-conversions": GoalConversions,
   "custom-events": CustomEvents,
+  "phone-click-tracking": PhoneClickTracking,
   "funnel-analysis": FunnelAnalysis,
   referrers: Referrers,
   "utm-tracking": UTMTracking,
