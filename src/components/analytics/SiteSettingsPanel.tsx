@@ -27,7 +27,7 @@ export default function SiteSettingsPanel({ site, onUpdate }: SiteSettingsPanelP
   const [deleting, setDeleting] = useState(false);
   const [snippetCopied, setSnippetCopied] = useState(false);
 
-  const trackingSnippet = `<script defer data-domain="${site.domain}" src="https://analytics.adnived.com/script.js"></script>`;
+  const trackingSnippet = `<script defer data-domain="${site.domain}" src="https://adnived.com/script.js"></script>`;
 
   const shareUrl = `${window.location.origin}/share/${site.id}`;
 
