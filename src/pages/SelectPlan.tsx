@@ -47,6 +47,7 @@ const SelectPlan = () => {
   const navigate = useNavigate();
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
+  const [profileChecked, setProfileChecked] = useState(false);
   const [selecting, setSelecting] = useState<string | null>(null);
 
   // Coupon state
@@ -75,7 +76,11 @@ const SelectPlan = () => {
       .eq("id", user.id)
       .single()
       .then(({ data }) => {
-        if (data?.plan_selected) navigate("/dashboard", { replace: true });
+        if (data?.plan_selected) {
+          navigate("/dashboard", { replace: true });
+        } else {
+          setProfileChecked(true);
+        }
       });
   }, [user, navigate]);
 
@@ -191,7 +196,7 @@ const SelectPlan = () => {
     return plan.price_cents;
   };
 
-  if (loading) {
+  if (loading || !profileChecked) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-background">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
