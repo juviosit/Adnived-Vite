@@ -40,14 +40,20 @@ const WhySwitchSection = () => {
 
         {/* Why Switch */}
         <div className="mx-auto max-w-3xl">
-          <div className="mb-12 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="mb-12 text-center"
+          >
             <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground">
               It's time to ditch legacy analytics
             </h2>
             <p className="text-muted-foreground">
               Traditional analytics tools are built for advertisers, not for you.
             </p>
-          </div>
+          </motion.div>
 
           <div className="space-y-3">
             {comparisons.map((item, i) => (

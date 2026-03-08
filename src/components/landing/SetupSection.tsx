@@ -6,7 +6,13 @@ const SetupSection = () => {
   return (
     <section className="border-t border-border/50 py-24">
       <div className="container">
-        <div className="mx-auto mb-4 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mx-auto mb-4 text-center"
+        >
           <p className="mb-2 text-sm font-medium text-primary">Easy Setup</p>
           <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground">
             Up and running in 5 minutes
@@ -14,7 +20,7 @@ const SetupSection = () => {
           <p className="mx-auto max-w-2xl text-muted-foreground">
             No complex setup, no tag managers, no configuration files. Just one script and you're done.
           </p>
-        </div>
+        </motion.div>
 
         <div className="mx-auto mt-16 grid max-w-5xl items-center gap-12 lg:grid-cols-2">
           {/* Steps */}
