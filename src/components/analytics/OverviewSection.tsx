@@ -406,6 +406,56 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
         </div>
       )}
 
+      {/* Date range selector */}
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <Select value={preset} onValueChange={(v) => setPreset(v as RangePreset)}>
+            <SelectTrigger className="h-8 w-[160px] text-xs">
+              <CalendarDays className="h-3.5 w-3.5 mr-1.5 text-muted-foreground" />
+              <SelectValue placeholder="Select range" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="realtime" className="text-xs">Realtime (5 min)</SelectItem>
+              <SelectItem value="today" className="text-xs">Today</SelectItem>
+              <SelectItem value="yesterday" className="text-xs">Yesterday</SelectItem>
+              <SelectItem value="24h" className="text-xs">Last 24 hours</SelectItem>
+              <SelectItem value="48h" className="text-xs">Last 48 hours</SelectItem>
+              <SelectItem value="7d" className="text-xs">Last 7 days</SelectItem>
+              <SelectItem value="14d" className="text-xs">Last 14 days</SelectItem>
+              <SelectItem value="30d" className="text-xs">Last 30 days</SelectItem>
+              <SelectItem value="3m" className="text-xs">Last 3 months</SelectItem>
+              <SelectItem value="6m" className="text-xs">Last 6 months</SelectItem>
+              <SelectItem value="12m" className="text-xs">Last 12 months</SelectItem>
+              <SelectItem value="lifetime" className="text-xs">All time</SelectItem>
+              <SelectItem value="custom" className="text-xs">Custom range</SelectItem>
+            </SelectContent>
+          </Select>
+
+          {preset === "custom" && (
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" size="sm" className="h-8 text-xs gap-1.5">
+                  <CalendarDays className="h-3.5 w-3.5" />
+                  {customRange?.from && customRange?.to
+                    ? `${format(customRange.from, "MMM d")} – ${format(customRange.to, "MMM d")}`
+                    : "Pick dates"}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="range"
+                  selected={customRange}
+                  onSelect={setCustomRange}
+                  numberOfMonths={2}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+          )}
+        </div>
+        <span className="text-xs text-muted-foreground">{rangeLabel}</span>
+      </div>
+
       {/* Metric strip — Plausible-style: no card border, flat, with underline active state */}
       <div className="flex flex-wrap items-start gap-x-8 gap-y-3 py-3 border-b border-border">
         {metrics.map((m) => (
