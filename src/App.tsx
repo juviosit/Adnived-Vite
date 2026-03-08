@@ -43,6 +43,7 @@ const App = () => (
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/sites/:siteId" element={<ProtectedRoute><SiteAnalytics /></ProtectedRoute>} />
             <Route path="/share/:siteId" element={<SharedDashboard />} />
+            <Route path="/utm-builder" element={<UTMBuilder />} />
             <Route path="/admin" element={<AdminRoute><AdminOverview /></AdminRoute>} />
             <Route path="/admin/users" element={<AdminRoute><AdminUsers /></AdminRoute>} />
             <Route path="/admin/sites" element={<AdminRoute><AdminSites /></AdminRoute>} />
