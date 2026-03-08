@@ -28,7 +28,7 @@ const principles = [
   { icon: EyeOff, title: "No cross-site tracking", description: "We don't follow your visitors across the web. Every site is isolated." },
   { icon: Hash, title: "IP hashing & rotation", description: "IP addresses are hashed with a daily-rotating salt, then immediately discarded. The hash is used only for unique visitor counting within a single day." },
   { icon: Database, title: "No personal data stored", description: "We store only aggregated metrics: page URLs, referrers, browser/OS type, device category, country, and UTM parameters. Nothing personally identifiable." },
-  { icon: Server, title: "Edge-processed", description: "All data is processed at the edge. IP addresses never reach our database — they're hashed in-memory and thrown away." },
+  { icon: Server, title: "Edge-processed", description: "All data is processed at the edge. IP addresses never reach our database. They're hashed in-memory and thrown away." },
 ];
 
 const WhyNoSocial = () => {

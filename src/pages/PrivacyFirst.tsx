@@ -10,15 +10,15 @@ const PrivacyFirst = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO
-        title="Privacy-First Analytics – No Cookies, No Tracking"
-        description="adnivedAnalytics is built for a privacy-first world. No cookies, no personal data, no consent banners. Fully GDPR, CCPA, and PECR compliant by design."
+        title="Privacy-First Analytics - No Cookies, No Tracking"
+        description="adnivedAnalytics is built for a privacy-first world. Cookieless analytics with no personal data collection and no consent banners. Fully GDPR, CCPA, and PECR compliant by design."
         path="/privacy-first"
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "WebPage",
           name: "Privacy-First Analytics",
           url: "https://adnived.com/privacy-first",
-          description: "Privacy-first web analytics without cookies or personal data collection. GDPR, CCPA, and PECR compliant.",
+          description: "Cookieless web analytics without personal data collection. GDPR, CCPA, and PECR compliant by design.",
           isPartOf: { "@type": "WebSite", name: "adnivedAnalytics", url: "https://adnived.com" },
         }}
       />
@@ -37,6 +37,16 @@ const PrivacyFirst = () => {
             </BreadcrumbList>
           </Breadcrumb>
         </div>
+        <section className="py-16 pb-0">
+          <div className="container text-center">
+            <h1 className="mb-4 text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+              Privacy-First Web Analytics Without Cookies
+            </h1>
+            <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
+              No cookies, no personal data, no consent banners. Get accurate website analytics while fully respecting visitor privacy and complying with GDPR, CCPA, and PECR.
+            </p>
+          </div>
+        </section>
         <PrivacySection />
         <section className="py-16">
           <div className="container">

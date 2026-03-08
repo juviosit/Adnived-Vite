@@ -202,7 +202,7 @@ const UTMBuilder = () => {
               <p className="mx-auto max-w-2xl text-muted-foreground">
                 UTM (Urchin Tracking Module) parameters are five short text snippets appended to a URL. When someone
                 clicks a tagged link, your analytics tool reads those snippets and attributes the visit to the right
-                source, medium, and campaign — giving you a clear picture of what's working and what isn't.
+                source, medium, and campaign, giving you a clear picture of what's working and what isn't.
               </p>
             </motion.div>
 

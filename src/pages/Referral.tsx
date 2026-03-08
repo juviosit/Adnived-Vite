@@ -33,7 +33,7 @@ const Referral = () => {
   return (
     <>
       <SEO
-        title="Refer & Earn – Get 1 Month Pro Free"
+        title="Refer and Earn - Get 1 Month Pro Free"
         description="Refer a friend to adnivedAnalytics. When they sign up, you both get 1 month of Pro free. No limits, no catch."
         path="/refer"
       />

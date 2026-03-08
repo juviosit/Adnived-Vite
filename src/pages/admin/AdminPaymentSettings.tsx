@@ -202,8 +202,8 @@ const AdminPaymentSettings = () => {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="LKR">LKR — Sri Lankan Rupee</SelectItem>
-                      <SelectItem value="USD">USD — US Dollar</SelectItem>
+                      <SelectItem value="LKR">LKR - Sri Lankan Rupee</SelectItem>
+                      <SelectItem value="USD">USD - US Dollar</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

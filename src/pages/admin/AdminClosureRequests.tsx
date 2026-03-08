@@ -84,7 +84,7 @@ const AdminClosureRequests = () => {
                     <TableRow key={req.id}>
                       <TableCell className="font-medium">{req.email}</TableCell>
                       <TableCell className="max-w-[200px] truncate text-sm text-muted-foreground">
-                        {req.reason || "—"}
+                        {req.reason || "-"}
                       </TableCell>
                       <TableCell>
                         <Badge variant={cfg.variant} className="gap-1">

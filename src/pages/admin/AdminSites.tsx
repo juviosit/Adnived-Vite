@@ -71,7 +71,7 @@ const AdminSites = () => {
                 {sites.map((s) => (
                   <TableRow key={s.id}>
                     <TableCell className="font-medium">{s.domain}</TableCell>
-                    <TableCell>{s.name || "—"}</TableCell>
+                    <TableCell>{s.name || "-"}</TableCell>
                     <TableCell className="text-muted-foreground">{s.owner_email}</TableCell>
                     <TableCell className="text-muted-foreground">
                       {new Date(s.created_at).toLocaleDateString()}

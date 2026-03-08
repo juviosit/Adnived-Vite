@@ -122,7 +122,7 @@ const AdminReferrals = () => {
                           {ref.reward_applied ? (
                             <Badge className="bg-green-100 text-green-700 border-green-200">Applied</Badge>
                           ) : (
-                            <span className="text-muted-foreground">—</span>
+                            <span className="text-muted-foreground">-</span>
                           )}
                         </td>
                         <td className="py-3">{new Date(ref.created_at).toLocaleDateString()}</td>

@@ -35,7 +35,7 @@ const features = [
   {
     icon: Bell,
     title: "UTM Tracking",
-    description: "Full UTM parameter support — track source, medium, campaign automatically.",
+    description: "Full UTM parameter support. Track source, medium, and campaign automatically.",
   },
   {
     icon: Download,
