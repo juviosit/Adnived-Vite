@@ -9,7 +9,7 @@ const GDPRCompliance = () => {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: "GDPR Compliant Web Analytics — No Cookies, No Consent Banners",
+    headline: "GDPR Compliant Web Analytics - No Cookies, No Consent Banners",
     description:
       "Learn what GDPR means for your website analytics and how adnivedAnalytics helps you stay compliant without cookie banners.",
     author: { "@type": "Organization", name: "adnivedAnalytics" },
