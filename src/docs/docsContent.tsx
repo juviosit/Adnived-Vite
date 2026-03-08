@@ -156,7 +156,7 @@ const AddScript = () => (
     <CodeBlock title="index.html">{`<script defer data-domain="yoursite.com"
   src="https://t.adnived.com/script.js">
 </script>`}</CodeBlock>
-    <P>Replace <Code>yoursite.com</Code> with your actual domain name — exactly as you entered it when adding your site.</P>
+    <P>Replace <Code>yoursite.com</Code> with your actual domain name, exactly as you entered it when adding your site.</P>
 
     <H2>Where to place it</H2>
     <P>The script should go inside the <Code>&lt;head&gt;</Code> tag of every page you want to track. For most sites, this means your main HTML template or layout file.</P>
