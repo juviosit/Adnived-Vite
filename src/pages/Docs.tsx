@@ -147,13 +147,13 @@ const DocsPage = () => {
             </div>
 
             {/* Prev / Next navigation */}
-            <div className="mt-16 flex items-center justify-between border-t border-border pt-6">
+            <div className="mt-16 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-t border-border pt-6">
               {prev ? (
                 <Link
                   to={`/docs/${prev.slug}`}
                   className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  <ArrowLeft className="h-4 w-4" />
+                  <ArrowLeft className="h-4 w-4 shrink-0" />
                   <div>
                     <p className="text-xs text-muted-foreground">Previous</p>
                     <p className="font-medium text-foreground">{prev.title}</p>
@@ -163,13 +163,13 @@ const DocsPage = () => {
               {next ? (
                 <Link
                   to={`/docs/${next.slug}`}
-                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors text-right"
+                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors sm:text-right self-end sm:self-auto"
                 >
                   <div>
                     <p className="text-xs text-muted-foreground">Next</p>
                     <p className="font-medium text-foreground">{next.title}</p>
                   </div>
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="h-4 w-4 shrink-0" />
                 </Link>
               ) : <div />}
             </div>
