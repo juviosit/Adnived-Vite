@@ -497,6 +497,45 @@ export type Database = {
         }
         Relationships: []
       }
+      referrals: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          expires_at: string
+          id: string
+          referral_code: string
+          referral_email: string
+          referred_user_id: string | null
+          referrer_id: string
+          reward_applied: boolean
+          status: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          referral_code: string
+          referral_email: string
+          referred_user_id?: string | null
+          referrer_id: string
+          reward_applied?: boolean
+          status?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          expires_at?: string
+          id?: string
+          referral_code?: string
+          referral_email?: string
+          referred_user_id?: string | null
+          referrer_id?: string
+          reward_applied?: boolean
+          status?: string
+        }
+        Relationships: []
+      }
       site_members: {
         Row: {
           created_at: string
