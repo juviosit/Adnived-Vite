@@ -46,9 +46,16 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
     const now = new Date();
     switch (preset) {
       case "realtime": return { from: subMinutes(now, 5), to: now };
+      case "today": return { from: startOfDay(now), to: now };
+      case "yesterday": { const y = subDays(now, 1); return { from: startOfDay(y), to: new Date(startOfDay(now).getTime() - 1) }; }
       case "24h": return { from: subHours(now, 24), to: now };
+      case "48h": return { from: subHours(now, 48), to: now };
       case "7d": return { from: subDays(now, 7), to: now };
+      case "14d": return { from: subDays(now, 14), to: now };
       case "30d": return { from: subDays(now, 30), to: now };
+      case "3m": return { from: subMonths(now, 3), to: now };
+      case "6m": return { from: subMonths(now, 6), to: now };
+      case "12m": return { from: subYears(now, 1), to: now };
       case "lifetime": return { from: null, to: now };
       case "custom": return { from: customRange?.from || subDays(now, 7), to: customRange?.to || now };
     }
