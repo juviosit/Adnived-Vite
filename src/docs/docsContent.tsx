@@ -505,7 +505,7 @@ export default function RootLayout({ children }) {
         <Script
           defer
           data-domain="yoursite.com"
-          src="https://analytics.adnived.com/script.js"
+          src="https://adnived.com/script.js"
         />
       </head>
       <body>{children}</body>

@@ -66,8 +66,8 @@ const SetupSection = () => {
                   <span className="text-primary">script</span>
                   {" "}
                   <span className="text-chart-2">src</span>
-                  <span className="text-muted-foreground">"https://adnived.com/script.js"</span>
-                  <span className="text-chart-3 break-all">"https://analytics.adnived.com/script.js"</span>
+                  <span className="text-muted-foreground">=</span>
+                  <span className="text-chart-3 break-all">"https://adnived.com/script.js"</span>
                 </p>
                 <p className="ml-8">
                   <span className="text-chart-2">data-domain</span>
