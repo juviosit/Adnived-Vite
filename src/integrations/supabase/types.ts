@@ -82,6 +82,48 @@ export type Database = {
         }
         Relationships: []
       }
+      coupons: {
+        Row: {
+          code: string
+          created_at: string
+          discount_type: string
+          discount_value: number
+          expires_at: string | null
+          free_months: number
+          id: string
+          is_active: boolean
+          max_uses: number | null
+          updated_at: string
+          used_count: number
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          discount_type?: string
+          discount_value?: number
+          expires_at?: string | null
+          free_months?: number
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          updated_at?: string
+          used_count?: number
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          discount_type?: string
+          discount_value?: number
+          expires_at?: string | null
+          free_months?: number
+          id?: string
+          is_active?: boolean
+          max_uses?: number | null
+          updated_at?: string
+          used_count?: number
+        }
+        Relationships: []
+      }
       custom_events: {
         Row: {
           event_name: string
@@ -336,6 +378,7 @@ export type Database = {
         Row: {
           additional_data: string | null
           amount_cents: number
+          coupon_id: string | null
           created_at: string
           currency: string
           id: string
@@ -349,6 +392,7 @@ export type Database = {
         Insert: {
           additional_data?: string | null
           amount_cents: number
+          coupon_id?: string | null
           created_at?: string
           currency?: string
           id?: string
@@ -362,6 +406,7 @@ export type Database = {
         Update: {
           additional_data?: string | null
           amount_cents?: number
+          coupon_id?: string | null
           created_at?: string
           currency?: string
           id?: string
@@ -373,6 +418,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "payment_transactions_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "payment_transactions_plan_id_fkey"
             columns: ["plan_id"]
