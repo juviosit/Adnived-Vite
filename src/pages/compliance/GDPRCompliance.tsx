@@ -70,7 +70,7 @@ const GDPRCompliance = () => {
 
           <div className="my-6 grid gap-4 sm:grid-cols-2">
             {[
-              { icon: CheckCircle, label: "Zero cookies — ever", desc: "No cookie consent banner needed" },
+              { icon: CheckCircle, label: "Zero cookies, ever", desc: "No cookie consent banner needed" },
               { icon: CheckCircle, label: "No IP storage", desc: "IPs are hashed daily and discarded" },
               { icon: CheckCircle, label: "No cross-site tracking", desc: "Each site is fully isolated" },
               { icon: CheckCircle, label: "No personal data", desc: "Nothing that identifies individuals" },
