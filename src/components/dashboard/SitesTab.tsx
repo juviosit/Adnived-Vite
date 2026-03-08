@@ -25,7 +25,8 @@ const SitesTab = () => {
   const [siteName, setSiteName] = useState("");
   const [adding, setAdding] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [emailVerified, setEmailVerified] = useState(true);
+  const [emailVerified, setEmailVerified] = useState(false);
+  const [verificationChecked, setVerificationChecked] = useState(false);
   const [verifyDialogOpen, setVerifyDialogOpen] = useState(false);
   const [resending, setResending] = useState(false);
   const navigate = useNavigate();
