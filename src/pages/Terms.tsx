@@ -1,9 +1,11 @@
+import SEO from "@/components/SEO";
 import Header from "@/components/landing/Header";
 import Footer from "@/components/landing/Footer";
 
 const Terms = () => {
   return (
     <div className="min-h-screen bg-background">
+      <SEO title="Terms of Service" description="Terms of Service for adnivedAnalytics. Understand your rights and responsibilities when using our privacy-first web analytics platform." path="/terms" />
       <Header />
       <main className="container max-w-3xl py-16">
         <h1 className="mb-8 text-3xl font-bold tracking-tight text-foreground">Terms of Service</h1>

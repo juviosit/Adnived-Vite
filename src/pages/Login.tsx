@@ -1,3 +1,4 @@
+import SEO from "@/components/SEO";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -26,6 +27,8 @@ const Login = () => {
   };
 
   return (
+    <>
+    <SEO title="Log In" description="Sign in to your adnivedAnalytics dashboard to view your website traffic, visitor insights, and conversion data." path="/login" noindex />
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
@@ -60,6 +63,7 @@ const Login = () => {
         </form>
       </div>
     </div>
+    </>
   );
 };
 
