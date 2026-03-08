@@ -366,7 +366,7 @@ const FunnelAnalysis = () => (
       <li>Go to <strong>Behavior → Funnels</strong> in your site dashboard</li>
       <li>Click <strong>Create Funnel</strong></li>
       <li>Name your funnel (e.g., "Signup flow")</li>
-      <li>Add steps — each step can be a page visit or custom event</li>
+      <li>Add steps. Each step can be a page visit or custom event</li>
       <li>Order the steps in the sequence you expect visitors to follow</li>
     </ol>
     <H2>Reading funnel data</H2>
