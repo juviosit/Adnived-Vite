@@ -1,8 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect, useCallback } from "react";
+import { motion } from "framer-motion";
 
 const stats = [
   { label: "Visitors", value: "12.4k", change: "+18.2%" },
@@ -13,19 +12,6 @@ const stats = [
 const bars = [40, 65, 45, 80, 55, 70, 90, 60, 75, 50, 85, 95];
 
 const HeroSection = () => {
-  const [setIndex, setSetIndex] = useState(0);
-
-  const cycle = useCallback(() => {
-    setSetIndex((prev) => (prev + 1) % statSets.length);
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(cycle, 3000);
-    return () => clearInterval(interval);
-  }, [cycle]);
-
-  const stats = statSets[setIndex];
-  const bars = barSets[setIndex];
 
   return (
     <section className="relative overflow-hidden py-24 md:py-32 lg:py-40">
