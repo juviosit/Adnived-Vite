@@ -1,47 +1,17 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect, useCallback } from "react";
+import { motion } from "framer-motion";
 
-const statSets = [
-  [
-    { label: "Visitors", value: "12.4k", change: "+18.2%" },
-    { label: "Page Views", value: "48.2k", change: "+12.5%" },
-    { label: "Bounce", value: "24.3%", change: "-3.1%" },
-  ],
-  [
-    { label: "Visitors", value: "14.1k", change: "+24.6%" },
-    { label: "Page Views", value: "53.8k", change: "+16.3%" },
-    { label: "Bounce", value: "21.7%", change: "-5.8%" },
-  ],
-  [
-    { label: "Visitors", value: "15.9k", change: "+31.4%" },
-    { label: "Page Views", value: "61.2k", change: "+22.1%" },
-    { label: "Bounce", value: "19.2%", change: "-8.4%" },
-  ],
+const stats = [
+  { label: "Visitors", value: "12.4k", change: "+18.2%" },
+  { label: "Page Views", value: "48.2k", change: "+12.5%" },
+  { label: "Bounce", value: "24.3%", change: "-3.1%" },
 ];
 
-const barSets = [
-  [40, 65, 45, 80, 55, 70, 90, 60, 75, 50, 85, 95],
-  [55, 70, 60, 90, 45, 85, 75, 95, 65, 80, 50, 88],
-  [70, 50, 85, 65, 90, 55, 80, 70, 95, 60, 75, 92],
-];
+const bars = [40, 65, 45, 80, 55, 70, 90, 60, 75, 50, 85, 95];
 
 const HeroSection = () => {
-  const [setIndex, setSetIndex] = useState(0);
-
-  const cycle = useCallback(() => {
-    setSetIndex((prev) => (prev + 1) % statSets.length);
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(cycle, 3000);
-    return () => clearInterval(interval);
-  }, [cycle]);
-
-  const stats = statSets[setIndex];
-  const bars = barSets[setIndex];
 
   return (
     <section className="relative overflow-hidden py-24 md:py-32 lg:py-40">
@@ -127,24 +97,18 @@ const HeroSection = () => {
               </div>
 
               <div className="mb-5 grid grid-cols-3 gap-3">
-                <AnimatePresence>
-                  {stats.map((stat) => (
-                    <motion.div
-                      key={`${stat.label}-${stat.value}`}
-                      initial={{ opacity: 0, y: 6 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -6 }}
-                      transition={{ duration: 0.4 }}
-                      className="rounded-xl border border-border/60 bg-background/60 p-3"
-                    >
-                      <p className="text-[10px] text-muted-foreground">{stat.label}</p>
-                      <p className="text-lg font-bold text-foreground">{stat.value}</p>
-                      <p className={`text-[10px] font-medium ${stat.change.startsWith("+") ? "text-green-600" : "text-red-500"}`}>
-                        {stat.change}
-                      </p>
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
+                {stats.map((stat) => (
+                  <div
+                    key={stat.label}
+                    className="rounded-xl border border-border/60 bg-background/60 p-3"
+                  >
+                    <p className="text-[10px] text-muted-foreground">{stat.label}</p>
+                    <p className="text-lg font-bold text-foreground">{stat.value}</p>
+                    <p className={`text-[10px] font-medium ${stat.change.startsWith("+") ? "text-green-600" : "text-red-500"}`}>
+                      {stat.change}
+                    </p>
+                  </div>
+                ))}
               </div>
 
               {/* Animated bar chart */}
