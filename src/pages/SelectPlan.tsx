@@ -76,7 +76,11 @@ const SelectPlan = () => {
       .eq("id", user.id)
       .single()
       .then(({ data }) => {
-        if (data?.plan_selected) navigate("/dashboard", { replace: true });
+        if (data?.plan_selected) {
+          navigate("/dashboard", { replace: true });
+        } else {
+          setProfileChecked(true);
+        }
       });
   }, [user, navigate]);
 
