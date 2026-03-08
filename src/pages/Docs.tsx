@@ -79,29 +79,29 @@ const DocsPage = () => {
       {/* Header */}
       <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-lg">
         <div className="flex h-14 items-center justify-between px-4 lg:px-6">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 min-w-0">
             <Button
               variant="ghost"
               size="icon"
-              className="lg:hidden"
+              className="lg:hidden shrink-0"
               onClick={() => setSidebarOpen(!sidebarOpen)}
             >
               {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
-            <Link to="/" className="flex items-center gap-2">
+            <Link to="/" className="flex items-center gap-2 shrink-0">
               <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
                 <BarChart3 className="h-4 w-4 text-primary-foreground" />
               </div>
               <span className="text-foreground tracking-tight"><span className="font-bold">adnived</span><span className="font-normal">Analytics</span></span>
             </Link>
-            <span className="text-sm font-medium text-muted-foreground">Docs</span>
+            <span className="hidden sm:inline text-sm font-medium text-muted-foreground">Docs</span>
           </div>
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" asChild>
+          <div className="flex items-center gap-2 shrink-0">
+            <Button variant="ghost" size="sm" asChild className="hidden sm:inline-flex">
               <Link to="/">Home</Link>
             </Button>
             <Button size="sm" asChild>
-              <Link to="/signup">Sign Up Free</Link>
+              <Link to="/signup">Sign Up</Link>
             </Button>
           </div>
         </div>
@@ -129,9 +129,9 @@ const DocsPage = () => {
 
         {/* Main content */}
         <main className="flex-1 min-w-0">
-          <div className="mx-auto max-w-3xl px-6 py-10 lg:px-10">
+          <div className="mx-auto max-w-3xl px-4 sm:px-6 py-8 lg:px-10 lg:py-10">
             {/* Breadcrumb */}
-            <div className="mb-6 flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="mb-6 flex flex-wrap items-center gap-1 sm:gap-2 text-xs sm:text-sm text-muted-foreground">
               <Link to="/docs/welcome" className="hover:text-foreground transition-colors">Docs</Link>
               <span>›</span>
               <span className="text-muted-foreground">{doc.category}</span>
@@ -139,7 +139,7 @@ const DocsPage = () => {
               <span className="text-foreground font-medium">{doc.title}</span>
             </div>
 
-            <h1 className="mb-8 text-3xl font-bold tracking-tight text-foreground">{doc.title}</h1>
+            <h1 className="mb-8 text-2xl sm:text-3xl font-bold tracking-tight text-foreground">{doc.title}</h1>
 
             {/* Content */}
             <div className="prose-docs">
@@ -147,13 +147,13 @@ const DocsPage = () => {
             </div>
 
             {/* Prev / Next navigation */}
-            <div className="mt-16 flex items-center justify-between border-t border-border pt-6">
+            <div className="mt-16 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-t border-border pt-6">
               {prev ? (
                 <Link
                   to={`/docs/${prev.slug}`}
                   className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  <ArrowLeft className="h-4 w-4" />
+                  <ArrowLeft className="h-4 w-4 shrink-0" />
                   <div>
                     <p className="text-xs text-muted-foreground">Previous</p>
                     <p className="font-medium text-foreground">{prev.title}</p>
@@ -163,13 +163,13 @@ const DocsPage = () => {
               {next ? (
                 <Link
                   to={`/docs/${next.slug}`}
-                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors text-right"
+                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors sm:text-right self-end sm:self-auto"
                 >
                   <div>
                     <p className="text-xs text-muted-foreground">Next</p>
                     <p className="font-medium text-foreground">{next.title}</p>
                   </div>
-                  <ArrowRight className="h-4 w-4" />
+                  <ArrowRight className="h-4 w-4 shrink-0" />
                 </Link>
               ) : <div />}
             </div>
