@@ -55,6 +55,15 @@ const TRACKER_SCRIPT = `(function(){
   history.replaceState=function(){origReplace.apply(this,arguments);send()};
   w.addEventListener("popstate",function(){send()});
 
+  // Auto-detect tel: and mailto: link clicks
+  d.addEventListener("click",function(e){
+    var t=e.target;while(t&&t.tagName!=="A")t=t.parentElement;
+    if(!t||!t.href)return;
+    var h=t.href;
+    if(h.indexOf("tel:")===0){send("Phone Click",{number:h.replace("tel:","")});}
+    else if(h.indexOf("mailto:")===0){send("Email Click",{email:h.replace("mailto:","")});}
+  },true);
+
   // Expose for custom events: window.insight("eventName", {props})
   w.insight=function(evt,props){send(evt,props)};
 })();`;

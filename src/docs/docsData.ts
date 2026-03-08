@@ -42,6 +42,7 @@ export const docCategories: DocCategory[] = [
     pages: [
       { slug: "goal-conversions", title: "Goal conversions", category: "Goals & Funnels" },
       { slug: "custom-events", title: "Custom events", category: "Goals & Funnels" },
+      { slug: "phone-click-tracking", title: "Phone & email click tracking", category: "Goals & Funnels" },
       { slug: "funnel-analysis", title: "Funnel analysis", category: "Goals & Funnels" },
     ],
   },

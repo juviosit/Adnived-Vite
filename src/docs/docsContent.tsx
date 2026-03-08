@@ -621,6 +621,49 @@ const TroubleshootAdblockers = () => (
   </>
 );
 
+const PhoneClickTracking = () => (
+  <>
+    <P>adnivedAnalytics automatically detects clicks on phone number links (<Code>tel:</Code>) and email links (<Code>mailto:</Code>) — no extra code required.</P>
+
+    <H2>How it works</H2>
+    <P>When a visitor clicks a link like <Code>&lt;a href="tel:+1234567890"&gt;Call us&lt;/a&gt;</Code>, the tracking script automatically fires a custom event called <strong>Phone Click</strong> with the phone number as a property.</P>
+    <P>Similarly, clicking <Code>&lt;a href="mailto:hello@example.com"&gt;Email us&lt;/a&gt;</Code> fires an <strong>Email Click</strong> event with the email address.</P>
+
+    <H2>Requirements</H2>
+    <Ul>
+      <Li>The standard adnivedAnalytics tracking script must be installed on your site.</Li>
+      <Li>Phone numbers must use standard <Code>tel:</Code> links, and emails must use <Code>mailto:</Code> links.</Li>
+    </Ul>
+
+    <H3>Example HTML</H3>
+    <CodeBlock title="HTML">{`<!-- Phone link — automatically tracked -->
+<a href="tel:+1234567890">+1 (234) 567-890</a>
+
+<!-- Email link — automatically tracked -->
+<a href="mailto:hello@example.com">Email us</a>`}</CodeBlock>
+
+    <H2>Viewing the data</H2>
+    <P>Phone and email click events appear in your <strong>Custom Events</strong> panel on the dashboard. You can also create a <Link to="/docs/goal-conversions" className="text-primary hover:underline">Goal</Link> with the event name <Code>Phone Click</Code> or <Code>Email Click</Code> to track conversions.</P>
+
+    <H3>Event details</H3>
+    <Ul>
+      <Li><strong>Phone Click</strong> — properties: <Code>{`{ number: "+1234567890" }`}</Code></Li>
+      <Li><strong>Email Click</strong> — properties: <Code>{`{ email: "hello@example.com" }`}</Code></Li>
+    </Ul>
+
+    <H2>Creating a goal for phone clicks</H2>
+    <P>To track phone clicks as conversions:</P>
+    <Ul>
+      <Li>Go to your site dashboard → <strong>Goals</strong> tab.</Li>
+      <Li>Click <strong>Add Goal</strong>.</Li>
+      <Li>Set goal type to <strong>Custom Event</strong> and enter <Code>Phone Click</Code> as the event name.</Li>
+      <Li>Save — you'll now see conversion rates for phone clicks.</Li>
+    </Ul>
+
+    <Tip>This works automatically with no code changes. Just make sure your phone numbers use proper <Code>tel:</Code> links instead of plain text.</Tip>
+  </>
+);
+
 /* ─── Export map ─── */
 export const docContent: Record<string, ComponentType> = {
   welcome: Welcome,
@@ -637,6 +680,7 @@ export const docContent: Record<string, ComponentType> = {
   realtime: Realtime,
   "goal-conversions": GoalConversions,
   "custom-events": CustomEvents,
+  "phone-click-tracking": PhoneClickTracking,
   "funnel-analysis": FunnelAnalysis,
   referrers: Referrers,
   "utm-tracking": UTMTracking,
