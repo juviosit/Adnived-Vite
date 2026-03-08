@@ -12,7 +12,6 @@ import { toast } from "sonner";
 declare global {
   interface Window {
     onePayData?: Record<string, unknown>;
-    onePay?: () => void;
   }
 }
 
