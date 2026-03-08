@@ -1,3 +1,4 @@
+import SEO from "@/components/SEO";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -140,6 +141,7 @@ const SelectPlan = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO title="Select Your Plan" description="Choose the right adnivedAnalytics plan for your website. Free, Pro, or Max — privacy-first analytics at every scale." path="/select-plan" noindex />
       <header className="border-b border-border/40 bg-background">
         <div className="container flex h-14 items-center justify-center">
           <Link to="/" className="flex items-center gap-2.5">

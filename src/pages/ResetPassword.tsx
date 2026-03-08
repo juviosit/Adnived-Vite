@@ -1,3 +1,4 @@
+import SEO from "@/components/SEO";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -35,6 +36,8 @@ const ResetPassword = () => {
   };
 
   return (
+    <>
+    <SEO title="Set New Password" description="Set a new password for your adnivedAnalytics account." path="/reset-password" noindex />
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">
@@ -62,6 +65,7 @@ const ResetPassword = () => {
         </form>
       </Card>
     </div>
+    </>
   );
 };
 

@@ -1,3 +1,4 @@
+import SEO from "@/components/SEO";
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
@@ -48,6 +49,7 @@ const SharedDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO title={`${site.name || site.domain} Analytics`} description={`Public analytics dashboard for ${site.domain}. View real-time visitor data powered by adnivedAnalytics.`} path={`/share/${siteId}`} noindex />
       <header className="border-b border-border/50 bg-background/95 backdrop-blur">
         <div className="flex h-14 items-center justify-between px-4 md:px-6">
           <div className="flex items-center gap-3">
