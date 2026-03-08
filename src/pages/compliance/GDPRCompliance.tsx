@@ -36,7 +36,7 @@ const GDPRCompliance = () => {
           GDPR Compliant Web Analytics - Without Cookie Banners
         </h1>
         <p className="mb-10 text-lg text-muted-foreground">
-          The General Data Protection Regulation (GDPR) is the EU's landmark privacy law. If your website has European visitors, it applies to you — even if your business is based elsewhere.
+          The General Data Protection Regulation (GDPR) is the EU's landmark privacy law. If your website has European visitors, it applies to you, even if your business is based elsewhere.
         </p>
 
         <div className="space-y-8 text-muted-foreground [&_h2]:mt-8 [&_h2]:mb-3 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-foreground [&_h3]:mt-4 [&_h3]:mb-2 [&_h3]:font-semibold [&_h3]:text-foreground">
