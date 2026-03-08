@@ -27,15 +27,15 @@ const DashboardLayout = ({ activeTab, onTabChange, children }: DashboardLayoutPr
               <span className="font-normal">Analytics</span>
             </span>
           </Link>
-          <div className="flex items-center gap-2">
-            <Link to="/utm-builder">
+          <div className="flex items-center gap-2 min-w-0">
+            <Link to="/utm-builder" className="hidden sm:block">
               <Button variant="outline" size="sm" className="rounded-full gap-1.5 h-9">
                 <Link2 className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">UTM Builder</span>
+                <span className="hidden lg:inline">UTM Builder</span>
               </Button>
             </Link>
             <div className="hidden sm:block h-5 w-px bg-border/60 mx-1" />
-            <span className="hidden md:block text-sm text-foreground/60 max-w-[200px] truncate">{user?.email}</span>
+            <span className="hidden lg:block text-sm text-foreground/60 max-w-[180px] truncate">{user?.email}</span>
             <Button variant="ghost" size="sm" className="rounded-full h-9 gap-1.5 text-foreground/60 hover:text-foreground" onClick={signOut}>
               <LogOut className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">Sign out</span>

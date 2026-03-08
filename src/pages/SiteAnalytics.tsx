@@ -178,17 +178,17 @@ const SiteAnalytics = () => {
                   {sidebarNav}
                 </SheetContent>
               </Sheet>
-              <div>
-                <div className="flex items-center gap-3">
-                  <h1 className="text-lg font-bold text-foreground">{site.name || site.domain}</h1>
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                  <h1 className="text-lg font-bold text-foreground truncate max-w-[200px] sm:max-w-none">{site.name || site.domain}</h1>
                   {currentVisitors !== null && (
-                    <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <span className="flex items-center gap-1.5 text-xs text-muted-foreground whitespace-nowrap">
                       <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
                       {currentVisitors} current visitor{currentVisitors !== 1 ? "s" : ""}
                     </span>
                   )}
                 </div>
-                {site.name && <p className="text-xs text-muted-foreground">{site.domain}</p>}
+                {site.name && <p className="text-xs text-muted-foreground truncate">{site.domain}</p>}
               </div>
             </div>
             <div className="flex items-center gap-2 md:gap-3">
