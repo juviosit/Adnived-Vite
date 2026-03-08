@@ -24,7 +24,19 @@ const PrivacyFirst = () => {
       />
       <Header />
       <main>
-        <PrivacySection />
+        <div className="container pt-6">
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild><Link to="/">Home</Link></BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Privacy-First</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
         <section className="py-16">
           <div className="container">
             <div className="mx-auto max-w-2xl text-center">
