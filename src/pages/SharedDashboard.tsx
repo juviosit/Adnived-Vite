@@ -59,7 +59,7 @@ const SharedDashboard = () => {
               {site.name && <p className="text-xs text-muted-foreground">{site.domain}</p>}
             </div>
           </div>
-          <span className="text-xs text-muted-foreground">Powered by adnived analytics</span>
+          <span className="text-xs text-muted-foreground">Powered by adnivedAnalytics</span>
         </div>
       </header>
       <main className="p-4 md:p-6">
