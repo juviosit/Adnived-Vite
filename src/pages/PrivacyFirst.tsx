@@ -3,6 +3,7 @@ import Header from "@/components/landing/Header";
 import PrivacySection from "@/components/landing/PrivacySection";
 import CTASection from "@/components/landing/CTASection";
 import Footer from "@/components/landing/Footer";
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Link } from "react-router-dom";
 
 const PrivacyFirst = () => {
