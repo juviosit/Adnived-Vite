@@ -17,7 +17,7 @@ const statsCards = [
 
 const WhySwitchSection = () => {
   return (
-    <section className="border-t border-border/50 py-24">
+    <section className="py-24">
       <div className="container">
         {/* Stats row */}
         <div className="mx-auto mb-24 grid max-w-4xl grid-cols-2 gap-4 lg:grid-cols-4">
@@ -28,9 +28,9 @@ const WhySwitchSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              className="rounded-xl border border-border bg-card p-5 text-center"
+              className="rounded-2xl bg-card p-6 text-center"
             >
-              <card.icon className="mx-auto mb-3 h-6 w-6 text-primary" />
+              <card.icon className="mx-auto mb-3 h-6 w-6 text-muted-foreground" />
               <p className="text-2xl font-bold text-foreground">{card.value}</p>
               <p className="text-sm font-medium text-foreground">{card.label}</p>
               <p className="mt-1 text-xs text-muted-foreground">{card.sub}</p>
@@ -41,16 +41,15 @@ const WhySwitchSection = () => {
         {/* Why Switch */}
         <div className="mx-auto max-w-3xl">
           <div className="mb-12 text-center">
-            <p className="mb-2 text-sm font-medium text-primary">Why Switch?</p>
             <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground">
               It's time to ditch legacy analytics
             </h2>
             <p className="text-muted-foreground">
-              Traditional analytics tools are built for advertisers, not for you. They're complex, slow, and require intrusive data collection.
+              Traditional analytics tools are built for advertisers, not for you.
             </p>
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             {comparisons.map((item, i) => (
               <motion.div
                 key={i}
@@ -58,15 +57,15 @@ const WhySwitchSection = () => {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 rounded-xl border border-border p-4"
+                className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 rounded-2xl bg-card p-5"
               >
                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                  <X className="h-4 w-4 shrink-0 text-destructive" />
+                  <X className="h-4 w-4 shrink-0 text-red-400" />
                   <span className="line-through">{item.bad}</span>
                 </div>
-                <ArrowRight className="h-4 w-4 text-primary" />
+                <ArrowRight className="h-4 w-4 text-muted-foreground/50" />
                 <div className="flex items-center gap-3 text-sm font-medium text-foreground">
-                  <Check className="h-4 w-4 shrink-0 text-primary" />
+                  <Check className="h-4 w-4 shrink-0 text-green-600" />
                   {item.good}
                 </div>
               </motion.div>
