@@ -79,29 +79,29 @@ const DocsPage = () => {
       {/* Header */}
       <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-lg">
         <div className="flex h-14 items-center justify-between px-4 lg:px-6">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 min-w-0">
             <Button
               variant="ghost"
               size="icon"
-              className="lg:hidden"
+              className="lg:hidden shrink-0"
               onClick={() => setSidebarOpen(!sidebarOpen)}
             >
               {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
-            <Link to="/" className="flex items-center gap-2">
+            <Link to="/" className="flex items-center gap-2 shrink-0">
               <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
                 <BarChart3 className="h-4 w-4 text-primary-foreground" />
               </div>
               <span className="text-foreground tracking-tight"><span className="font-bold">adnived</span><span className="font-normal">Analytics</span></span>
             </Link>
-            <span className="text-sm font-medium text-muted-foreground">Docs</span>
+            <span className="hidden sm:inline text-sm font-medium text-muted-foreground">Docs</span>
           </div>
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" asChild>
+          <div className="flex items-center gap-2 shrink-0">
+            <Button variant="ghost" size="sm" asChild className="hidden sm:inline-flex">
               <Link to="/">Home</Link>
             </Button>
             <Button size="sm" asChild>
-              <Link to="/signup">Sign Up Free</Link>
+              <Link to="/signup">Sign Up</Link>
             </Button>
           </div>
         </div>
