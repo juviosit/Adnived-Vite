@@ -1,63 +1,53 @@
 
 
-# Download Reports, Plan Display Fix, and E2E Polish
+## Create Standalone Pages for Features, Pricing, and Privacy
 
-## 1. Download PDF Reports Feature
+### What
+Create three new standalone pages at `/features`, `/pricing`, and `/privacy-first` that reuse the existing homepage section components but wrap them in full pages with proper SEO metadata. Keep the homepage sections as-is.
 
-Create a new "Download Report" dialog accessible from the site analytics page. Users can configure:
-- **Metrics to include**: Checkboxes for Visitors, Pageviews, Bounce Rate, Visit Duration, Sources, Pages, Countries, Technology
-- **Time period**: Same presets as overview (24h, 7d, 30d, Lifetime, Custom date range)
-- **Generate PDF**: Build an HTML report in-memory, render it using the browser's `window.print()` with a print-optimized stylesheet (no external PDF library needed)
+### New Files
 
-### Implementation
+1. **`src/pages/Features.tsx`** — Full page with Header, SEO component (title: "Features — adnivedAnalytics", description about all features), FeaturesSection component, CTA, Footer. Add JSON-LD `WebPage` schema.
 
-**New file: `src/components/analytics/DownloadReportDialog.tsx`**
-- Dialog with metric checkboxes (using existing Checkbox component)
-- Date range selector (reusing the same preset/calendar pattern from OverviewSection)
-- "Generate Report" button that:
-  1. Fetches pageview data for the selected period
-  2. Computes selected metrics (visitors, pageviews, bounce rate, etc.)
-  3. Computes breakdowns (sources, pages, countries) if selected
-  4. Opens a new window with a styled HTML report and triggers `window.print()` for PDF save
-- Report includes: site name, date range header, metric summary cards, breakdown tables
+2. **`src/pages/Pricing.tsx`** — Full page with Header, SEO component (title: "Pricing — adnivedAnalytics"), PricingSection component, FAQ section, CTA, Footer. Add JSON-LD `WebPage` schema.
 
-**Edit: `src/pages/SiteAnalytics.tsx`**
-- Add a "Download Report" button (with `Download` icon) in the header bar next to "Sign out"
-- Import and render the `DownloadReportDialog` component
+3. **`src/pages/PrivacyFirst.tsx`** — Full page with Header, SEO component (title: "Privacy-First Analytics — adnivedAnalytics"), PrivacySection component, compliance badges/links, CTA, Footer. Add JSON-LD `WebPage` schema. Route: `/privacy-first` (to avoid conflict with existing `/privacy` policy page).
 
-## 2. Fix Plan Display - Show Millions Instead of Thousands
+### Route Changes (`src/App.tsx`)
+Add three new routes:
+- `/features` → `<Features />`
+- `/pricing` → `<Pricing />`
+- `/privacy-first` → `<PrivacyFirst />`
 
-The `PlanTab.tsx` currently formats max_hits as `${(plan.max_hits / 1000).toFixed(0)}K pageviews` which shows e.g. "1000K" for 1 million. Fix to use smart formatting.
+### Navigation Updates
 
-**Edit: `src/components/dashboard/PlanTab.tsx`**
-- Add a `formatHits` helper (same pattern already exists in `PricingSection.tsx`):
-  - >= 1,000,000: show as `1M`, `10M`, etc.
-  - >= 1,000: show as `10K`, `100K`, etc.
-  - Otherwise: raw number
-- Update line 136 from `${(plan.max_hits / 1000).toFixed(0)}K pageviews` to use `formatHits(plan.max_hits)` + " pageviews"
-- Also update the current usage display (line 98) to use the same formatter for consistency
+**`src/components/landing/Footer.tsx`**:
+- Change `<a href="#features">` to `<Link to="/features">`
+- Change `<a href="#pricing">` to `<Link to="/pricing">`
+- Add link to `/privacy-first` labeled "Privacy-First"
 
-## 3. End-to-End Polish and Fixes
+**`src/components/landing/Header.tsx`**: Update any `#features` / `#pricing` anchor links to use the new routes (with fallback to hash links when on homepage).
 
-Based on codebase review, the following issues need attention:
+### SEO File Updates
 
-**a. SharedDashboard consistency**
-- Review and ensure the shared (public) dashboard has proper branding and works without auth
+**`public/sitemap.xml`**: Add three new entries:
+- `https://adnived.com/features` (priority 0.9)
+- `https://adnived.com/pricing` (priority 0.9)
+- `https://adnived.com/privacy-first` (priority 0.8)
 
-**b. Navigation consistency**
-- The SiteAnalytics header has "Sign out" but no link back to dashboard (only in sidebar). Add a visible "Back to Dashboard" link in the main header for clarity.
+**`public/llms.txt`**: Add the three new pages under the "Public Pages" section with descriptions.
 
-**c. Supabase query limit awareness**
-- The pageview queries don't specify a limit, which means they default to Supabase's 1000-row limit. For sites with significant traffic, data will be silently truncated. Add `.limit(10000)` or paginated fetching for accuracy.
+**`public/robots.txt`**: No changes needed — all new routes are public and already allowed.
 
-### Technical Summary
-
-| File | Change |
+### Summary of Changes
+| File | Action |
 |------|--------|
-| `src/components/analytics/DownloadReportDialog.tsx` | New -- report config dialog with metric selection, date range, and PDF generation |
-| `src/pages/SiteAnalytics.tsx` | Add "Download Report" button in header |
-| `src/components/dashboard/PlanTab.tsx` | Fix hits formatting to show M for millions, add `formatHits` helper |
-| `src/components/analytics/OverviewSection.tsx` | Increase query limit to avoid silent data truncation |
-| `src/components/analytics/BreakdownPage.tsx` | Increase query limit to avoid silent data truncation |
-| `src/pages/SharedDashboard.tsx` | Review and ensure branding consistency |
+| `src/pages/Features.tsx` | Create |
+| `src/pages/Pricing.tsx` | Create |
+| `src/pages/PrivacyFirst.tsx` | Create |
+| `src/App.tsx` | Add 3 routes |
+| `src/components/landing/Footer.tsx` | Update links |
+| `src/components/landing/Header.tsx` | Update links |
+| `public/sitemap.xml` | Add 3 URLs |
+| `public/llms.txt` | Add 3 page entries |
 
