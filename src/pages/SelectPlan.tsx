@@ -12,7 +12,6 @@ import { toast } from "sonner";
 declare global {
   interface Window {
     onePayData?: Record<string, unknown>;
-    onePay?: () => void;
   }
 }
 
@@ -124,12 +123,20 @@ const SelectPlan = () => {
           return;
         }
 
+        // Set payment data for the OnePay SDK
         window.onePayData = data.paymentData;
-        if (typeof window.onePay === "function") {
-          window.onePay();
+
+        // The SDK creates a button inside #onepay-btn on DOMContentLoaded
+        const onePayContainer = document.getElementById("onepay-btn");
+        const sdkButton = onePayContainer?.querySelector("button");
+        if (sdkButton) {
+          // Temporarily make it clickable
+          onePayContainer!.style.pointerEvents = "auto";
+          sdkButton.click();
+          onePayContainer!.style.pointerEvents = "none";
         } else {
-          console.error("OnePay SDK not loaded. window.onePay is:", typeof window.onePay);
-          toast.error("Payment gateway failed to load. Please disable any ad blockers and refresh the page.");
+          console.error("OnePay SDK button not found in #onepay-btn");
+          toast.error("Payment gateway failed to load. Please refresh the page and try again.");
           setSelecting(null);
         }
       }
