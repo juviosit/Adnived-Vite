@@ -70,9 +70,16 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
   useEffect(() => {
     switch (preset) {
       case "realtime": setChartInterval("minute"); break;
+      case "today": setChartInterval("hour"); break;
+      case "yesterday": setChartInterval("hour"); break;
       case "24h": setChartInterval("hour"); break;
+      case "48h": setChartInterval("hour"); break;
       case "7d": setChartInterval("day"); break;
+      case "14d": setChartInterval("day"); break;
       case "30d": setChartInterval("day"); break;
+      case "3m": setChartInterval("week"); break;
+      case "6m": setChartInterval("week"); break;
+      case "12m": setChartInterval("month"); break;
       case "lifetime": setChartInterval("month"); break;
       case "custom": {
         if (dateRange.from) {
@@ -89,9 +96,16 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
   const availableIntervals = useMemo((): ChartInterval[] => {
     switch (preset) {
       case "realtime": return ["minute"];
+      case "today": return ["hour"];
+      case "yesterday": return ["hour"];
       case "24h": return ["hour"];
+      case "48h": return ["hour", "day"];
       case "7d": return ["hour", "day"];
+      case "14d": return ["day", "week"];
       case "30d": return ["day", "week"];
+      case "3m": return ["day", "week", "month"];
+      case "6m": return ["week", "month"];
+      case "12m": return ["week", "month"];
       case "lifetime": return ["day", "week", "month"];
       case "custom": {
         if (!dateRange.from) return ["day", "week", "month"];
