@@ -127,7 +127,7 @@ const HeroSection = () => {
               </div>
 
               <div className="mb-5 grid grid-cols-3 gap-3">
-                <AnimatePresence mode="wait">
+                <AnimatePresence>
                   {stats.map((stat) => (
                     <motion.div
                       key={`${stat.label}-${stat.value}`}
