@@ -67,7 +67,7 @@ const AdminReferrals = () => {
 
   return (
     <AdminLayout>
-      <SEO title="Admin – Referrals" description="View referral program activity." path="/admin/referrals" noindex />
+      <SEO title="Admin - Referrals" description="View referral program activity." path="/admin/referrals" noindex />
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Referrals</h1>
