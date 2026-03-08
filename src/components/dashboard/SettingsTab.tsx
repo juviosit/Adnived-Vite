@@ -147,6 +147,10 @@ const SettingsTab = () => {
         <CardContent>
           <form onSubmit={handleChangePassword} className="max-w-sm space-y-4">
             <div className="space-y-2">
+              <Label htmlFor="currentPassword">Current password</Label>
+              <Input id="currentPassword" type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} placeholder="Enter current password" required className="h-10" />
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="newPassword">New password</Label>
               <Input id="newPassword" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Min 6 characters" required className="h-10" />
             </div>

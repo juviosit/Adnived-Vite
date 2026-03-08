@@ -50,6 +50,10 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
     return <Navigate to="/login" replace />;
   }
 
+  if (planSelected && location.pathname === "/select-plan") {
+    return <Navigate to="/dashboard" replace />;
+  }
+
   if (!planSelected && location.pathname !== "/select-plan") {
     return <Navigate to="/select-plan" replace />;
   }
