@@ -6,6 +6,36 @@
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://kindred-vision-craft.lovable.app/signup</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://kindred-vision-craft.lovable.app/utm-builder</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kindred-vision-craft.lovable.app/docs</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://kindred-vision-craft.lovable.app/docs/welcome</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://kindred-vision-craft.lovable.app/docs/add-site</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://kindred-vision-craft.lovable.app/docs/script-setup</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://kindred-vision-craft.lovable.app/privacy</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
@@ -18,11 +48,6 @@
   <url>
     <loc>https://kindred-vision-craft.lovable.app/login</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.4</priority>
-  </url>
-  <url>
-    <loc>https://kindred-vision-craft.lovable.app/signup</loc>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <priority>0.3</priority>
   </url>
 </urlset>
