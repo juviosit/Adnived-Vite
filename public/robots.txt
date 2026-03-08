@@ -6,4 +6,4 @@ Disallow: /admin
 Disallow: /select-plan
 Disallow: /reset-password
 
-Sitemap: https://kindred-vision-craft.lovable.app/sitemap.xml
+Sitemap: https://adnived.com/sitemap.xml

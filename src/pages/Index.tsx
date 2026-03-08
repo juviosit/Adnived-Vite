@@ -25,7 +25,7 @@ const Index = () => {
           applicationCategory: "WebApplication",
           operatingSystem: "Web",
           description: "Powerful, lightweight analytics without cookies. GDPR compliant out of the box.",
-          url: "https://kindred-vision-craft.lovable.app",
+          url: "https://adnived.com",
           offers: { "@type": "Offer", price: "0", priceCurrency: "USD", description: "Free tier available" },
           featureList: ["Privacy-first analytics", "No cookies", "GDPR compliant", "Real-time dashboard", "UTM tracking", "Goals & Funnels"],
         }}

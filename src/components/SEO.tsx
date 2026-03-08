@@ -1,6 +1,6 @@
 import { Helmet } from "react-helmet-async";
 
-const SITE_URL = "https://kindred-vision-craft.lovable.app";
+const SITE_URL = "https://adnived.com";
 const SITE_NAME = "adnivedAnalytics";
 const DEFAULT_IMAGE = "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/1d7bb8eb-1765-490d-a45d-d13209e57446/id-preview-bdd38c8d--ada4088c-db9f-47e8-b3e6-0f6448b77910.lovable.app-1771949999132.png";
 

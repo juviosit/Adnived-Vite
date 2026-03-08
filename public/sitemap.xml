@@ -1,52 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://kindred-vision-craft.lovable.app/</loc>
+    <loc>https://adnived.com/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://kindred-vision-craft.lovable.app/signup</loc>
+    <loc>https://adnived.com/signup</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://kindred-vision-craft.lovable.app/utm-builder</loc>
+    <loc>https://adnived.com/utm-builder</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://kindred-vision-craft.lovable.app/docs</loc>
+    <loc>https://adnived.com/docs</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://kindred-vision-craft.lovable.app/docs/welcome</loc>
+    <loc>https://adnived.com/docs/welcome</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://kindred-vision-craft.lovable.app/docs/add-site</loc>
+    <loc>https://adnived.com/docs/add-site</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://kindred-vision-craft.lovable.app/docs/script-setup</loc>
+    <loc>https://adnived.com/docs/script-setup</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://kindred-vision-craft.lovable.app/privacy</loc>
+    <loc>https://adnived.com/refer</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://adnived.com/privacy</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://kindred-vision-craft.lovable.app/terms</loc>
+    <loc>https://adnived.com/terms</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://kindred-vision-craft.lovable.app/login</loc>
+    <loc>https://adnived.com/login</loc>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
   </url>
