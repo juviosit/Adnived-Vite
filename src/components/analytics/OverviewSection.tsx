@@ -18,7 +18,7 @@ import BreakdownDetails from "./BreakdownDetails";
 import WorldMap from "./WorldMap";
 import type { DateRange } from "react-day-picker";
 
-type RangePreset = "realtime" | "24h" | "7d" | "30d" | "lifetime" | "custom";
+type RangePreset = "realtime" | "today" | "yesterday" | "24h" | "48h" | "7d" | "14d" | "30d" | "3m" | "6m" | "12m" | "lifetime" | "custom";
 type MetricKey = "visitors" | "visits" | "pageviews" | "views_per_visit" | "bounce_rate" | "duration";
 type ChartInterval = "minute" | "hour" | "day" | "week" | "month";
 
