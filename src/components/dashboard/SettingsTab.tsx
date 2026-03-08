@@ -27,6 +27,7 @@ type Plan = { slug: string; price_cents: number };
 
 const SettingsTab = () => {
   const { user } = useAuth();
+  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [changingPassword, setChangingPassword] = useState(false);
