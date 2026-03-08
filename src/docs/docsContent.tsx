@@ -646,10 +646,10 @@ const PhoneClickTracking = () => (
     </Ul>
 
     <H3>Example HTML</H3>
-    <CodeBlock title="HTML">{`<!-- Phone link — automatically tracked -->
+    <CodeBlock title="HTML">{`<!-- Phone link - automatically tracked -->
 <a href="tel:+1234567890">+1 (234) 567-890</a>
 
-<!-- Email link — automatically tracked -->
+<!-- Email link - automatically tracked -->
 <a href="mailto:hello@example.com">Email us</a>`}</CodeBlock>
 
     <H2>Viewing the data</H2>
