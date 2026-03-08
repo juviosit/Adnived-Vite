@@ -33,7 +33,7 @@ const CCPACompliance = () => {
           Compliance Guide
         </div>
         <h1 className="mb-4 text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-          CCPA Compliant Web Analytics — No Data Selling, Ever
+          CCPA Compliant Web Analytics - No Data Selling, Ever
         </h1>
         <p className="mb-10 text-lg text-muted-foreground">
           The California Consumer Privacy Act (CCPA) gives California residents the right to know what data is collected about them and to opt out of its sale. Here's how adnivedAnalytics keeps you compliant.
