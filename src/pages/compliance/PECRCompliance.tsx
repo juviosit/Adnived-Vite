@@ -33,7 +33,7 @@ const PECRCompliance = () => {
           Compliance Guide
         </div>
         <h1 className="mb-4 text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-          PECR Compliant Web Analytics — Drop the Cookie Pop-up
+          PECR Compliant Web Analytics - Drop the Cookie Pop-up
         </h1>
         <p className="mb-10 text-lg text-muted-foreground">
           PECR (Privacy and Electronic Communications Regulations) is the UK law that governs cookies and electronic tracking. If your website uses cookies, you need consent. With adnivedAnalytics, you don't need either.
