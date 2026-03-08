@@ -6,6 +6,7 @@ import Footer from "@/components/landing/Footer";
 import { Button } from "@/components/ui/button";
 import { Gift, UserPlus, CheckCircle2, ArrowRight, Check } from "lucide-react";
 import { motion } from "framer-motion";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 const steps = [
   { icon: Gift, title: "Share your link", desc: "Send your unique referral link to a friend via email or message." },
