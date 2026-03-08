@@ -117,6 +117,12 @@ serve(async (req) => {
           .eq("id", couponData.id);
       }
 
+      // Calculate period end based on free_months coupon or default 30 days
+      const freeMonths = couponData?.discount_type === "free_months" && couponData?.free_months > 0
+        ? couponData.free_months
+        : 1;
+      const periodEnd = new Date(Date.now() + freeMonths * 30 * 24 * 60 * 60 * 1000).toISOString();
+
       // Update user subscription to the paid plan
       const { data: existingSub } = await supabase
         .from("user_subscriptions")
@@ -127,12 +133,23 @@ serve(async (req) => {
       if (existingSub) {
         await supabase
           .from("user_subscriptions")
-          .update({ plan_id: plan.id, status: "active" })
+          .update({
+            plan_id: plan.id,
+            status: "active",
+            current_period_start: new Date().toISOString(),
+            current_period_end: periodEnd,
+          })
           .eq("id", existingSub.id);
       } else {
         await supabase
           .from("user_subscriptions")
-          .insert({ user_id: user.id, plan_id: plan.id, status: "active" });
+          .insert({
+            user_id: user.id,
+            plan_id: plan.id,
+            status: "active",
+            current_period_start: new Date().toISOString(),
+            current_period_end: periodEnd,
+          });
       }
 
       // Mark plan selected
