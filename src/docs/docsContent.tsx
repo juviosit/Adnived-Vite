@@ -154,7 +154,7 @@ const AddScript = () => (
     <H2>The tracking snippet</H2>
     <P>Add this single line to your site:</P>
     <CodeBlock title="index.html">{`<script defer data-domain="yoursite.com"
-  src="https://adnived.com/script.js">
+  src="https://t.adnived.com/script.js">
 </script>`}</CodeBlock>
     <P>Replace <Code>yoursite.com</Code> with your actual domain name — exactly as you entered it when adding your site.</P>
 
