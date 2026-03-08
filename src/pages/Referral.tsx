@@ -114,27 +114,45 @@ const Referral = () => {
             </div>
           </section>
 
-          {/* FAQ mini */}
-          <section className="border-t border-border/40 py-20 md:py-28">
-            <div className="container max-w-2xl">
-              <motion.div {...fadeUp}>
-                <h2 className="text-2xl font-bold text-foreground mb-10 text-center">
-                  Frequently asked questions
+          {/* FAQ – accordion style matching homepage */}
+          <section className="border-t border-border/40 py-24">
+            <div className="container">
+              <motion.div {...fadeUp} className="mx-auto mb-12 max-w-2xl text-center">
+                <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground">
+                  Frequently Asked Questions
                 </h2>
-                <div className="space-y-8">
+                <p className="text-muted-foreground">
+                  Everything you need to know about the referral program
+                </p>
+              </motion.div>
+
+              <div className="mx-auto max-w-2xl">
+                <Accordion type="single" collapsible className="space-y-2">
                   {[
                     { q: "Who can refer?", a: "Any user on a paid plan (Pro or Max) can send referrals from their dashboard." },
                     { q: "What do I get?", a: "Both you and your friend each receive 1 free month of Pro. If you're already on Pro or Max, your billing period is extended by 30 days." },
                     { q: "Is there a limit?", a: "No limit! Refer as many friends as you like." },
                     { q: "How long is the link valid?", a: "Each referral link expires 30 days after creation." },
-                  ].map((item, i) => (
-                    <div key={i}>
-                      <h3 className="font-semibold text-foreground">{item.q}</h3>
-                      <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">{item.a}</p>
-                    </div>
+                  ].map((faq, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 16 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.08, duration: 0.4 }}
+                    >
+                      <AccordionItem value={`faq-${i}`} className="rounded-2xl bg-card px-5 border-none">
+                        <AccordionTrigger className="text-sm font-medium text-foreground hover:no-underline">
+                          {faq.q}
+                        </AccordionTrigger>
+                        <AccordionContent className="text-sm text-muted-foreground">
+                          {faq.a}
+                        </AccordionContent>
+                      </AccordionItem>
+                    </motion.div>
                   ))}
-                </div>
-              </motion.div>
+                </Accordion>
+              </div>
             </div>
           </section>
 
