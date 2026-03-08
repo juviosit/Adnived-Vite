@@ -3,6 +3,8 @@ import Header from "@/components/landing/Header";
 import FeaturesSection from "@/components/landing/FeaturesSection";
 import CTASection from "@/components/landing/CTASection";
 import Footer from "@/components/landing/Footer";
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import { Link } from "react-router-dom";
 
 const Features = () => {
   return (
@@ -22,6 +24,19 @@ const Features = () => {
       />
       <Header />
       <main>
+        <div className="container pt-6">
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild><Link to="/">Home</Link></BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Features</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
         <FeaturesSection />
         <CTASection />
       </main>

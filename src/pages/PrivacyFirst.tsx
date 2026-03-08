@@ -3,6 +3,7 @@ import Header from "@/components/landing/Header";
 import PrivacySection from "@/components/landing/PrivacySection";
 import CTASection from "@/components/landing/CTASection";
 import Footer from "@/components/landing/Footer";
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Link } from "react-router-dom";
 
 const PrivacyFirst = () => {
@@ -23,6 +24,19 @@ const PrivacyFirst = () => {
       />
       <Header />
       <main>
+        <div className="container pt-6">
+          <Breadcrumb>
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild><Link to="/">Home</Link></BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Privacy-First</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+        </div>
         <PrivacySection />
         <section className="py-16">
           <div className="container">
