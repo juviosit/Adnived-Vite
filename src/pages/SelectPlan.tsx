@@ -47,6 +47,7 @@ const SelectPlan = () => {
   const navigate = useNavigate();
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
+  const [profileChecked, setProfileChecked] = useState(false);
   const [selecting, setSelecting] = useState<string | null>(null);
 
   // Coupon state
