@@ -1,0 +1,1 @@
+ALTER TABLE public.user_subscriptions ADD COLUMN scheduled_plan_id uuid REFERENCES public.plans(id) DEFAULT NULL;

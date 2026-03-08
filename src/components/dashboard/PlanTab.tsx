@@ -1,16 +1,17 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Check, Zap, Loader2 } from "lucide-react";
+import { Check, Zap, Loader2, Clock, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 
 declare global {
   interface Window {
     onePayData?: Record<string, unknown>;
+    onePay?: () => void;
   }
 }
 
@@ -30,6 +31,7 @@ type Subscription = {
   hits_used: number;
   status: string;
   current_period_end: string;
+  scheduled_plan_id: string | null;
 };
 
 const formatHits = (hits: number): string => {
@@ -46,36 +48,32 @@ const PlanTab = () => {
   const [siteCount, setSiteCount] = useState(0);
   const [processingPlanId, setProcessingPlanId] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const [plansRes, subRes, sitesRes] = await Promise.all([
-        supabase.from("plans").select("*").eq("is_active", true).order("price_cents"),
-        supabase.from("user_subscriptions").select("*").eq("user_id", user!.id).eq("status", "active").limit(1).single(),
-        supabase.from("sites").select("id", { count: "exact", head: true }),
-      ]);
+  const fetchData = async () => {
+    const [plansRes, subRes, sitesRes] = await Promise.all([
+      supabase.from("plans").select("*").eq("is_active", true).order("price_cents"),
+      supabase.from("user_subscriptions").select("*").eq("user_id", user!.id).eq("status", "active").limit(1).single(),
+      supabase.from("sites").select("id", { count: "exact", head: true }),
+    ]);
 
-      setPlans(plansRes.data || []);
-      setSubscription(subRes.data || null);
-      setSiteCount(sitesRes.count || 0);
-      setLoading(false);
-    };
+    setPlans(plansRes.data || []);
+    setSubscription(subRes.data as Subscription | null);
+    setSiteCount(sitesRes.count || 0);
+    setLoading(false);
+  };
+
+  useEffect(() => {
     fetchData();
   }, [user]);
 
   // Listen for OnePay events
   useEffect(() => {
-    const handleSuccess = (e: Event) => {
-      const detail = (e as CustomEvent).detail;
-      console.log("Payment SUCCESS:", detail);
+    const handleSuccess = () => {
       toast.success("Payment successful! Your plan will be upgraded shortly.");
       setProcessingPlanId(null);
-      // Refresh data after a short delay to allow callback to process
       setTimeout(() => window.location.reload(), 3000);
     };
 
-    const handleFail = (e: Event) => {
-      const detail = (e as CustomEvent).detail;
-      console.log("Payment FAIL:", detail);
+    const handleFail = () => {
       toast.error("Payment failed. Please try again.");
       setProcessingPlanId(null);
     };
@@ -96,20 +94,20 @@ const PlanTab = () => {
         body: { plan_id: planId },
       });
 
-      if (error) {
-        toast.error("Failed to initiate payment");
-        setProcessingPlanId(null);
-        return;
-      }
-
-      if (data?.error) {
-        toast.error(data.error);
+      if (error || data?.error) {
+        toast.error(data?.error || "Failed to initiate payment");
         setProcessingPlanId(null);
         return;
       }
 
       // Set OnePay data and trigger payment overlay
       window.onePayData = data.paymentData;
+      if (typeof window.onePay === "function") {
+        window.onePay();
+      } else {
+        toast.error("Payment gateway failed to load. Please refresh and try again.");
+        setProcessingPlanId(null);
+      }
     } catch (err) {
       console.error("Payment error:", err);
       toast.error("Something went wrong. Please try again.");
@@ -117,7 +115,49 @@ const PlanTab = () => {
     }
   };
 
+  const handleDowngrade = async (targetPlanId: string) => {
+    if (!subscription) return;
+    setProcessingPlanId(targetPlanId);
+    try {
+      const { error } = await supabase
+        .from("user_subscriptions")
+        .update({ scheduled_plan_id: targetPlanId } as any)
+        .eq("id", subscription.id);
+
+      if (error) {
+        toast.error("Failed to schedule downgrade.");
+      } else {
+        toast.success("Downgrade scheduled. Your current plan remains active until the billing period ends.");
+        fetchData();
+      }
+    } catch {
+      toast.error("Something went wrong.");
+    } finally {
+      setProcessingPlanId(null);
+    }
+  };
+
+  const cancelScheduledDowngrade = async () => {
+    if (!subscription) return;
+    try {
+      const { error } = await supabase
+        .from("user_subscriptions")
+        .update({ scheduled_plan_id: null } as any)
+        .eq("id", subscription.id);
+
+      if (error) {
+        toast.error("Failed to cancel downgrade.");
+      } else {
+        toast.success("Scheduled downgrade cancelled.");
+        fetchData();
+      }
+    } catch {
+      toast.error("Something went wrong.");
+    }
+  };
+
   const currentPlan = plans.find((p) => p.id === subscription?.plan_id);
+  const scheduledPlan = plans.find((p) => p.id === subscription?.scheduled_plan_id);
   const hitsUsed = subscription?.hits_used || 0;
   const maxHits = currentPlan?.max_hits;
   const hitsPercent = maxHits ? Math.min((hitsUsed / maxHits) * 100, 100) : 0;
@@ -136,6 +176,26 @@ const PlanTab = () => {
         <h1 className="text-2xl font-bold text-foreground">Your Plan</h1>
         <p className="text-muted-foreground">Manage your subscription and usage</p>
       </div>
+
+      {/* Scheduled downgrade banner */}
+      {scheduledPlan && subscription && (
+        <Card className="mb-6 border-amber-500/50 bg-amber-500/5">
+          <CardContent className="flex items-start gap-3 py-4">
+            <Clock className="mt-0.5 h-5 w-5 shrink-0 text-amber-500" />
+            <div className="flex-1">
+              <p className="font-medium text-foreground">Downgrade scheduled</p>
+              <p className="text-sm text-muted-foreground">
+                Your <strong>{currentPlan?.name}</strong> plan remains active until{" "}
+                <strong>{new Date(subscription.current_period_end).toLocaleDateString()}</strong>.
+                After that, you'll be automatically switched to the <strong>{scheduledPlan.name}</strong> plan.
+              </p>
+            </div>
+            <Button variant="outline" size="sm" onClick={cancelScheduledDowngrade}>
+              Cancel
+            </Button>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Current usage */}
       {currentPlan && (
@@ -182,12 +242,22 @@ const PlanTab = () => {
       <div className="grid gap-4 md:grid-cols-3">
         {plans.map((plan) => {
           const isCurrent = plan.id === subscription?.plan_id;
+          const isScheduledTarget = plan.id === subscription?.scheduled_plan_id;
+          const isDowngrade = plan.price_cents < (currentPlan?.price_cents || 0);
+          const isUpgrade = plan.price_cents > (currentPlan?.price_cents || 0);
+
           return (
-            <Card key={plan.id} className={isCurrent ? "border-primary ring-1 ring-primary" : ""}>
+            <Card key={plan.id} className={isCurrent ? "border-primary ring-1 ring-primary" : isScheduledTarget ? "border-amber-500 ring-1 ring-amber-500" : ""}>
               <CardHeader>
                 <CardTitle className="flex items-center justify-between text-lg">
                   {plan.name}
                   {isCurrent && <Badge>Current</Badge>}
+                  {isScheduledTarget && (
+                    <Badge variant="outline" className="border-amber-500 text-amber-600">
+                      <Clock className="mr-1 h-3 w-3" />
+                      Scheduled
+                    </Badge>
+                  )}
                 </CardTitle>
                 <CardDescription>
                   {plan.price_cents === 0 ? (
@@ -206,33 +276,46 @@ const PlanTab = () => {
                 {plan.slug !== "free" && <Feature label="Team members" />}
                 {plan.slug === "max" && <Feature label="Priority support" />}
 
-                {!isCurrent && plan.price_cents > 0 && (
+                {!isCurrent && !isScheduledTarget && isUpgrade && (
                   <Button
                     className="mt-4 w-full gap-2"
-                    variant={plan.price_cents > (currentPlan?.price_cents || 0) ? "default" : "outline"}
                     onClick={() => handleUpgrade(plan.id)}
-                    disabled={processingPlanId === plan.id}
+                    disabled={!!processingPlanId}
                   >
                     {processingPlanId === plan.id ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
                       <Zap className="h-4 w-4" />
                     )}
-                    {processingPlanId === plan.id
-                      ? "Processing..."
-                      : plan.price_cents > (currentPlan?.price_cents || 0)
-                        ? "Upgrade"
-                        : "Switch Plan"}
+                    {processingPlanId === plan.id ? "Processing..." : "Upgrade"}
                   </Button>
                 )}
-                {!isCurrent && plan.price_cents === 0 && (
-                  <Button
-                    className="mt-4 w-full gap-2"
-                    variant="outline"
-                    onClick={() => toast.info("Contact support to downgrade to free")}
-                  >
-                    Downgrade
-                  </Button>
+
+                {!isCurrent && !isScheduledTarget && isDowngrade && (
+                  <div className="mt-4 space-y-2">
+                    <Button
+                      className="w-full gap-2"
+                      variant="outline"
+                      onClick={() => handleDowngrade(plan.id)}
+                      disabled={!!processingPlanId}
+                    >
+                      {processingPlanId === plan.id ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <AlertTriangle className="h-4 w-4" />
+                      )}
+                      {processingPlanId === plan.id ? "Processing..." : "Downgrade"}
+                    </Button>
+                    <p className="text-center text-xs text-muted-foreground">
+                      Current plan stays active until {new Date(subscription?.current_period_end || "").toLocaleDateString()}
+                    </p>
+                  </div>
+                )}
+
+                {isScheduledTarget && (
+                  <p className="mt-4 text-center text-xs text-amber-600">
+                    Switching after {new Date(subscription?.current_period_end || "").toLocaleDateString()}
+                  </p>
                 )}
               </CardContent>
             </Card>
