@@ -9,7 +9,7 @@ const PECRCompliance = () => {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: "PECR Compliant Web Analytics — No Cookies, No Consent Pop-ups",
+    headline: "PECR Compliant Web Analytics - No Cookies, No Consent Pop-ups",
     description:
       "Understand PECR cookie rules for UK websites and how adnivedAnalytics lets you track visitors without consent pop-ups.",
     author: { "@type": "Organization", name: "adnivedAnalytics" },
