@@ -1,3 +1,4 @@
+import SEO from "@/components/SEO";
 import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";

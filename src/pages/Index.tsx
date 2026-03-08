@@ -14,6 +14,22 @@ import Footer from "@/components/landing/Footer";
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="adnivedAnalytics – Privacy-First Web Analytics"
+        description="Powerful, lightweight web analytics without cookies. Track visitors, pageviews, and conversions while respecting user privacy. GDPR compliant out of the box."
+        path="/"
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "SoftwareApplication",
+          name: "adnivedAnalytics",
+          applicationCategory: "WebApplication",
+          operatingSystem: "Web",
+          description: "Powerful, lightweight analytics without cookies. GDPR compliant out of the box.",
+          url: "https://kindred-vision-craft.lovable.app",
+          offers: { "@type": "Offer", price: "0", priceCurrency: "USD", description: "Free tier available" },
+          featureList: ["Privacy-first analytics", "No cookies", "GDPR compliant", "Real-time dashboard", "UTM tracking", "Goals & Funnels"],
+        }}
+      />
       <Header />
       <main>
         <HeroSection />

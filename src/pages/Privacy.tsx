@@ -5,6 +5,7 @@ import Footer from "@/components/landing/Footer";
 const Privacy = () => {
   return (
     <div className="min-h-screen bg-background">
+      <SEO title="Privacy Policy" description="Learn how adnivedAnalytics handles data. We never use cookies, never track personal information, and are GDPR compliant by design." path="/privacy" />
       <Header />
       <main className="container max-w-3xl py-16">
         <h1 className="mb-8 text-3xl font-bold tracking-tight text-foreground">Privacy Policy</h1>
