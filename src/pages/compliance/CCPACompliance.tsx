@@ -45,7 +45,7 @@ const CCPACompliance = () => {
             The <strong>California Consumer Privacy Act (CCPA)</strong>, effective since January 1, 2020, and strengthened by the California Privacy Rights Act (CPRA) in 2023, is one of the most comprehensive state-level privacy laws in the United States.
           </p>
           <p>
-            CCPA applies to any business that collects personal information from California residents — regardless of where the business is located — if it meets certain revenue or data volume thresholds. Under CCPA, "personal information" includes IP addresses, device identifiers, browsing history, and geolocation data.
+            CCPA applies to any business that collects personal information from California residents, regardless of where the business is located, if it meets certain revenue or data volume thresholds. Under CCPA, "personal information" includes IP addresses, device identifiers, browsing history, and geolocation data.
           </p>
 
           <h2>Key CCPA Rights for Consumers</h2>
