@@ -4,29 +4,13 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect, useCallback } from "react";
 
-const statSets = [
-  [
-    { label: "Visitors", value: "12.4k", change: "+18.2%" },
-    { label: "Page Views", value: "48.2k", change: "+12.5%" },
-    { label: "Bounce", value: "24.3%", change: "-3.1%" },
-  ],
-  [
-    { label: "Visitors", value: "14.1k", change: "+24.6%" },
-    { label: "Page Views", value: "53.8k", change: "+16.3%" },
-    { label: "Bounce", value: "21.7%", change: "-5.8%" },
-  ],
-  [
-    { label: "Visitors", value: "15.9k", change: "+31.4%" },
-    { label: "Page Views", value: "61.2k", change: "+22.1%" },
-    { label: "Bounce", value: "19.2%", change: "-8.4%" },
-  ],
+const stats = [
+  { label: "Visitors", value: "12.4k", change: "+18.2%" },
+  { label: "Page Views", value: "48.2k", change: "+12.5%" },
+  { label: "Bounce", value: "24.3%", change: "-3.1%" },
 ];
 
-const barSets = [
-  [40, 65, 45, 80, 55, 70, 90, 60, 75, 50, 85, 95],
-  [55, 70, 60, 90, 45, 85, 75, 95, 65, 80, 50, 88],
-  [70, 50, 85, 65, 90, 55, 80, 70, 95, 60, 75, 92],
-];
+const bars = [40, 65, 45, 80, 55, 70, 90, 60, 75, 50, 85, 95];
 
 const HeroSection = () => {
   const [setIndex, setSetIndex] = useState(0);
