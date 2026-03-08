@@ -101,6 +101,7 @@ const Welcome = () => (
       headers={["Topic", "Description"]}
       rows={[
         ["Goal conversions", "Track signups, purchases, downloads and other actions"],
+        ["Phone & email tracking", "Automatically track tel: and mailto: link clicks"],
         ["Funnel analysis", "Follow the visitor journey from landing page to conversion"],
         ["UTM campaigns", "Track your marketing campaigns with UTM tags"],
         ["Privacy", "Learn how we protect visitor privacy by design"],
@@ -281,13 +282,14 @@ const Filtering = () => (
   <>
     <P>Use date ranges and filters to drill into your data.</P>
     <H2>Date range picker</H2>
-    <P>Select from preset ranges (Today, Last 7 days, Last 30 days, etc.) or pick a custom date range using the calendar.</P>
+    <P>Select from preset ranges (Today, Yesterday, 48h, 7d, 14d, 30d, 3m, 6m, 12m, All Time) or pick a custom date range using the calendar.</P>
     <H2>Chart granularity</H2>
-    <P>The chart automatically selects the best granularity:</P>
+    <P>The chart automatically selects the best granularity based on the range:</P>
     <Ul>
-      <Li><strong>Today:</strong> Hourly buckets</Li>
-      <Li><strong>7 days:</strong> Daily buckets</Li>
-      <Li><strong>30+ days:</strong> Daily or weekly buckets</Li>
+      <Li><strong>Today / Yesterday / 48h:</strong> Hourly buckets</Li>
+      <Li><strong>7d–30d:</strong> Daily buckets</Li>
+      <Li><strong>3m–6m:</strong> Weekly buckets</Li>
+      <Li><strong>12m / All Time:</strong> Monthly buckets</Li>
     </Ul>
     <H2>Breakdown filters</H2>
     <P>Click any value in a breakdown table (e.g., a country name, a referrer, a page path) to filter the entire dashboard by that dimension.</P>
@@ -335,16 +337,24 @@ const CustomEvents = () => (
   <>
     <P>Custom events let you track specific user interactions beyond page views.</P>
     <H2>Sending a custom event</H2>
-    <P>Use the global <Code>adnived</Code> function to send custom events from your website:</P>
+    <P>Use the global <Code>insight</Code> function to send custom events from your website:</P>
     <CodeBlock title="JavaScript">{`// Basic event
-adnived('Signup');
+window.insight('Signup');
 
 // Event with properties
-adnived('Purchase', { plan: 'pro', value: 29 });`}</CodeBlock>
+window.insight('Purchase', { plan: 'pro', value: 29 });`}</CodeBlock>
+
+    <H2>Automatic events</H2>
+    <P>adnived automatically tracks certain interactions without any extra code:</P>
+    <Ul>
+      <Li><strong>Phone clicks:</strong> Clicks on <Code>tel:</Code> links fire a <Code>Phone Click</Code> event</Li>
+      <Li><strong>Email clicks:</strong> Clicks on <Code>mailto:</Code> links fire an <Code>Email Click</Code> event</Li>
+    </Ul>
+    <P>See <DocLink to="phone-click-tracking">Phone & email click tracking</DocLink> for details.</P>
 
     <H2>Viewing events</H2>
     <P>Custom events appear in the <strong>Behavior → Goals</strong> section when you create a matching goal with the "Custom event" type.</P>
-    <Warning>The tracking script must be loaded before calling the <Code>adnived()</Code> function. Use <Code>defer</Code> or ensure the script is loaded first.</Warning>
+    <Warning>The tracking script must be loaded before calling <Code>window.insight()</Code>. Use the <Code>defer</Code> attribute and ensure your code runs after page load.</Warning>
   </>
 );
 
