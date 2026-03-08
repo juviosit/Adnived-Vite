@@ -1,63 +1,45 @@
 
 
-# Download Reports, Plan Display Fix, and E2E Polish
+## Plan: Secure Subscription Changes + Dashboard Text Visibility
 
-## 1. Download PDF Reports Feature
+### 1. Secure Subscription Downgrade via Backend Function
 
-Create a new "Download Report" dialog accessible from the site analytics page. Users can configure:
-- **Metrics to include**: Checkboxes for Visitors, Pageviews, Bounce Rate, Visit Duration, Sources, Pages, Countries, Technology
-- **Time period**: Same presets as overview (24h, 7d, 30d, Lifetime, Custom date range)
-- **Generate PDF**: Build an HTML report in-memory, render it using the browser's `window.print()` with a print-optimized stylesheet (no external PDF library needed)
+**Problem**: The `PlanTab.tsx` component tries to update `user_subscriptions` directly from the client to schedule downgrades, but the RLS policy only allows admins to update subscriptions. This means downgrades silently fail for regular users.
 
-### Implementation
+**Solution**: Create a backend function `schedule-downgrade` that:
+- Accepts `{ target_plan_id }` from the authenticated user
+- Validates the target plan exists and is a lower-priced plan than the current one
+- Updates `scheduled_plan_id` on the user's subscription using the service role key
+- Similarly, create a `cancel-downgrade` function for cancelling scheduled downgrades
 
-**New file: `src/components/analytics/DownloadReportDialog.tsx`**
-- Dialog with metric checkboxes (using existing Checkbox component)
-- Date range selector (reusing the same preset/calendar pattern from OverviewSection)
-- "Generate Report" button that:
-  1. Fetches pageview data for the selected period
-  2. Computes selected metrics (visitors, pageviews, bounce rate, etc.)
-  3. Computes breakdowns (sources, pages, countries) if selected
-  4. Opens a new window with a styled HTML report and triggers `window.print()` for PDF save
-- Report includes: site name, date range header, metric summary cards, breakdown tables
+**Files to create:**
+- `supabase/functions/schedule-downgrade/index.ts` — validates and sets `scheduled_plan_id`
+- `supabase/functions/cancel-downgrade/index.ts` — clears `scheduled_plan_id`
 
-**Edit: `src/pages/SiteAnalytics.tsx`**
-- Add a "Download Report" button (with `Download` icon) in the header bar next to "Sign out"
-- Import and render the `DownloadReportDialog` component
+**Files to modify:**
+- `src/components/dashboard/PlanTab.tsx` — replace direct `.update()` calls with `supabase.functions.invoke("schedule-downgrade")` and `supabase.functions.invoke("cancel-downgrade")`
 
-## 2. Fix Plan Display - Show Millions Instead of Thousands
+### 2. Dashboard Text Visibility Improvements
 
-The `PlanTab.tsx` currently formats max_hits as `${(plan.max_hits / 1000).toFixed(0)}K pageviews` which shows e.g. "1000K" for 1 million. Fix to use smart formatting.
+**Problem**: Secondary text (descriptions, dates, card subtitles) in the dashboard area appears too light against the warm cream background, making it hard to read.
 
-**Edit: `src/components/dashboard/PlanTab.tsx`**
-- Add a `formatHits` helper (same pattern already exists in `PricingSection.tsx`):
-  - >= 1,000,000: show as `1M`, `10M`, etc.
-  - >= 1,000: show as `10K`, `100K`, etc.
-  - Otherwise: raw number
-- Update line 136 from `${(plan.max_hits / 1000).toFixed(0)}K pageviews` to use `formatHits(plan.max_hits)` + " pageviews"
-- Also update the current usage display (line 98) to use the same formatter for consistency
+**Changes in `src/index.css`:**
+- Darken `--card-foreground` slightly for better contrast on card surfaces
+- Darken `--muted-foreground` further in light mode (from current `20 10% 35%` to `20 12% 28%`)
 
-## 3. End-to-End Polish and Fixes
+**Changes in dashboard components** (`DashboardLayout.tsx`, `SitesTab.tsx`, `SettingsTab.tsx`, `PlanTab.tsx`):
+- Replace `text-muted-foreground` with `text-foreground/70` on key descriptive text where more contrast is needed
+- Ensure card descriptions, dates, and secondary labels use stronger contrast values
 
-Based on codebase review, the following issues need attention:
+### Summary of Changes
 
-**a. SharedDashboard consistency**
-- Review and ensure the shared (public) dashboard has proper branding and works without auth
-
-**b. Navigation consistency**
-- The SiteAnalytics header has "Sign out" but no link back to dashboard (only in sidebar). Add a visible "Back to Dashboard" link in the main header for clarity.
-
-**c. Supabase query limit awareness**
-- The pageview queries don't specify a limit, which means they default to Supabase's 1000-row limit. For sites with significant traffic, data will be silently truncated. Add `.limit(10000)` or paginated fetching for accuracy.
-
-### Technical Summary
-
-| File | Change |
-|------|--------|
-| `src/components/analytics/DownloadReportDialog.tsx` | New -- report config dialog with metric selection, date range, and PDF generation |
-| `src/pages/SiteAnalytics.tsx` | Add "Download Report" button in header |
-| `src/components/dashboard/PlanTab.tsx` | Fix hits formatting to show M for millions, add `formatHits` helper |
-| `src/components/analytics/OverviewSection.tsx` | Increase query limit to avoid silent data truncation |
-| `src/components/analytics/BreakdownPage.tsx` | Increase query limit to avoid silent data truncation |
-| `src/pages/SharedDashboard.tsx` | Review and ensure branding consistency |
+| Area | What changes |
+|------|-------------|
+| `schedule-downgrade` edge function | New — handles downgrade securely server-side |
+| `cancel-downgrade` edge function | New — handles cancel securely server-side |
+| `PlanTab.tsx` | Use edge functions instead of direct DB updates; improve text contrast |
+| `SitesTab.tsx` | Improve text contrast on card descriptions and dates |
+| `SettingsTab.tsx` | Improve text contrast on descriptions |
+| `DashboardLayout.tsx` | Improve email text contrast in header |
+| `src/index.css` | Darken `--muted-foreground` for better readability |
 
