@@ -657,8 +657,8 @@ const PhoneClickTracking = () => (
 
     <H3>Event details</H3>
     <Ul>
-      <Li><strong>Phone Click</strong> — properties: <Code>{`{ number: "+1234567890" }`}</Code></Li>
-      <Li><strong>Email Click</strong> — properties: <Code>{`{ email: "hello@example.com" }`}</Code></Li>
+      <Li><strong>Phone Click</strong> properties: <Code>{`{ number: "+1234567890" }`}</Code></Li>
+      <Li><strong>Email Click</strong> properties: <Code>{`{ email: "hello@example.com" }`}</Code></Li>
     </Ul>
 
     <H2>Creating a goal for phone clicks</H2>
