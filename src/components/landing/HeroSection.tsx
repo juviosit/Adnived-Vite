@@ -69,7 +69,7 @@ const HeroSection = () => {
                 <span className="h-3 w-3 rounded-full bg-green-400/60" />
               </div>
               <div className="flex-1 text-center">
-                <span className="rounded-md bg-background/80 px-4 py-1 text-xs text-muted-foreground">app.adnived.com/dashboard</span>
+                <span className="rounded-md bg-background/80 px-4 py-1 text-xs text-muted-foreground">adnived.com/dashboard</span>
               </div>
             </div>
 
