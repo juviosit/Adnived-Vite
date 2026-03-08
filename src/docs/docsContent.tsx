@@ -101,6 +101,7 @@ const Welcome = () => (
       headers={["Topic", "Description"]}
       rows={[
         ["Goal conversions", "Track signups, purchases, downloads and other actions"],
+        ["Phone & email tracking", "Automatically track tel: and mailto: link clicks"],
         ["Funnel analysis", "Follow the visitor journey from landing page to conversion"],
         ["UTM campaigns", "Track your marketing campaigns with UTM tags"],
         ["Privacy", "Learn how we protect visitor privacy by design"],
