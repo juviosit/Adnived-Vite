@@ -97,24 +97,18 @@ const HeroSection = () => {
               </div>
 
               <div className="mb-5 grid grid-cols-3 gap-3">
-                <AnimatePresence>
-                  {stats.map((stat) => (
-                    <motion.div
-                      key={`${stat.label}-${stat.value}`}
-                      initial={{ opacity: 0, y: 6 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -6 }}
-                      transition={{ duration: 0.4 }}
-                      className="rounded-xl border border-border/60 bg-background/60 p-3"
-                    >
-                      <p className="text-[10px] text-muted-foreground">{stat.label}</p>
-                      <p className="text-lg font-bold text-foreground">{stat.value}</p>
-                      <p className={`text-[10px] font-medium ${stat.change.startsWith("+") ? "text-green-600" : "text-red-500"}`}>
-                        {stat.change}
-                      </p>
-                    </motion.div>
-                  ))}
-                </AnimatePresence>
+                {stats.map((stat) => (
+                  <div
+                    key={stat.label}
+                    className="rounded-xl border border-border/60 bg-background/60 p-3"
+                  >
+                    <p className="text-[10px] text-muted-foreground">{stat.label}</p>
+                    <p className="text-lg font-bold text-foreground">{stat.value}</p>
+                    <p className={`text-[10px] font-medium ${stat.change.startsWith("+") ? "text-green-600" : "text-red-500"}`}>
+                      {stat.change}
+                    </p>
+                  </div>
+                ))}
               </div>
 
               {/* Animated bar chart */}
