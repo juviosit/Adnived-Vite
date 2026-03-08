@@ -74,13 +74,26 @@ const SettingsTab = () => {
 
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!currentPassword) { toast.error("Please enter your current password"); return; }
     if (newPassword.length < 6) { toast.error("Password must be at least 6 characters"); return; }
     if (newPassword !== confirmPassword) { toast.error("Passwords do not match"); return; }
     setChangingPassword(true);
+
+    // Verify current password first
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: user?.email || "",
+      password: currentPassword,
+    });
+    if (signInError) {
+      setChangingPassword(false);
+      toast.error("Current password is incorrect");
+      return;
+    }
+
     const { error } = await supabase.auth.updateUser({ password: newPassword });
     setChangingPassword(false);
     if (error) toast.error(error.message);
-    else { toast.success("Password updated"); setNewPassword(""); setConfirmPassword(""); }
+    else { toast.success("Password updated"); setCurrentPassword(""); setNewPassword(""); setConfirmPassword(""); }
   };
 
   const handleInvite = async (e: React.FormEvent) => {
