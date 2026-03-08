@@ -129,9 +129,9 @@ const DocsPage = () => {
 
         {/* Main content */}
         <main className="flex-1 min-w-0">
-          <div className="mx-auto max-w-3xl px-6 py-10 lg:px-10">
+          <div className="mx-auto max-w-3xl px-4 sm:px-6 py-8 lg:px-10 lg:py-10">
             {/* Breadcrumb */}
-            <div className="mb-6 flex items-center gap-2 text-sm text-muted-foreground">
+            <div className="mb-6 flex flex-wrap items-center gap-1 sm:gap-2 text-xs sm:text-sm text-muted-foreground">
               <Link to="/docs/welcome" className="hover:text-foreground transition-colors">Docs</Link>
               <span>›</span>
               <span className="text-muted-foreground">{doc.category}</span>
@@ -139,7 +139,7 @@ const DocsPage = () => {
               <span className="text-foreground font-medium">{doc.title}</span>
             </div>
 
-            <h1 className="mb-8 text-3xl font-bold tracking-tight text-foreground">{doc.title}</h1>
+            <h1 className="mb-8 text-2xl sm:text-3xl font-bold tracking-tight text-foreground">{doc.title}</h1>
 
             {/* Content */}
             <div className="prose-docs">
