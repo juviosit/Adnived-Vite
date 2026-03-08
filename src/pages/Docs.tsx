@@ -75,6 +75,7 @@ const DocsPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO title={`${doc.title} – Docs`} description={`Documentation: ${doc.title}. Learn how to use adnivedAnalytics for privacy-first web analytics.`} path={`/docs/${currentSlug}`} />
       {/* Header */}
       <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-lg">
         <div className="flex h-14 items-center justify-between px-4 lg:px-6">

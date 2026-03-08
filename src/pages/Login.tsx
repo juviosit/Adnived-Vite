@@ -27,6 +27,8 @@ const Login = () => {
   };
 
   return (
+    <>
+    <SEO title="Log In" description="Sign in to your adnivedAnalytics dashboard to view your website traffic, visitor insights, and conversion data." path="/login" noindex />
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">

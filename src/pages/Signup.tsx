@@ -37,6 +37,8 @@ const Signup = () => {
   };
 
   return (
+    <>
+    <SEO title="Sign Up" description="Create a free adnivedAnalytics account. Get privacy-first web analytics with no cookies, real-time dashboards, and GDPR compliance in minutes." path="/signup" />
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">

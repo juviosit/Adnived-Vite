@@ -28,6 +28,8 @@ const ForgotPassword = () => {
   };
 
   return (
+    <>
+    <SEO title="Reset Password" description="Reset your adnivedAnalytics password. Enter your email to receive a secure password reset link." path="/forgot-password" noindex />
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 text-center">
