@@ -491,7 +491,7 @@ const IntegrationReact = () => (
     <H2>React (Vite, CRA)</H2>
     <P>Add the script to your <Code>index.html</Code> file's <Code>&lt;head&gt;</Code>:</P>
     <CodeBlock title="index.html">{`<script defer data-domain="yoursite.com"
-  src="https://analytics.adnived.com/script.js">
+  src="https://adnived.com/script.js">
 </script>`}</CodeBlock>
 
     <H2>Next.js (App Router)</H2>
