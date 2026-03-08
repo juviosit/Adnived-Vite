@@ -37,6 +37,7 @@ const PrivacyFirst = () => {
             </BreadcrumbList>
           </Breadcrumb>
         </div>
+        <PrivacySection />
         <section className="py-16">
           <div className="container">
             <div className="mx-auto max-w-2xl text-center">
