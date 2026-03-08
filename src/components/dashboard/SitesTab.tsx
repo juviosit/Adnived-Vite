@@ -60,12 +60,14 @@ const SitesTab = () => {
         .maybeSingle();
       if (roleData) {
         setEmailVerified(true);
+        setVerificationChecked(true);
         return;
       }
 
       // Refresh session to get latest email_confirmed_at from server
       const { data: { user: freshUser } } = await supabase.auth.getUser();
       setEmailVerified(!!freshUser?.email_confirmed_at);
+      setVerificationChecked(true);
     };
     checkVerification();
   }, [user]);
