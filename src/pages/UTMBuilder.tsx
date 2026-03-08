@@ -128,7 +128,7 @@ const UTMBuilder = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <SEO title="Free UTM Link Builder" description="Build UTM-tagged URLs for your marketing campaigns. Track traffic sources, mediums, and campaigns with adnivedAnalytics — privacy-first, no cookies." path="/utm-builder" />
+      <SEO title="Free UTM Link Builder" description="Build UTM-tagged URLs for your marketing campaigns. Track traffic sources, mediums, and campaigns with adnivedAnalytics. Privacy-first, no cookies." path="/utm-builder" />
       <Header />
 
       <main className="flex-1">
