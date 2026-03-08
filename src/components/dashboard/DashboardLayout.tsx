@@ -25,6 +25,12 @@ const DashboardLayout = ({ activeTab, onTabChange, children }: DashboardLayoutPr
             <span className="text-foreground tracking-tight"><span className="font-bold">adnived</span><span className="font-normal">Analytics</span></span>
           </Link>
           <div className="flex items-center gap-3">
+            <Link to="/utm-builder">
+              <Button variant="outline" size="sm" className="rounded-full gap-1.5">
+                <Link2 className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">UTM Builder</span>
+              </Button>
+            </Link>
             <span className="text-sm text-foreground/70">{user?.email}</span>
             <Button variant="ghost" size="sm" className="rounded-full" onClick={signOut}>
               Sign out
