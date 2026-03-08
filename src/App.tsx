@@ -22,8 +22,10 @@ import AdminUsers from "./pages/admin/AdminUsers";
 import AdminSites from "./pages/admin/AdminSites";
 import AdminPlans from "./pages/admin/AdminPlans";
 import AdminPaymentSettings from "./pages/admin/AdminPaymentSettings";
+import AdminClosureRequests from "./pages/admin/AdminClosureRequests";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
+import WhyNoSocial from "./pages/WhyNoSocial";
 import Docs from "./pages/Docs";
 import NotFound from "./pages/NotFound";
 
