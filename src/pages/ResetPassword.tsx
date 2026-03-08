@@ -36,6 +36,8 @@ const ResetPassword = () => {
   };
 
   return (
+    <>
+    <SEO title="Set New Password" description="Set a new password for your adnivedAnalytics account." path="/reset-password" noindex />
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <Card className="w-full max-w-sm">
         <CardHeader className="text-center">

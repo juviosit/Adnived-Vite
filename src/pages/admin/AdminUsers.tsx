@@ -79,6 +79,7 @@ const AdminUsers = () => {
 
   return (
     <AdminLayout>
+      <SEO title="Admin Users" description="Manage users." path="/admin/users" noindex />
       <h1 className="mb-6 text-2xl font-bold text-foreground">Users</h1>
       <Card>
         <CardContent className="p-0">

@@ -132,6 +132,7 @@ const SiteAnalytics = () => {
 
   return (
     <div className="flex min-h-screen bg-background">
+      <SEO title={`${site.name || site.domain} – Analytics`} description={`Analytics dashboard for ${site.domain}. View traffic, sources, and conversions.`} path={`/sites/${siteId}`} noindex />
       {/* Desktop Sidebar */}
       <aside className="sticky top-0 hidden md:flex h-screen w-56 shrink-0 flex-col border-r border-border/50 bg-sidebar-background">
         <div className="flex flex-col border-b border-border/50 px-4">

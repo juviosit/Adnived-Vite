@@ -35,6 +35,7 @@ const AdminOverview = () => {
 
   return (
     <AdminLayout>
+      <SEO title="Admin Overview" description="Admin dashboard overview." path="/admin" noindex />
       <h1 className="mb-6 text-2xl font-bold text-foreground">Admin Overview</h1>
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {cards.map((c) => (

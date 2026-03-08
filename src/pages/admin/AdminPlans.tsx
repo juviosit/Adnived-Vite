@@ -87,6 +87,7 @@ const AdminPlans = () => {
 
   return (
     <AdminLayout>
+      <SEO title="Admin Plans" description="Manage plans and pricing." path="/admin/plans" noindex />
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-foreground">Plans & Pricing</h1>
         <Button className="gap-2" onClick={openCreate}>

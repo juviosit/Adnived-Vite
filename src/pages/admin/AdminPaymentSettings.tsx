@@ -144,6 +144,7 @@ const AdminPaymentSettings = () => {
 
   return (
     <AdminLayout>
+      <SEO title="Payment Settings" description="Configure payment gateway." path="/admin/payments" noindex />
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-foreground">Payment Gateway</h1>
         <p className="text-muted-foreground">Configure OnePay payment integration</p>

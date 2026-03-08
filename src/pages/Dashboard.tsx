@@ -12,6 +12,8 @@ const Dashboard = () => {
   const [activeTab, setActiveTab] = useState(initialTab);
 
   return (
+    <>
+    <SEO title="Dashboard" description="Manage your websites, view analytics, and track performance with adnivedAnalytics." path="/dashboard" noindex />
     <DashboardLayout activeTab={activeTab} onTabChange={setActiveTab}>
       {{
         sites: <SitesTab />,

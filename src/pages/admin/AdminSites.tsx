@@ -48,6 +48,7 @@ const AdminSites = () => {
 
   return (
     <AdminLayout>
+      <SEO title="Admin Sites" description="Manage sites." path="/admin/sites" noindex />
       <h1 className="mb-6 text-2xl font-bold text-foreground">Sites</h1>
       <Card>
         <CardContent className="p-0">
