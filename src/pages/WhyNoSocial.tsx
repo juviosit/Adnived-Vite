@@ -38,7 +38,7 @@ const WhyNoSocial = () => {
 
   const form = useForm<ClosureForm>({
     resolver: zodResolver(closureSchema),
-    defaultValues: { email: user?.email ?? "", reason: "" },
+    defaultValues: { email: "", reason: "" },
   });
 
   const onSubmit = async (values: ClosureForm) => {
