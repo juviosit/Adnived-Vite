@@ -59,8 +59,11 @@ const SitesTab = () => {
         setEmailVerified(true);
         return;
       }
-      const confirmed = user.email_confirmed_at;
-      const created = user.created_at;
+
+      // Refresh session to get latest email_confirmed_at from server
+      const { data: { user: freshUser } } = await supabase.auth.getUser();
+      const confirmed = freshUser?.email_confirmed_at;
+      const created = freshUser?.created_at;
       if (confirmed && created) {
         const confirmedAt = new Date(confirmed).getTime();
         const createdAt = new Date(created).getTime();
