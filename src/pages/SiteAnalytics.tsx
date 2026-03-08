@@ -138,8 +138,7 @@ const SiteAnalytics = () => {
             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
               <BarChart3 className="h-4 w-4 text-primary-foreground" />
             </div>
-            <span className="font-bold text-foreground">adnived</span>
-            <span className="text-sm text-muted-foreground">analytics</span>
+            <span className="text-foreground tracking-tight"><span className="font-bold">adnived</span><span className="font-normal">Analytics</span></span>
           </Link>
           <div className="flex items-center gap-2 pb-3">
             <ArrowLeft className="h-3.5 w-3.5 text-muted-foreground" />
@@ -165,10 +164,9 @@ const SiteAnalytics = () => {
                    <div className="flex flex-col border-b border-border/50 px-4">
                      <Link to="/dashboard" className="flex h-14 items-center gap-2">
                        <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary">
-                         <BarChart3 className="h-4 w-4 text-primary-foreground" />
-                       </div>
-                       <span className="font-bold text-foreground">adnived</span>
-                       <span className="text-sm text-muted-foreground">analytics</span>
+                        <BarChart3 className="h-4 w-4 text-primary-foreground" />
+                      </div>
+                      <span className="text-foreground tracking-tight"><span className="font-bold">adnived</span><span className="font-normal">Analytics</span></span>
                      </Link>
                      <div className="flex items-center gap-2 pb-3">
                        <ArrowLeft className="h-3.5 w-3.5 text-muted-foreground" />

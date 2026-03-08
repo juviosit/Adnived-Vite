@@ -10,7 +10,7 @@ const Header = () => {
           <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary">
             <BarChart3 className="h-4 w-4 text-primary-foreground" />
           </div>
-          <span className="text-lg font-bold text-foreground tracking-tight">adnived</span>
+          <span className="text-lg text-foreground tracking-tight"><span className="font-bold">adnived</span><span className="font-normal">Analytics</span></span>
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
