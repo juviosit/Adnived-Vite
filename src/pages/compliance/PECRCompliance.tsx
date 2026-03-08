@@ -45,7 +45,7 @@ const PECRCompliance = () => {
             The <strong>Privacy and Electronic Communications Regulations (PECR)</strong> is UK law that sits alongside the UK GDPR. While GDPR focuses on personal data broadly, PECR specifically regulates the use of cookies, tracking technologies, and electronic communications.
           </p>
           <p>
-            PECR is enforced by the <strong>Information Commissioner's Office (ICO)</strong> and applies to any website that stores or accesses information on a user's device — which includes analytics cookies, tracking pixels, and local storage.
+            PECR is enforced by the <strong>Information Commissioner's Office (ICO)</strong> and applies to any website that stores or accesses information on a user's device, which includes analytics cookies, tracking pixels, and local storage.
           </p>
 
           <h2>PECR Cookie Rules — The Basics</h2>
