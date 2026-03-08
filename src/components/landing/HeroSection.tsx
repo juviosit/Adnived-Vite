@@ -18,9 +18,9 @@ const HeroSection = () => {
           transition={{ duration: 0.6 }}
           className="mx-auto max-w-3xl text-center"
         >
-          <p className="mb-6 text-sm font-medium tracking-wide text-muted-foreground">
+          <span className="mb-6 inline-flex items-center rounded-full border border-border/60 bg-muted/60 px-4 py-1.5 text-sm font-medium text-muted-foreground backdrop-blur-sm">
             Privacy-first web analytics
-          </p>
+          </span>
 
           <h1 className="mb-6 text-4xl font-extrabold tracking-tight text-foreground sm:text-5xl lg:text-6xl leading-[1.1]">
             Easy to use &{" "}
