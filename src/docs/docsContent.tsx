@@ -202,7 +202,7 @@ const GeneralSettings = () => (
     <H2>Available settings</H2>
     <Ul>
       <Li><strong>Site name:</strong> A friendly display name shown in your dashboard</Li>
-      <Li><strong>Domain:</strong> The domain being tracked (cannot be changed after creation — delete and re-add if needed)</Li>
+      <Li><strong>Domain:</strong> The domain being tracked (cannot be changed after creation; delete and re-add if needed)</Li>
       <Li><strong>Public dashboard:</strong> Toggle to make your stats publicly accessible via a shareable link</Li>
       <Li><strong>Delete site:</strong> Permanently removes the site and all associated data</Li>
     </Ul>
