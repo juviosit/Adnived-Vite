@@ -32,7 +32,7 @@ const UTM_FIELDS = [
     name: "utm_medium",
     label: "Campaign Medium",
     placeholder: "e.g. cpc, email, social",
-    description: "The marketing medium — how the link is delivered.",
+    description: "The marketing medium, or how the link is delivered.",
     required: true,
   },
   {
