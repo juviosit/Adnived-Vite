@@ -15,6 +15,7 @@ import Dashboard from "./pages/Dashboard";
 import SiteAnalytics from "./pages/SiteAnalytics";
 import SharedDashboard from "./pages/SharedDashboard";
 import UTMBuilder from "./pages/UTMBuilder";
+import SelectPlan from "./pages/SelectPlan";
 import AdminOverview from "./pages/admin/AdminOverview";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminSites from "./pages/admin/AdminSites";
@@ -40,6 +41,7 @@ const App = () => (
             <Route path="/signup" element={<Signup />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/select-plan" element={<ProtectedRoute><SelectPlan /></ProtectedRoute>} />
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/sites/:siteId" element={<ProtectedRoute><SiteAnalytics /></ProtectedRoute>} />
             <Route path="/share/:siteId" element={<SharedDashboard />} />

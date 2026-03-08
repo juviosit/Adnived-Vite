@@ -29,8 +29,9 @@ const Signup = () => {
     if (error) {
       toast.error(error.message);
     } else {
-      toast.success("Check your email to verify your account!");
-      navigate("/login");
+      toast.success("Account created! Please verify your email to unlock all features.");
+      // With auto-confirm, user is signed in immediately — redirect to plan selection
+      navigate("/select-plan");
     }
   };
 

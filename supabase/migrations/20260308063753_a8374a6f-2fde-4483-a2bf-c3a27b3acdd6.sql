@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles ADD COLUMN plan_selected boolean NOT NULL DEFAULT false;
