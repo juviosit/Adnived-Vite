@@ -25,7 +25,8 @@ const SitesTab = () => {
   const [siteName, setSiteName] = useState("");
   const [adding, setAdding] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [emailVerified, setEmailVerified] = useState(true);
+  const [emailVerified, setEmailVerified] = useState(false);
+  const [verificationChecked, setVerificationChecked] = useState(false);
   const [verifyDialogOpen, setVerifyDialogOpen] = useState(false);
   const [resending, setResending] = useState(false);
   const navigate = useNavigate();
@@ -59,12 +60,14 @@ const SitesTab = () => {
         .maybeSingle();
       if (roleData) {
         setEmailVerified(true);
+        setVerificationChecked(true);
         return;
       }
 
       // Refresh session to get latest email_confirmed_at from server
       const { data: { user: freshUser } } = await supabase.auth.getUser();
       setEmailVerified(!!freshUser?.email_confirmed_at);
+      setVerificationChecked(true);
     };
     checkVerification();
   }, [user]);
@@ -72,6 +75,7 @@ const SitesTab = () => {
   const cleanDomain = (d: string) => d.replace(/^https?:\/\//, "").replace(/\/$/, "");
 
   const handleAddSiteClick = () => {
+    if (!verificationChecked) return;
     if (!emailVerified) {
       setVerifyDialogOpen(true);
       return;
