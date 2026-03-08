@@ -426,7 +426,7 @@ const Channels = () => (
 
 const PrivacyApproach = () => (
   <>
-    <P>Privacy isn't a feature of adnived — it's the foundation.</P>
+    <P>Privacy isn't a feature of adnived. It's the foundation.</P>
     <H2>Our principles</H2>
     <Ul>
       <Li><strong>No cookies:</strong> We never set cookies on your visitors' browsers</Li>
