@@ -36,7 +36,7 @@ serve(async (req) => {
     // Get the transaction
     const { data: tx, error: txError } = await supabase
       .from("payment_transactions")
-      .select("id, user_id, plan_id, status")
+      .select("id, user_id, plan_id, status, coupon_id")
       .eq("id", internalTxId)
       .single();
 
