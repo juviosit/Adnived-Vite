@@ -22,18 +22,19 @@ Website owners, marketers, and developers who want accurate analytics without co
 ## Pages
 
 ### Public Pages
-- **Homepage** (`/`): Overview of the product, features, pricing, testimonials, and FAQ
-- **Documentation** (`/docs`): Guides on getting started, adding the tracking script, tracking goals, UTM parameters, API usage, and more
-- **UTM Builder** (`/utm-builder`): Free tool to generate UTM-tagged URLs for marketing campaign tracking
-- **Privacy Policy** (`/privacy`): How data is handled — no personal data collected, no cookies used
-- **Terms of Service** (`/terms`): Usage terms for the platform
-- **Sign Up** (`/signup`): Create a free account
-- **Log In** (`/login`): Access your dashboard
+- **Homepage** (https://adnived.com/): Overview of the product, features, pricing, testimonials, and FAQ
+- **Documentation** (https://adnived.com/docs): Guides on getting started, adding the tracking script, tracking goals, UTM parameters, API usage, and more
+- **UTM Builder** (https://adnived.com/utm-builder): Free tool to generate UTM-tagged URLs for marketing campaign tracking
+- **Refer & Earn** (https://adnived.com/refer): Referral program — invite friends and earn free months
+- **Privacy Policy** (https://adnived.com/privacy): How data is handled — no personal data collected, no cookies used
+- **Terms of Service** (https://adnived.com/terms): Usage terms for the platform
+- **Sign Up** (https://adnived.com/signup): Create a free account
+- **Log In** (https://adnived.com/login): Access your dashboard
 
 ### Authenticated Pages
-- **Dashboard** (`/dashboard`): Manage your tracked websites, view your plan, and account settings
-- **Site Analytics** (`/sites/:id`): Detailed analytics for a specific website including overview, sources, campaigns, pages, locations, technology, goals, funnels, and settings
-- **Shared Dashboard** (`/share/:id`): Public read-only analytics view (if enabled by site owner)
+- **Dashboard** (https://adnived.com/dashboard): Manage your tracked websites, view your plan, and account settings
+- **Site Analytics** (https://adnived.com/sites/:id): Detailed analytics for a specific website including overview, sources, campaigns, pages, locations, technology, goals, funnels, and settings
+- **Shared Dashboard** (https://adnived.com/share/:id): Public read-only analytics view (if enabled by site owner)
 
 ## Pricing
 - **Free**: 1,000 pageviews/month, 1 site
@@ -41,4 +42,4 @@ Website owners, marketers, and developers who want accurate analytics without co
 - **Max** ($10/mo): 10,000,000 pageviews/month, 100 sites
 
 ## Contact
-Website: https://kindred-vision-craft.lovable.app
+Website: https://adnived.com
