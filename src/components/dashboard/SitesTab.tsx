@@ -75,6 +75,7 @@ const SitesTab = () => {
   const cleanDomain = (d: string) => d.replace(/^https?:\/\//, "").replace(/\/$/, "");
 
   const handleAddSiteClick = () => {
+    if (!verificationChecked) return;
     if (!emailVerified) {
       setVerifyDialogOpen(true);
       return;
