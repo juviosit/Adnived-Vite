@@ -356,6 +356,11 @@ const UTMBuilder = () => {
                         <span className="hidden sm:inline">{copied ? "Copied!" : "Copy"}</span>
                       </Button>
                     </div>
+
+                    <div className="flex items-start gap-2 pt-2 text-xs text-muted-foreground/70">
+                      <ShieldCheck className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+                      <p>We value your privacy — nothing you enter here is saved or sent to our servers. Make sure to copy your link before closing the tab.</p>
+                    </div>
                   </div>
                 </div>
               </div>
