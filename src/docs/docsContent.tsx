@@ -491,7 +491,7 @@ const IntegrationReact = () => (
     <H2>React (Vite, CRA)</H2>
     <P>Add the script to your <Code>index.html</Code> file's <Code>&lt;head&gt;</Code>:</P>
     <CodeBlock title="index.html">{`<script defer data-domain="yoursite.com"
-  src="https://adnived.com/script.js">
+  src="https://t.adnived.com/script.js">
 </script>`}</CodeBlock>
 
     <H2>Next.js (App Router)</H2>
@@ -505,7 +505,7 @@ export default function RootLayout({ children }) {
         <Script
           defer
           data-domain="yoursite.com"
-          src="https://adnived.com/script.js"
+          src="https://t.adnived.com/script.js"
         />
       </head>
       <body>{children}</body>
