@@ -13,13 +13,16 @@ const Footer = () => {
             <span className="text-foreground tracking-tight"><span className="font-bold">adnived</span><span className="font-normal">Analytics</span></span>
           </div>
 
-          <nav className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground">
+          <nav className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
             <a href="#features" className="transition-colors hover:text-foreground">Features</a>
             <a href="#pricing" className="transition-colors hover:text-foreground">Pricing</a>
             <Link to="/utm-builder" className="transition-colors hover:text-foreground">UTM Builder</Link>
             <Link to="/docs" className="transition-colors hover:text-foreground">Docs</Link>
             <Link to="/why-no-social" className="transition-colors hover:text-foreground">Why no social?</Link>
             <Link to="/refer" className="transition-colors hover:text-foreground">Refer & Earn</Link>
+            <Link to="/gdpr-compliant-analytics" className="transition-colors hover:text-foreground">GDPR</Link>
+            <Link to="/ccpa-compliant-analytics" className="transition-colors hover:text-foreground">CCPA</Link>
+            <Link to="/pecr-compliant-analytics" className="transition-colors hover:text-foreground">PECR</Link>
             <Link to="/privacy" className="transition-colors hover:text-foreground">Privacy</Link>
             <Link to="/terms" className="transition-colors hover:text-foreground">Terms</Link>
           </nav>

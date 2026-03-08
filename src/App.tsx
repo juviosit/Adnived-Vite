@@ -70,6 +70,9 @@ const App = () => (
               <Route path="/terms" element={<Terms />} />
               <Route path="/docs" element={<Docs />} />
               <Route path="/docs/:slug" element={<Docs />} />
+              <Route path="/gdpr-compliant-analytics" element={<GDPRCompliance />} />
+              <Route path="/ccpa-compliant-analytics" element={<CCPACompliance />} />
+              <Route path="/pecr-compliant-analytics" element={<PECRCompliance />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>
