@@ -33,6 +33,9 @@ import Docs from "./pages/Docs";
 import GDPRCompliance from "./pages/compliance/GDPRCompliance";
 import CCPACompliance from "./pages/compliance/CCPACompliance";
 import PECRCompliance from "./pages/compliance/PECRCompliance";
+import Features from "./pages/Features";
+import Pricing from "./pages/Pricing";
+import PrivacyFirst from "./pages/PrivacyFirst";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
