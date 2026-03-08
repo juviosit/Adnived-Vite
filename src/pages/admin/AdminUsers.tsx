@@ -141,7 +141,7 @@ const AdminUsers = () => {
                 {users.map((u) => (
                   <TableRow key={u.id}>
                     <TableCell className="font-medium">{u.email}</TableCell>
-                    <TableCell>{u.full_name || "—"}</TableCell>
+                    <TableCell>{u.full_name || "-"}</TableCell>
                     <TableCell>
                       <Badge variant={u.role === "admin" ? "default" : "secondary"}>
                         {u.role}
