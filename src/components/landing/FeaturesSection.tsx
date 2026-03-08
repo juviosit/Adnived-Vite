@@ -48,14 +48,20 @@ const FeaturesSection = () => {
   return (
     <section id="features" className="py-24">
       <div className="container">
-        <div className="mx-auto mb-4 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mx-auto mb-4 text-center"
+        >
           <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground">
             Analytics that respects everyone
           </h2>
           <p className="mx-auto max-w-2xl text-muted-foreground">
             Built from the ground up with privacy as a core principle, not an afterthought.
           </p>
-        </div>
+        </motion.div>
 
         <div className="mx-auto mt-16 grid max-w-5xl gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {features.map((feature, i) => (

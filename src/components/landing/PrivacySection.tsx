@@ -8,14 +8,20 @@ const PrivacySection = () => {
   return (
     <section id="privacy" className="py-24">
       <div className="container">
-        <div className="mx-auto mb-4 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mx-auto mb-4 text-center"
+        >
           <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground">
             Built for a privacy-first world
           </h2>
           <p className="mx-auto max-w-2xl text-muted-foreground">
             We don't collect personal data, period. IP addresses are hashed and discarded daily, with no cookies, no device fingerprinting, and no cross-site tracking.
           </p>
-        </div>
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}

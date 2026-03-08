@@ -22,14 +22,20 @@ const TestimonialsSection = () => {
   return (
     <section className="py-24">
       <div className="container">
-        <div className="mx-auto mb-4 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mx-auto mb-4 text-center"
+        >
           <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground">
             Loved by privacy-conscious teams
           </h2>
           <p className="text-muted-foreground">
             Join businesses who've made the switch to ethical analytics.
           </p>
-        </div>
+        </motion.div>
 
         <div className="mx-auto mt-16 grid max-w-5xl gap-4 md:grid-cols-3">
           {testimonials.map((t, i) => (

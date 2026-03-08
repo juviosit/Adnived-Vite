@@ -78,14 +78,20 @@ const PricingSection = () => {
   return (
     <section id="pricing" className="py-24">
       <div className="container">
-        <div className="mx-auto mb-4 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mx-auto mb-4 text-center"
+        >
           <h2 className="mb-4 text-3xl font-bold tracking-tight text-foreground">
             Choose your plan
           </h2>
           <p className="mx-auto max-w-2xl text-muted-foreground">
             Start free, upgrade when you need more. No hidden fees, no surprises.
           </p>
-        </div>
+        </motion.div>
 
         <div className="mx-auto mt-16 grid max-w-5xl gap-6 lg:grid-cols-3">
           {plans.map((plan, i) => {
