@@ -20,3 +20,6 @@ verify_jwt = false
 
 [functions.complete-referral]
 verify_jwt = false
+
+[functions.track]
+verify_jwt = false
