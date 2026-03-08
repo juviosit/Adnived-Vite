@@ -503,6 +503,7 @@ export type Database = {
           hits_used: number
           id: string
           plan_id: string
+          scheduled_plan_id: string | null
           status: string
           updated_at: string
           user_id: string
@@ -514,6 +515,7 @@ export type Database = {
           hits_used?: number
           id?: string
           plan_id: string
+          scheduled_plan_id?: string | null
           status?: string
           updated_at?: string
           user_id: string
@@ -525,6 +527,7 @@ export type Database = {
           hits_used?: number
           id?: string
           plan_id?: string
+          scheduled_plan_id?: string | null
           status?: string
           updated_at?: string
           user_id?: string
@@ -533,6 +536,13 @@ export type Database = {
           {
             foreignKeyName: "user_subscriptions_plan_id_fkey"
             columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_subscriptions_scheduled_plan_id_fkey"
+            columns: ["scheduled_plan_id"]
             isOneToOne: false
             referencedRelation: "plans"
             referencedColumns: ["id"]
