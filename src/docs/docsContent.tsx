@@ -574,7 +574,7 @@ const IntegrationSPA = () => (
       <Li>Svelte routing</Li>
       <Li>Any framework using the History API</Li>
     </Ul>
-    <Tip>No extra configuration needed — just add the script and SPA tracking works out of the box.</Tip>
+    <Tip>No extra configuration needed. Just add the script and SPA tracking works out of the box.</Tip>
   </>
 );
 
