@@ -332,35 +332,33 @@ const UTMBuilder = () => {
                       <p className="text-xs text-muted-foreground">{field.description}</p>
                     </div>
                   ))}
+
+                  {/* Generated URL output */}
+                  <div className="space-y-2 pt-4 border-t border-border/60">
+                    <Label className="text-sm font-medium text-foreground">
+                      Your Tagged URL
+                    </Label>
+                    <div className="flex gap-2">
+                      <div className="flex-1 rounded-xl border border-border/60 bg-background p-4 text-sm break-all font-mono leading-relaxed min-h-[48px]">
+                        {generatedUrl ? (
+                          <span className="text-foreground">{generatedUrl}</span>
+                        ) : (
+                          <span className="text-muted-foreground/50">Fill in the fields above to generate your UTM link…</span>
+                        )}
+                      </div>
+                      <Button
+                        onClick={handleCopy}
+                        variant="default"
+                        disabled={!generatedUrl}
+                        className="shrink-0 h-auto min-h-[48px] rounded-xl gap-2 px-5"
+                      >
+                        {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                        <span className="hidden sm:inline">{copied ? "Copied!" : "Copy"}</span>
+                      </Button>
+                    </div>
+                  </div>
                 </div>
               </div>
-
-              {/* Result */}
-              {generatedUrl && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="mt-6"
-                >
-                  <Label className="text-sm font-medium text-foreground mb-2 block">
-                    Your Tagged URL
-                  </Label>
-                  <div className="flex gap-2">
-                    <div className="flex-1 rounded-2xl bg-card p-4 text-sm text-foreground break-all font-mono leading-relaxed">
-                      {generatedUrl}
-                    </div>
-                    <Button
-                      onClick={handleCopy}
-                      variant="default"
-                      size="icon"
-                      className="shrink-0 h-auto min-h-[48px] rounded-xl"
-                    >
-                      {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                    </Button>
-                  </div>
-                </motion.div>
-              )}
             </motion.div>
           </div>
         </section>
