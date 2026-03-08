@@ -33,7 +33,7 @@ const GDPRCompliance = () => {
           Compliance Guide
         </div>
         <h1 className="mb-4 text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-          GDPR Compliant Web Analytics — Without Cookie Banners
+          GDPR Compliant Web Analytics - Without Cookie Banners
         </h1>
         <p className="mb-10 text-lg text-muted-foreground">
           The General Data Protection Regulation (GDPR) is the EU's landmark privacy law. If your website has European visitors, it applies to you — even if your business is based elsewhere.
