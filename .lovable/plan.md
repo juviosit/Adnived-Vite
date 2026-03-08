@@ -1,72 +1,63 @@
 
 
-## Fix Em Dashes and Optimize SEO Content
+# Download Reports, Plan Display Fix, and E2E Polish
 
-### 1. Remove Em Dashes Sitewide
+## 1. Download PDF Reports Feature
 
-Replace all `—` (em dash) characters with appropriate alternatives: either `. ` (period + space for sentence breaks), `, ` (comma), or simply remove and rephrase. For table placeholders like `"—"` in admin pages, replace with `-` (hyphen).
+Create a new "Download Report" dialog accessible from the site analytics page. Users can configure:
+- **Metrics to include**: Checkboxes for Visitors, Pageviews, Bounce Rate, Visit Duration, Sources, Pages, Countries, Technology
+- **Time period**: Same presets as overview (24h, 7d, 30d, Lifetime, Custom date range)
+- **Generate PDF**: Build an HTML report in-memory, render it using the browser's `window.print()` with a print-optimized stylesheet (no external PDF library needed)
 
-**Files with em dashes in user-facing content:**
+### Implementation
 
-| File | Count | Notes |
-|------|-------|-------|
-| `src/components/landing/FeaturesSection.tsx` | 2 | Feature descriptions |
-| `src/components/landing/WhySwitchSection.tsx` | 0 | Clean |
-| `src/pages/Features.tsx` | 2 | SEO description + JSON-LD |
-| `src/pages/Pricing.tsx` | 1 | SEO title separator `–` (en dash, keep or standardize) |
-| `src/pages/PrivacyFirst.tsx` | 1 | SEO title separator |
-| `src/pages/Index.tsx` | 1 | SEO title separator |
-| `src/pages/UTMBuilder.tsx` | ~10 | Descriptions, SEO meta |
-| `src/pages/WhyNoSocial.tsx` | 3 | Principles, body text |
-| `src/pages/Referral.tsx` | 2 | SEO title, body text |
-| `src/pages/SelectPlan.tsx` | 2 | Code comments, coupon display |
-| `src/pages/admin/AdminUsers.tsx` | 2 | Table placeholders |
-| `src/pages/admin/AdminReferrals.tsx` | 2 | Table placeholder, SEO title |
-| `src/pages/compliance/GDPRCompliance.tsx` | ~8 | Headlines, body, comparison |
-| `src/pages/compliance/CCPACompliance.tsx` | ~6 | Headlines, body, table |
-| `src/pages/compliance/PECRCompliance.tsx` | ~6 | Headlines, body |
-| `src/docs/docsContent.tsx` | ~20 | Documentation text throughout |
+**New file: `src/components/analytics/DownloadReportDialog.tsx`**
+- Dialog with metric checkboxes (using existing Checkbox component)
+- Date range selector (reusing the same preset/calendar pattern from OverviewSection)
+- "Generate Report" button that:
+  1. Fetches pageview data for the selected period
+  2. Computes selected metrics (visitors, pageviews, bounce rate, etc.)
+  3. Computes breakdowns (sources, pages, countries) if selected
+  4. Opens a new window with a styled HTML report and triggers `window.print()` for PDF save
+- Report includes: site name, date range header, metric summary cards, breakdown tables
 
-**Replacement strategy:**
-- SEO titles: `–` (en dash) → `-` (hyphen) for consistency
-- Prose: `—` → rephrase with period, comma, or "and"
-- Table/UI placeholders: `—` → `-`
-- Code comments: `—` → `-` or rephrase
+**Edit: `src/pages/SiteAnalytics.tsx`**
+- Add a "Download Report" button (with `Download` icon) in the header bar next to "Sign out"
+- Import and render the `DownloadReportDialog` component
 
-### 2. SEO Content Optimization
+## 2. Fix Plan Display - Show Millions Instead of Thousands
 
-**H1 tags on standalone pages** (currently missing dedicated H1s on Features, Pricing, PrivacyFirst pages since they reuse section components that use H2):
+The `PlanTab.tsx` currently formats max_hits as `${(plan.max_hits / 1000).toFixed(0)}K pageviews` which shows e.g. "1000K" for 1 million. Fix to use smart formatting.
 
-- **`src/pages/Features.tsx`**: Add a hero section with H1: "Privacy-First Web Analytics Features" before `<FeaturesSection />`
-- **`src/pages/Pricing.tsx`**: Add a hero section with H1: "Simple, Transparent Analytics Pricing" before `<PricingSection />`
-- **`src/pages/PrivacyFirst.tsx`**: Add a hero section with H1: "Privacy-First Web Analytics Without Cookies" before `<PrivacySection />`
+**Edit: `src/components/dashboard/PlanTab.tsx`**
+- Add a `formatHits` helper (same pattern already exists in `PricingSection.tsx`):
+  - >= 1,000,000: show as `1M`, `10M`, etc.
+  - >= 1,000: show as `10K`, `100K`, etc.
+  - Otherwise: raw number
+- Update line 136 from `${(plan.max_hits / 1000).toFixed(0)}K pageviews` to use `formatHits(plan.max_hits)` + " pageviews"
+- Also update the current usage display (line 98) to use the same formatter for consistency
 
-Each hero will include a keyword-rich subtitle paragraph. This ensures every standalone page has exactly one H1, improving SEO structure.
+## 3. End-to-End Polish and Fixes
 
-**Keyword optimization in meta descriptions:**
-- Features: Include "cookie-free analytics", "lightweight tracking script", "privacy-compliant"
-- Pricing: Include "free analytics plan", "affordable web analytics", "no hidden fees"
-- PrivacyFirst: Include "cookieless analytics", "GDPR CCPA PECR compliant", "no consent banners"
+Based on codebase review, the following issues need attention:
 
-### 3. Summary of Changes
+**a. SharedDashboard consistency**
+- Review and ensure the shared (public) dashboard has proper branding and works without auth
 
-| File | Changes |
-|------|---------|
-| `src/pages/Features.tsx` | Add H1 hero, fix em dashes in meta |
-| `src/pages/Pricing.tsx` | Add H1 hero, fix em dashes in meta |
-| `src/pages/PrivacyFirst.tsx` | Add H1 hero, fix em dashes in meta |
-| `src/components/landing/FeaturesSection.tsx` | Remove em dashes from descriptions |
-| `src/pages/Index.tsx` | Fix title separator |
-| `src/pages/UTMBuilder.tsx` | Remove ~10 em dashes |
-| `src/pages/WhyNoSocial.tsx` | Remove 3 em dashes |
-| `src/pages/Referral.tsx` | Fix title and body em dashes |
-| `src/pages/SelectPlan.tsx` | Fix comment and coupon display |
-| `src/pages/admin/AdminUsers.tsx` | Replace `—` with `-` |
-| `src/pages/admin/AdminReferrals.tsx` | Replace `—` with `-` |
-| `src/pages/compliance/GDPRCompliance.tsx` | Remove ~8 em dashes |
-| `src/pages/compliance/CCPACompliance.tsx` | Remove ~6 em dashes |
-| `src/pages/compliance/PECRCompliance.tsx` | Remove ~6 em dashes |
-| `src/docs/docsContent.tsx` | Remove ~20 em dashes |
+**b. Navigation consistency**
+- The SiteAnalytics header has "Sign out" but no link back to dashboard (only in sidebar). Add a visible "Back to Dashboard" link in the main header for clarity.
 
-No design or layout changes. Only text content and SEO metadata updates.
+**c. Supabase query limit awareness**
+- The pageview queries don't specify a limit, which means they default to Supabase's 1000-row limit. For sites with significant traffic, data will be silently truncated. Add `.limit(10000)` or paginated fetching for accuracy.
+
+### Technical Summary
+
+| File | Change |
+|------|--------|
+| `src/components/analytics/DownloadReportDialog.tsx` | New -- report config dialog with metric selection, date range, and PDF generation |
+| `src/pages/SiteAnalytics.tsx` | Add "Download Report" button in header |
+| `src/components/dashboard/PlanTab.tsx` | Fix hits formatting to show M for millions, add `formatHits` helper |
+| `src/components/analytics/OverviewSection.tsx` | Increase query limit to avoid silent data truncation |
+| `src/components/analytics/BreakdownPage.tsx` | Increase query limit to avoid silent data truncation |
+| `src/pages/SharedDashboard.tsx` | Review and ensure branding consistency |
 

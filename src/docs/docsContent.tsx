@@ -84,7 +84,7 @@ const Welcome = () => (
   <>
     <P>
       adnived analytics is an easy-to-use, lightweight, and privacy-friendly web analytics tool.
-      It helps you understand your website traffic without compromising visitor privacy — no cookies, no personal data, no consent banners needed.
+      It helps you understand your website traffic without compromising visitor privacy. No cookies, no personal data, no consent banners needed.
     </P>
 
     <H2>New to adnived? Start here</H2>
@@ -140,7 +140,7 @@ const AddWebsite = () => (
     <H2>Steps to add a site</H2>
     <ol className="mb-4 space-y-2 pl-6 list-decimal text-sm text-muted-foreground">
       <li>From your <Link to="/dashboard" className="text-primary hover:underline">dashboard</Link>, click <strong>"Add Site"</strong></li>
-      <li>Enter your domain name (e.g., <Code>example.com</Code>) — no <Code>https://</Code> prefix needed</li>
+      <li>Enter your domain name (e.g., <Code>example.com</Code>). No <Code>https://</Code> prefix needed</li>
       <li>Click <strong>Create</strong></li>
     </ol>
     <P>Your site will appear in the dashboard sidebar. Next, you'll need to <DocLink to="add-script">add the tracking script</DocLink>.</P>
@@ -156,7 +156,7 @@ const AddScript = () => (
     <CodeBlock title="index.html">{`<script defer data-domain="yoursite.com"
   src="https://t.adnived.com/script.js">
 </script>`}</CodeBlock>
-    <P>Replace <Code>yoursite.com</Code> with your actual domain name — exactly as you entered it when adding your site.</P>
+    <P>Replace <Code>yoursite.com</Code> with your actual domain name, exactly as you entered it when adding your site.</P>
 
     <H2>Where to place it</H2>
     <P>The script should go inside the <Code>&lt;head&gt;</Code> tag of every page you want to track. For most sites, this means your main HTML template or layout file.</P>
@@ -181,7 +181,7 @@ const VerifyInstallation = () => (
     <ol className="mb-4 space-y-2 pl-6 list-decimal text-sm text-muted-foreground">
       <li>Open your website in a browser</li>
       <li>Go to your adnived dashboard and select your site</li>
-      <li>Switch to the <strong>Realtime</strong> view — you should see your visit within seconds</li>
+      <li>Switch to the <strong>Realtime</strong> view. You should see your visit within seconds</li>
     </ol>
 
     <H2>Troubleshooting</H2>
@@ -202,7 +202,7 @@ const GeneralSettings = () => (
     <H2>Available settings</H2>
     <Ul>
       <Li><strong>Site name:</strong> A friendly display name shown in your dashboard</Li>
-      <Li><strong>Domain:</strong> The domain being tracked (cannot be changed after creation — delete and re-add if needed)</Li>
+      <Li><strong>Domain:</strong> The domain being tracked (cannot be changed after creation; delete and re-add if needed)</Li>
       <Li><strong>Public dashboard:</strong> Toggle to make your stats publicly accessible via a shareable link</Li>
       <Li><strong>Delete site:</strong> Permanently removes the site and all associated data</Li>
     </Ul>
@@ -266,7 +266,7 @@ const MetricsDefinitions = () => (
     <Table
       headers={["Metric", "Definition"]}
       rows={[
-        ["Unique Visitors", "Counted using a daily-rotating hash. Not a cookie — resets each day."],
+        ["Unique Visitors", "Counted using a daily-rotating hash. Not a cookie; resets each day."],
         ["Total Pageviews", "The total number of pages viewed across all visitors."],
         ["Views per Visit", "Average number of pages viewed per session."],
         ["Bounce Rate", "Percentage of sessions with exactly one pageview."],
@@ -366,12 +366,12 @@ const FunnelAnalysis = () => (
       <li>Go to <strong>Behavior → Funnels</strong> in your site dashboard</li>
       <li>Click <strong>Create Funnel</strong></li>
       <li>Name your funnel (e.g., "Signup flow")</li>
-      <li>Add steps — each step can be a page visit or custom event</li>
+      <li>Add steps. Each step can be a page visit or custom event</li>
       <li>Order the steps in the sequence you expect visitors to follow</li>
     </ol>
     <H2>Reading funnel data</H2>
     <P>Each step shows the number of visitors who reached it and the drop-off rate from the previous step. This helps you identify where visitors are abandoning the process.</P>
-    <Tip>Keep funnels focused — 3-5 steps works best. Too many steps make analysis harder.</Tip>
+    <Tip>Keep funnels focused. 3-5 steps works best. Too many steps make analysis harder.</Tip>
   </>
 );
 
@@ -426,7 +426,7 @@ const Channels = () => (
 
 const PrivacyApproach = () => (
   <>
-    <P>Privacy isn't a feature of adnived — it's the foundation.</P>
+    <P>Privacy isn't a feature of adnived. It's the foundation.</P>
     <H2>Our principles</H2>
     <Ul>
       <Li><strong>No cookies:</strong> We never set cookies on your visitors' browsers</Li>
@@ -446,7 +446,7 @@ const GDPR = () => (
     <H2>How we comply</H2>
     <Ul>
       <Li>No personal data is collected or processed</Li>
-      <Li>No cookies are used — no consent mechanism needed</Li>
+      <Li>No cookies are used, so no consent mechanism is needed</Li>
       <Li>IP addresses are hashed with a daily-rotating salt and never stored raw</Li>
       <Li>All data is aggregated and cannot be used to identify individuals</Li>
       <Li>Data is stored securely with encryption at rest and in transit</Li>
@@ -574,7 +574,7 @@ const IntegrationSPA = () => (
       <Li>Svelte routing</Li>
       <Li>Any framework using the History API</Li>
     </Ul>
-    <Tip>No extra configuration needed — just add the script and SPA tracking works out of the box.</Tip>
+    <Tip>No extra configuration needed. Just add the script and SPA tracking works out of the box.</Tip>
   </>
 );
 
@@ -633,7 +633,7 @@ const TroubleshootAdblockers = () => (
 
 const PhoneClickTracking = () => (
   <>
-    <P>adnivedAnalytics automatically detects clicks on phone number links (<Code>tel:</Code>) and email links (<Code>mailto:</Code>) — no extra code required.</P>
+    <P>adnivedAnalytics automatically detects clicks on phone number links (<Code>tel:</Code>) and email links (<Code>mailto:</Code>), with no extra code required.</P>
 
     <H2>How it works</H2>
     <P>When a visitor clicks a link like <Code>&lt;a href="tel:+1234567890"&gt;Call us&lt;/a&gt;</Code>, the tracking script automatically fires a custom event called <strong>Phone Click</strong> with the phone number as a property.</P>
@@ -646,10 +646,10 @@ const PhoneClickTracking = () => (
     </Ul>
 
     <H3>Example HTML</H3>
-    <CodeBlock title="HTML">{`<!-- Phone link — automatically tracked -->
+    <CodeBlock title="HTML">{`<!-- Phone link - automatically tracked -->
 <a href="tel:+1234567890">+1 (234) 567-890</a>
 
-<!-- Email link — automatically tracked -->
+<!-- Email link - automatically tracked -->
 <a href="mailto:hello@example.com">Email us</a>`}</CodeBlock>
 
     <H2>Viewing the data</H2>
@@ -657,8 +657,8 @@ const PhoneClickTracking = () => (
 
     <H3>Event details</H3>
     <Ul>
-      <Li><strong>Phone Click</strong> — properties: <Code>{`{ number: "+1234567890" }`}</Code></Li>
-      <Li><strong>Email Click</strong> — properties: <Code>{`{ email: "hello@example.com" }`}</Code></Li>
+      <Li><strong>Phone Click</strong> properties: <Code>{`{ number: "+1234567890" }`}</Code></Li>
+      <Li><strong>Email Click</strong> properties: <Code>{`{ email: "hello@example.com" }`}</Code></Li>
     </Ul>
 
     <H2>Creating a goal for phone clicks</H2>
@@ -667,7 +667,7 @@ const PhoneClickTracking = () => (
       <Li>Go to your site dashboard → <strong>Goals</strong> tab.</Li>
       <Li>Click <strong>Add Goal</strong>.</Li>
       <Li>Set goal type to <strong>Custom Event</strong> and enter <Code>Phone Click</Code> as the event name.</Li>
-      <Li>Save — you'll now see conversion rates for phone clicks.</Li>
+      <Li>Save. You'll now see conversion rates for phone clicks.</Li>
     </Ul>
 
     <Tip>This works automatically with no code changes. Just make sure your phone numbers use proper <Code>tel:</Code> links instead of plain text.</Tip>

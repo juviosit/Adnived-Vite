@@ -141,7 +141,7 @@ const AdminUsers = () => {
                 {users.map((u) => (
                   <TableRow key={u.id}>
                     <TableCell className="font-medium">{u.email}</TableCell>
-                    <TableCell>{u.full_name || "—"}</TableCell>
+                    <TableCell>{u.full_name || "-"}</TableCell>
                     <TableCell>
                       <Badge variant={u.role === "admin" ? "default" : "secondary"}>
                         {u.role}
@@ -149,7 +149,7 @@ const AdminUsers = () => {
                     </TableCell>
                     <TableCell>
                       {u.email_confirmed === null ? (
-                        <span className="text-muted-foreground text-xs">—</span>
+                        <span className="text-muted-foreground text-xs">-</span>
                       ) : u.email_confirmed ? (
                         <Badge variant="outline" className="gap-1 text-primary border-primary/30">
                           <CheckCircle className="h-3 w-3" /> Verified

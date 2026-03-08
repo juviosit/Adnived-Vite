@@ -9,7 +9,7 @@ const PECRCompliance = () => {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: "PECR Compliant Web Analytics — No Cookies, No Consent Pop-ups",
+    headline: "PECR Compliant Web Analytics - No Cookies, No Consent Pop-ups",
     description:
       "Understand PECR cookie rules for UK websites and how adnivedAnalytics lets you track visitors without consent pop-ups.",
     author: { "@type": "Organization", name: "adnivedAnalytics" },
@@ -33,7 +33,7 @@ const PECRCompliance = () => {
           Compliance Guide
         </div>
         <h1 className="mb-4 text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-          PECR Compliant Web Analytics — Drop the Cookie Pop-up
+          PECR Compliant Web Analytics - Drop the Cookie Pop-up
         </h1>
         <p className="mb-10 text-lg text-muted-foreground">
           PECR (Privacy and Electronic Communications Regulations) is the UK law that governs cookies and electronic tracking. If your website uses cookies, you need consent. With adnivedAnalytics, you don't need either.
@@ -45,7 +45,7 @@ const PECRCompliance = () => {
             The <strong>Privacy and Electronic Communications Regulations (PECR)</strong> is UK law that sits alongside the UK GDPR. While GDPR focuses on personal data broadly, PECR specifically regulates the use of cookies, tracking technologies, and electronic communications.
           </p>
           <p>
-            PECR is enforced by the <strong>Information Commissioner's Office (ICO)</strong> and applies to any website that stores or accesses information on a user's device — which includes analytics cookies, tracking pixels, and local storage.
+            PECR is enforced by the <strong>Information Commissioner's Office (ICO)</strong> and applies to any website that stores or accesses information on a user's device, which includes analytics cookies, tracking pixels, and local storage.
           </p>
 
           <h2>PECR Cookie Rules — The Basics</h2>
@@ -67,9 +67,9 @@ const PECRCompliance = () => {
 
           <div className="my-6 grid gap-4 sm:grid-cols-2">
             {[
-              { icon: CheckCircle, ok: true, label: "No cookies set", desc: "Zero cookies of any kind — session, persistent, or third-party" },
+              { icon: CheckCircle, ok: true, label: "No cookies set", desc: "Zero cookies of any kind: session, persistent, or third-party" },
               { icon: CheckCircle, ok: true, label: "No local storage", desc: "Nothing written to localStorage, sessionStorage, or IndexedDB" },
-              { icon: CheckCircle, ok: true, label: "No tracking pixels", desc: "Pure JavaScript — no hidden images or pixel trackers" },
+              { icon: CheckCircle, ok: true, label: "No tracking pixels", desc: "Pure JavaScript with no hidden images or pixel trackers" },
               { icon: CheckCircle, ok: true, label: "No device fingerprinting", desc: "No canvas, WebGL, or audio fingerprinting techniques" },
               { icon: CheckCircle, ok: true, label: "No consent pop-up needed", desc: "Load the script immediately without any consent mechanism" },
               { icon: CheckCircle, ok: true, label: "ICO guidance aligned", desc: "Follows ICO recommendations for privacy-preserving analytics" },

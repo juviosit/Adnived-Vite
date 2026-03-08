@@ -9,7 +9,7 @@ const CCPACompliance = () => {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: "CCPA Compliant Web Analytics — Respect California Privacy Rights",
+    headline: "CCPA Compliant Web Analytics - Respect California Privacy Rights",
     description:
       "Understand CCPA requirements for website analytics and how adnivedAnalytics helps you stay compliant without selling visitor data.",
     author: { "@type": "Organization", name: "adnivedAnalytics" },
@@ -33,7 +33,7 @@ const CCPACompliance = () => {
           Compliance Guide
         </div>
         <h1 className="mb-4 text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-          CCPA Compliant Web Analytics — No Data Selling, Ever
+          CCPA Compliant Web Analytics - No Data Selling, Ever
         </h1>
         <p className="mb-10 text-lg text-muted-foreground">
           The California Consumer Privacy Act (CCPA) gives California residents the right to know what data is collected about them and to opt out of its sale. Here's how adnivedAnalytics keeps you compliant.
@@ -45,7 +45,7 @@ const CCPACompliance = () => {
             The <strong>California Consumer Privacy Act (CCPA)</strong>, effective since January 1, 2020, and strengthened by the California Privacy Rights Act (CPRA) in 2023, is one of the most comprehensive state-level privacy laws in the United States.
           </p>
           <p>
-            CCPA applies to any business that collects personal information from California residents — regardless of where the business is located — if it meets certain revenue or data volume thresholds. Under CCPA, "personal information" includes IP addresses, device identifiers, browsing history, and geolocation data.
+            CCPA applies to any business that collects personal information from California residents, regardless of where the business is located, if it meets certain revenue or data volume thresholds. Under CCPA, "personal information" includes IP addresses, device identifiers, browsing history, and geolocation data.
           </p>
 
           <h2>Key CCPA Rights for Consumers</h2>
@@ -103,12 +103,12 @@ const CCPACompliance = () => {
               </thead>
               <tbody>
                 {[
-                  ["Disclose data collection", "Minimal — no personal data collected from visitors"],
-                  ["\"Do Not Sell\" link", "Not required — no data is sold"],
-                  ["Honour opt-out requests", "N/A — nothing to opt out of"],
-                  ["Consumer access requests", "N/A — no personal data stored"],
-                  ["Consumer deletion requests", "N/A — nothing to delete"],
-                  ["Privacy policy update", "Simplified — can state no personal visitor data is collected"],
+                  ["Disclose data collection", "Minimal: no personal data collected from visitors"],
+                  ["\"Do Not Sell\" link", "Not required, no data is sold"],
+                  ["Honour opt-out requests", "N/A, nothing to opt out of"],
+                  ["Consumer access requests", "N/A, no personal data stored"],
+                  ["Consumer deletion requests", "N/A, nothing to delete"],
+                  ["Privacy policy update", "Simplified: can state no personal visitor data is collected"],
                 ].map(([req, status]) => (
                   <tr key={req} className="border-b border-border/40 last:border-0">
                     <td className="px-4 py-2.5 text-foreground">{req}</td>

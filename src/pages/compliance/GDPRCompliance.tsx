@@ -9,7 +9,7 @@ const GDPRCompliance = () => {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: "GDPR Compliant Web Analytics — No Cookies, No Consent Banners",
+    headline: "GDPR Compliant Web Analytics - No Cookies, No Consent Banners",
     description:
       "Learn what GDPR means for your website analytics and how adnivedAnalytics helps you stay compliant without cookie banners.",
     author: { "@type": "Organization", name: "adnivedAnalytics" },
@@ -33,10 +33,10 @@ const GDPRCompliance = () => {
           Compliance Guide
         </div>
         <h1 className="mb-4 text-3xl font-bold tracking-tight text-foreground md:text-4xl">
-          GDPR Compliant Web Analytics — Without Cookie Banners
+          GDPR Compliant Web Analytics - Without Cookie Banners
         </h1>
         <p className="mb-10 text-lg text-muted-foreground">
-          The General Data Protection Regulation (GDPR) is the EU's landmark privacy law. If your website has European visitors, it applies to you — even if your business is based elsewhere.
+          The General Data Protection Regulation (GDPR) is the EU's landmark privacy law. If your website has European visitors, it applies to you, even if your business is based elsewhere.
         </p>
 
         <div className="space-y-8 text-muted-foreground [&_h2]:mt-8 [&_h2]:mb-3 [&_h2]:text-xl [&_h2]:font-semibold [&_h2]:text-foreground [&_h3]:mt-4 [&_h3]:mb-2 [&_h3]:font-semibold [&_h3]:text-foreground">
@@ -70,7 +70,7 @@ const GDPRCompliance = () => {
 
           <div className="my-6 grid gap-4 sm:grid-cols-2">
             {[
-              { icon: CheckCircle, label: "Zero cookies — ever", desc: "No cookie consent banner needed" },
+              { icon: CheckCircle, label: "Zero cookies, ever", desc: "No cookie consent banner needed" },
               { icon: CheckCircle, label: "No IP storage", desc: "IPs are hashed daily and discarded" },
               { icon: CheckCircle, label: "No cross-site tracking", desc: "Each site is fully isolated" },
               { icon: CheckCircle, label: "No personal data", desc: "Nothing that identifies individuals" },
@@ -87,7 +87,7 @@ const GDPRCompliance = () => {
             ))}
           </div>
 
-          <h2>adnivedAnalytics vs Google Analytics — GDPR Comparison</h2>
+          <h2>adnivedAnalytics vs Google Analytics - GDPR Comparison</h2>
           <div className="my-4 overflow-hidden rounded-xl border border-border/60">
             <table className="w-full text-sm">
               <thead>

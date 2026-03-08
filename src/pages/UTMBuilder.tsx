@@ -32,7 +32,7 @@ const UTM_FIELDS = [
     name: "utm_medium",
     label: "Campaign Medium",
     placeholder: "e.g. cpc, email, social",
-    description: "The marketing medium — how the link is delivered.",
+    description: "The marketing medium, or how the link is delivered.",
     required: true,
   },
   {
@@ -101,15 +101,15 @@ const UTMBuilder = () => {
   };
 
   const utmParams = [
-    { tag: "utm_source", desc: "Where the traffic comes from — Google, a newsletter, Twitter, etc." },
-    { tag: "utm_medium", desc: "How the link is delivered — CPC ads, email, organic social, etc." },
+    { tag: "utm_source", desc: "Where the traffic comes from: Google, a newsletter, Twitter, etc." },
+    { tag: "utm_medium", desc: "How the link is delivered: CPC ads, email, organic social, etc." },
     { tag: "utm_campaign", desc: "The specific promotion — spring_sale, product_launch, etc." },
     { tag: "utm_term", desc: "The paid keyword that triggered an ad (optional)." },
     { tag: "utm_content", desc: "Differentiates variations of the same ad or link (optional)." },
   ];
 
   const whyCards = [
-    { icon: Target, title: "Know What Converts", body: "See which channels actually drive sign-ups, purchases, or engagement — and stop guessing." },
+    { icon: Target, title: "Know What Converts", body: "See which channels actually drive sign-ups, purchases, or engagement. Stop guessing." },
     { icon: PieChart, title: "Allocate Budget Wisely", body: "Compare cost-per-click campaigns against organic and social to invest where ROI is highest." },
     { icon: Eye, title: "A/B Test Everything", body: "Use utm_content to tag link variations and see which creative or copy wins in real numbers." },
   ];
@@ -121,14 +121,14 @@ const UTMBuilder = () => {
   ];
 
   const platformCards = [
-    { icon: Zap, title: "Blazing Fast", body: "Our tracking script is under 1 KB — it loads instantly and never slows your site down." },
+    { icon: Zap, title: "Blazing Fast", body: "Our tracking script is under 1 KB. It loads instantly and never slows your site down." },
     { icon: ShieldCheck, title: "Privacy First", body: "No cookies, no fingerprinting, no personal data. Fully GDPR and CCPA compliant." },
     { icon: Tag, title: "Automatic UTM Tracking", body: "Every UTM-tagged visit is captured and broken down automatically in your dashboard." },
   ];
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <SEO title="Free UTM Link Builder" description="Build UTM-tagged URLs for your marketing campaigns. Track traffic sources, mediums, and campaigns with adnivedAnalytics — privacy-first, no cookies." path="/utm-builder" />
+      <SEO title="Free UTM Link Builder" description="Build UTM-tagged URLs for your marketing campaigns. Track traffic sources, mediums, and campaigns with adnivedAnalytics. Privacy-first, no cookies." path="/utm-builder" />
       <Header />
 
       <main className="flex-1">
@@ -155,7 +155,7 @@ const UTMBuilder = () => {
 
               <p className="mx-auto mb-10 max-w-xl text-lg leading-relaxed text-muted-foreground">
                 UTM parameters are simple tags added to any URL so you can see exactly which campaigns,
-                ads, or emails bring visitors to your site. This tool builds those tagged links for you — instantly.
+                ads, or emails bring visitors to your site. This tool builds those tagged links for you, instantly.
               </p>
 
               <div className="flex flex-wrap items-center justify-center gap-4">
@@ -202,7 +202,7 @@ const UTMBuilder = () => {
               <p className="mx-auto max-w-2xl text-muted-foreground">
                 UTM (Urchin Tracking Module) parameters are five short text snippets appended to a URL. When someone
                 clicks a tagged link, your analytics tool reads those snippets and attributes the visit to the right
-                source, medium, and campaign — giving you a clear picture of what's working and what isn't.
+                source, medium, and campaign, giving you a clear picture of what's working and what isn't.
               </p>
             </motion.div>
 

@@ -67,7 +67,7 @@ const AdminReferrals = () => {
 
   return (
     <AdminLayout>
-      <SEO title="Admin – Referrals" description="View referral program activity." path="/admin/referrals" noindex />
+      <SEO title="Admin - Referrals" description="View referral program activity." path="/admin/referrals" noindex />
       <div className="space-y-6">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Referrals</h1>
@@ -122,7 +122,7 @@ const AdminReferrals = () => {
                           {ref.reward_applied ? (
                             <Badge className="bg-green-100 text-green-700 border-green-200">Applied</Badge>
                           ) : (
-                            <span className="text-muted-foreground">—</span>
+                            <span className="text-muted-foreground">-</span>
                           )}
                         </td>
                         <td className="py-3">{new Date(ref.created_at).toLocaleDateString()}</td>

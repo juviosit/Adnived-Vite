@@ -15,7 +15,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO
-        title="adnivedAnalytics – Privacy-First Web Analytics"
+        title="adnivedAnalytics - Privacy-First Web Analytics"
         description="Powerful, lightweight web analytics without cookies. Track visitors, pageviews, and conversions while respecting user privacy. GDPR compliant out of the box."
         path="/"
         jsonLd={{

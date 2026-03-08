@@ -235,7 +235,7 @@ const SelectPlan = () => {
             <div className="flex items-center gap-2 rounded-xl border border-primary/30 bg-primary/5 px-4 py-3">
               <Tag className="h-4 w-4 text-primary" />
               <span className="text-sm font-medium text-foreground">
-                <code className="font-mono">{couponCode}</code> — {appliedCoupon.description}
+                <code className="font-mono">{couponCode}</code> - {appliedCoupon.description}
               </span>
               <Button variant="ghost" size="icon" className="ml-auto h-6 w-6" onClick={removeCoupon}>
                 <X className="h-3 w-3" />

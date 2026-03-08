@@ -28,7 +28,7 @@ const principles = [
   { icon: EyeOff, title: "No cross-site tracking", description: "We don't follow your visitors across the web. Every site is isolated." },
   { icon: Hash, title: "IP hashing & rotation", description: "IP addresses are hashed with a daily-rotating salt, then immediately discarded. The hash is used only for unique visitor counting within a single day." },
   { icon: Database, title: "No personal data stored", description: "We store only aggregated metrics: page URLs, referrers, browser/OS type, device category, country, and UTM parameters. Nothing personally identifiable." },
-  { icon: Server, title: "Edge-processed", description: "All data is processed at the edge. IP addresses never reach our database — they're hashed in-memory and thrown away." },
+  { icon: Server, title: "Edge-processed", description: "All data is processed at the edge. IP addresses never reach our database. They're hashed in-memory and thrown away." },
 ];
 
 const WhyNoSocial = () => {
@@ -87,7 +87,7 @@ const WhyNoSocial = () => {
         <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-16">
           <h2 className="mb-2 text-2xl font-bold text-foreground">How our platform works</h2>
           <p className="mb-8 text-muted-foreground">
-            When a visitor lands on a website running our script, here's exactly what happens — and what doesn't.
+            When a visitor lands on a website running our script, here's exactly what happens, and what doesn't.
           </p>
           <div className="grid gap-5 sm:grid-cols-2">
             {principles.map((p) => (

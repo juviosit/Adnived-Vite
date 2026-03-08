@@ -20,7 +20,7 @@ const features = [
   {
     icon: Globe,
     title: "Geographic Data",
-    description: "Visitor locations by country, region, and city — without storing personal data.",
+    description: "Visitor locations by country, region, and city, without storing personal data.",
   },
   {
     icon: Target,
@@ -35,7 +35,7 @@ const features = [
   {
     icon: Bell,
     title: "UTM Tracking",
-    description: "Full UTM parameter support — track source, medium, campaign automatically.",
+    description: "Full UTM parameter support. Track source, medium, and campaign automatically.",
   },
   {
     icon: Download,

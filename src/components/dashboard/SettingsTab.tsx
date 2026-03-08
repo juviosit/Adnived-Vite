@@ -204,8 +204,8 @@ const SettingsTab = () => {
                       <Select value={inviteRole} onValueChange={setInviteRole}>
                         <SelectTrigger className="h-10"><SelectValue /></SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="viewer">Viewer — can view analytics</SelectItem>
-                          <SelectItem value="admin">Admin — can manage settings</SelectItem>
+                          <SelectItem value="viewer">Viewer - can view analytics</SelectItem>
+                          <SelectItem value="admin">Admin - can manage settings</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>

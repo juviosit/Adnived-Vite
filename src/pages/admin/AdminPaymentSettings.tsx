@@ -181,7 +181,7 @@ const AdminPaymentSettings = () => {
                   <Label>Test Mode</Label>
                 </div>
                 {form.is_test_mode && (
-                  <Badge variant="secondary">Sandbox — no real charges</Badge>
+                  <Badge variant="secondary">Sandbox - no real charges</Badge>
                 )}
               </div>
 
@@ -202,8 +202,8 @@ const AdminPaymentSettings = () => {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="LKR">LKR — Sri Lankan Rupee</SelectItem>
-                      <SelectItem value="USD">USD — US Dollar</SelectItem>
+                      <SelectItem value="LKR">LKR - Sri Lankan Rupee</SelectItem>
+                      <SelectItem value="USD">USD - US Dollar</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -308,7 +308,7 @@ const AdminPaymentSettings = () => {
                         <Badge variant={statusColor(tx.status) as any}>{tx.status}</Badge>
                       </TableCell>
                       <TableCell className="font-mono text-xs">
-                        {tx.onepay_transaction_id || "—"}
+                        {tx.onepay_transaction_id || "-"}
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground">
                         {new Date(tx.created_at).toLocaleDateString()}
