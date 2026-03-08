@@ -225,13 +225,8 @@ serve(async (req) => {
     const firstName = nameParts[0] || "Customer";
     const lastName = nameParts.slice(1).join(" ") || "User";
 
-    // Increment coupon usage if applicable
-    if (couponData) {
-      await supabase
-        .from("coupons")
-        .update({ used_count: couponData.used_count + 1 })
-        .eq("id", couponData.id);
-    }
+    // NOTE: Coupon usage is incremented in the callback (onepay-callback) after payment is confirmed,
+    // not here, to avoid inflating usage if the user abandons payment.
 
     // Create transaction record
     const { data: transaction, error: txError } = await supabase

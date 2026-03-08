@@ -2,7 +2,9 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2.97.0";
 
 function getCorsHeaders(req: Request) {
   const allowedOrigins = [
-    "https://kindred-vision-craft.lovable.app",
+    "https://adnived.com",
+    "https://www.adnived.com",
+    "https://adnivedanalytics.lovable.app",
     "https://id-preview--ac195187-7e81-4817-80e9-674066df6889.lovable.app",
     "http://localhost:5173",
     "http://localhost:8080",
