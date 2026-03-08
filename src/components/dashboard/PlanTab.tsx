@@ -119,13 +119,12 @@ const PlanTab = () => {
     if (!subscription) return;
     setProcessingPlanId(targetPlanId);
     try {
-      const { error } = await supabase
-        .from("user_subscriptions")
-        .update({ scheduled_plan_id: targetPlanId } as any)
-        .eq("id", subscription.id);
+      const { data, error } = await supabase.functions.invoke("schedule-downgrade", {
+        body: { target_plan_id: targetPlanId },
+      });
 
-      if (error) {
-        toast.error("Failed to schedule downgrade.");
+      if (error || data?.error) {
+        toast.error(data?.error || "Failed to schedule downgrade.");
       } else {
         toast.success("Downgrade scheduled. Your current plan remains active until the billing period ends.");
         fetchData();
@@ -140,13 +139,10 @@ const PlanTab = () => {
   const cancelScheduledDowngrade = async () => {
     if (!subscription) return;
     try {
-      const { error } = await supabase
-        .from("user_subscriptions")
-        .update({ scheduled_plan_id: null } as any)
-        .eq("id", subscription.id);
+      const { data, error } = await supabase.functions.invoke("cancel-downgrade");
 
-      if (error) {
-        toast.error("Failed to cancel downgrade.");
+      if (error || data?.error) {
+        toast.error(data?.error || "Failed to cancel downgrade.");
       } else {
         toast.success("Scheduled downgrade cancelled.");
         fetchData();

@@ -141,7 +141,7 @@ const SitesTab = () => {
             <CardContent className="flex flex-col items-center justify-center py-12">
               <Globe className="mb-4 h-12 w-12 text-muted-foreground/50" />
               <h3 className="mb-2 text-lg font-medium text-foreground">No websites yet</h3>
-              <p className="mb-6 text-sm text-muted-foreground">Add your first website to start tracking analytics</p>
+              <p className="mb-6 text-sm text-foreground/60">Add your first website to start tracking analytics</p>
               <Button className="gap-2" onClick={() => setDialogOpen(true)}>
                 <Plus className="h-4 w-4" />
                 Add your first website
@@ -168,7 +168,7 @@ const SitesTab = () => {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-foreground/60">
                     Added {new Date(site.created_at).toLocaleDateString()}
                   </p>
                 </CardContent>
