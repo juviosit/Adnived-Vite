@@ -23,6 +23,9 @@ Website owners, marketers, and developers who want accurate analytics without co
 
 ### Public Pages
 - **Homepage** (https://adnived.com/): Overview of the product, features, pricing, testimonials, and FAQ
+- **Features** (https://adnived.com/features): Detailed overview of all analytics features — privacy by design, real-time insights, goals, funnels, UTM tracking, geographic data, and more
+- **Pricing** (https://adnived.com/pricing): Simple, transparent pricing plans — Free, Pro ($5/mo), and Max ($10/mo) with FAQ
+- **Privacy-First Analytics** (https://adnived.com/privacy-first): How adnivedAnalytics is built for a privacy-first world — no cookies, no personal data, with links to GDPR, CCPA, and PECR compliance pages
 - **Documentation** (https://adnived.com/docs): Guides on getting started, adding the tracking script, tracking goals, UTM parameters, API usage, and more
 - **UTM Builder** (https://adnived.com/utm-builder): Free tool to generate UTM-tagged URLs for marketing campaign tracking
 - **Refer & Earn** (https://adnived.com/refer): Referral program — invite friends and earn free months

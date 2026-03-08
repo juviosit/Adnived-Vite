@@ -8,9 +8,9 @@ const Header = () => {
   const [open, setOpen] = useState(false);
 
   const navLinks = [
-    { href: "#features", label: "Features", isAnchor: true },
-    { href: "#pricing", label: "Pricing", isAnchor: true },
-    { href: "#privacy", label: "Privacy", isAnchor: true },
+    { href: "/features", label: "Features", isAnchor: false },
+    { href: "/pricing", label: "Pricing", isAnchor: false },
+    { href: "/privacy-first", label: "Privacy", isAnchor: false },
     { href: "/utm-builder", label: "UTM Builder", isAnchor: false },
     { href: "/refer", label: "Refer & Earn", isAnchor: false },
     { href: "/docs", label: "Docs", isAnchor: false },
