@@ -281,13 +281,14 @@ const Filtering = () => (
   <>
     <P>Use date ranges and filters to drill into your data.</P>
     <H2>Date range picker</H2>
-    <P>Select from preset ranges (Today, Last 7 days, Last 30 days, etc.) or pick a custom date range using the calendar.</P>
+    <P>Select from preset ranges (Today, Yesterday, 48h, 7d, 14d, 30d, 3m, 6m, 12m, All Time) or pick a custom date range using the calendar.</P>
     <H2>Chart granularity</H2>
-    <P>The chart automatically selects the best granularity:</P>
+    <P>The chart automatically selects the best granularity based on the range:</P>
     <Ul>
-      <Li><strong>Today:</strong> Hourly buckets</Li>
-      <Li><strong>7 days:</strong> Daily buckets</Li>
-      <Li><strong>30+ days:</strong> Daily or weekly buckets</Li>
+      <Li><strong>Today / Yesterday / 48h:</strong> Hourly buckets</Li>
+      <Li><strong>7d–30d:</strong> Daily buckets</Li>
+      <Li><strong>3m–6m:</strong> Weekly buckets</Li>
+      <Li><strong>12m / All Time:</strong> Monthly buckets</Li>
     </Ul>
     <H2>Breakdown filters</H2>
     <P>Click any value in a breakdown table (e.g., a country name, a referrer, a page path) to filter the entire dashboard by that dimension.</P>
