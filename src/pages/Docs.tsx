@@ -1,3 +1,4 @@
+import SEO from "@/components/SEO";
 import { useState } from "react";
 import { Link, useParams, Navigate } from "react-router-dom";
 import { BarChart3, ChevronDown, ChevronRight, Menu, X, ArrowLeft, ArrowRight } from "lucide-react";
