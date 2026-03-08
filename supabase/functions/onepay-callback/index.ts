@@ -62,6 +62,21 @@ serve(async (req) => {
 
     // If payment succeeded, upgrade user's subscription
     if (newStatus === "success") {
+      // Increment coupon usage if a coupon was used
+      if (tx.coupon_id) {
+        const { data: coupon } = await supabase
+          .from("coupons")
+          .select("id, used_count")
+          .eq("id", tx.coupon_id)
+          .single();
+        if (coupon) {
+          await supabase
+            .from("coupons")
+            .update({ used_count: coupon.used_count + 1 })
+            .eq("id", coupon.id);
+        }
+      }
+
       // Check if user already has an active subscription
       const { data: existingSub } = await supabase
         .from("user_subscriptions")
@@ -71,7 +86,6 @@ serve(async (req) => {
         .single();
 
       if (existingSub) {
-        // Update existing subscription
         await supabase
           .from("user_subscriptions")
           .update({
@@ -82,12 +96,17 @@ serve(async (req) => {
           })
           .eq("id", existingSub.id);
       } else {
-        // Create new subscription
         await supabase.from("user_subscriptions").insert({
           user_id: tx.user_id,
           plan_id: tx.plan_id,
         });
       }
+
+      // Mark plan as selected (for first-time purchasers)
+      await supabase
+        .from("profiles")
+        .update({ plan_selected: true })
+        .eq("id", tx.user_id);
 
       console.log(`User ${tx.user_id} upgraded to plan ${tx.plan_id}`);
     }
