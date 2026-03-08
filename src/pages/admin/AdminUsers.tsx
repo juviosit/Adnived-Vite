@@ -2,11 +2,13 @@ import SEO from "@/components/SEO";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import { CheckCircle, XCircle, ShieldCheck } from "lucide-react";
 
 type UserRow = {
   id: string;
@@ -17,6 +19,7 @@ type UserRow = {
   plan_name: string | null;
   plan_id: string | null;
   sub_id: string | null;
+  email_confirmed: boolean | null; // null = loading
 };
 
 type Plan = { id: string; name: string; slug: string };
@@ -25,6 +28,7 @@ const AdminUsers = () => {
   const [users, setUsers] = useState<UserRow[]>([]);
   const [plans, setPlans] = useState<Plan[]>([]);
   const [loading, setLoading] = useState(true);
+  const [verifying, setVerifying] = useState<string | null>(null);
 
   const fetchData = async () => {
     const [profilesRes, rolesRes, subsRes, plansRes] = await Promise.all([
@@ -34,6 +38,20 @@ const AdminUsers = () => {
       supabase.from("plans").select("id, name, slug"),
     ]);
 
+    // Fetch auth user verification status
+    let authUsers: { id: string; email_confirmed_at: string | null }[] = [];
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await supabase.functions.invoke("admin-list-auth-users", {
+        headers: { Authorization: `Bearer ${session?.access_token}` },
+      });
+      if (res.data && Array.isArray(res.data)) {
+        authUsers = res.data;
+      }
+    } catch (e) {
+      console.error("Failed to fetch auth users:", e);
+    }
+
     const roles = (rolesRes.data || []) as any[];
     const subs = (subsRes.data || []) as any[];
     const profilesList = (profilesRes.data || []) as any[];
@@ -41,6 +59,7 @@ const AdminUsers = () => {
     const merged: UserRow[] = profilesList.map((p: any) => {
       const role = roles.find((r: any) => r.user_id === p.id);
       const sub = subs.find((s: any) => s.user_id === p.id);
+      const authUser = authUsers.find((a) => a.id === p.id);
       return {
         id: p.id,
         email: p.email,
@@ -50,6 +69,7 @@ const AdminUsers = () => {
         plan_name: sub?.plans?.name || "None",
         plan_id: sub?.plan_id || null,
         sub_id: sub?.id || null,
+        email_confirmed: authUser ? !!authUser.email_confirmed_at : null,
       };
     });
 
@@ -77,6 +97,29 @@ const AdminUsers = () => {
     fetchData();
   };
 
+  const verifyEmail = async (userId: string) => {
+    setVerifying(userId);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await supabase.functions.invoke("admin-verify-email", {
+        body: { user_id: userId },
+        headers: { Authorization: `Bearer ${session?.access_token}` },
+      });
+      if (res.error || res.data?.error) {
+        toast.error(res.data?.error || "Failed to verify email");
+      } else {
+        toast.success("Email verified successfully");
+        // Update local state
+        setUsers((prev) =>
+          prev.map((u) => (u.id === userId ? { ...u, email_confirmed: true } : u))
+        );
+      }
+    } catch (e: any) {
+      toast.error(e.message || "Failed to verify email");
+    }
+    setVerifying(null);
+  };
+
   return (
     <AdminLayout>
       <SEO title="Admin Users" description="Manage users." path="/admin/users" noindex />
@@ -94,6 +137,7 @@ const AdminUsers = () => {
                   <TableHead>Email</TableHead>
                   <TableHead>Name</TableHead>
                   <TableHead>Role</TableHead>
+                  <TableHead>Verified</TableHead>
                   <TableHead>Plan</TableHead>
                   <TableHead>Joined</TableHead>
                 </TableRow>
@@ -107,6 +151,30 @@ const AdminUsers = () => {
                       <Badge variant={u.role === "admin" ? "default" : "secondary"}>
                         {u.role}
                       </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {u.email_confirmed === null ? (
+                        <span className="text-muted-foreground text-xs">—</span>
+                      ) : u.email_confirmed ? (
+                        <Badge variant="outline" className="gap-1 text-primary border-primary/30">
+                          <CheckCircle className="h-3 w-3" /> Verified
+                        </Badge>
+                      ) : (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="gap-1 text-xs"
+                          disabled={verifying === u.id}
+                          onClick={() => verifyEmail(u.id)}
+                        >
+                          {verifying === u.id ? (
+                            <div className="h-3 w-3 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+                          ) : (
+                            <ShieldCheck className="h-3 w-3" />
+                          )}
+                          Verify
+                        </Button>
+                      )}
                     </TableCell>
                     <TableCell>
                       <Select value={u.plan_id || ""} onValueChange={(v) => changePlan(u, v)}>
