@@ -68,6 +68,9 @@ const App = () => (
               <Route path="/admin/coupons" element={<AdminRoute><AdminCoupons /></AdminRoute>} />
               <Route path="/admin/referrals" element={<AdminRoute><AdminReferrals /></AdminRoute>} />
               <Route path="/refer" element={<Referral />} />
+              <Route path="/features" element={<Features />} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/privacy-first" element={<PrivacyFirst />} />
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/why-no-social" element={<WhyNoSocial />} />
               <Route path="/terms" element={<Terms />} />
