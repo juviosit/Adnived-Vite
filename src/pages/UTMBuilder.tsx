@@ -155,7 +155,7 @@ const UTMBuilder = () => {
 
               <p className="mx-auto mb-10 max-w-xl text-lg leading-relaxed text-muted-foreground">
                 UTM parameters are simple tags added to any URL so you can see exactly which campaigns,
-                ads, or emails bring visitors to your site. This tool builds those tagged links for you — instantly.
+                ads, or emails bring visitors to your site. This tool builds those tagged links for you, instantly.
               </p>
 
               <div className="flex flex-wrap items-center justify-center gap-4">
