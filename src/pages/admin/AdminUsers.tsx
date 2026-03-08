@@ -81,24 +81,15 @@ const AdminUsers = () => {
   useEffect(() => { fetchData(); }, []);
 
   const changePlan = async (user: UserRow, newPlanId: string) => {
-    if (user.sub_id) {
-      const { error } = await supabase
-        .from("user_subscriptions")
-        .update({ plan_id: newPlanId, hits_used: 0 })
-        .eq("id", user.sub_id);
-      if (error) { toast.error(error.message); return; }
-    } else {
-      // Use upsert to handle case where subscription exists but wasn't fetched
-      const { error } = await supabase
-        .from("user_subscriptions")
-        .upsert(
-          { user_id: user.id, plan_id: newPlanId, hits_used: 0 },
-          { onConflict: "user_id" }
-        );
-      if (error) { toast.error(error.message); return; }
-    }
+    const { error } = await supabase
+      .from("user_subscriptions")
+      .upsert(
+        { user_id: user.id, plan_id: newPlanId, hits_used: 0 },
+        { onConflict: "user_id" }
+      );
+    if (error) { toast.error(error.message); return; }
     toast.success("Plan updated");
-    fetchData();
+    await fetchData();
   };
 
   const verifyEmail = async (userId: string) => {

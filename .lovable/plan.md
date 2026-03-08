@@ -1,38 +1,63 @@
 
 
-## Three Issues to Fix
+# Download Reports, Plan Display Fix, and E2E Polish
 
-### Issue 1: Admin plan update not visible after page reload
+## 1. Download PDF Reports Feature
 
-**Root cause**: When `changePlan` runs for a user without a `sub_id` (because the subscription wasn't matched during merge), it uses `upsert`. However, after page reload, `fetchData` re-fetches all data. The issue is likely that the `changePlan` succeeds (toast shows success) but the admin's client-side query may not be returning the updated data due to stale state or a timing issue with the `fetchData()` call after upsert.
+Create a new "Download Report" dialog accessible from the site analytics page. Users can configure:
+- **Metrics to include**: Checkboxes for Visitors, Pageviews, Bounce Rate, Visit Duration, Sources, Pages, Countries, Technology
+- **Time period**: Same presets as overview (24h, 7d, 30d, Lifetime, Custom date range)
+- **Generate PDF**: Build an HTML report in-memory, render it using the browser's `window.print()` with a print-optimized stylesheet (no external PDF library needed)
 
-**Fix**: Ensure `changePlan` always uses upsert (simplify the logic), and ensure `fetchData` properly resets state. Also add a small delay or use the response to confirm before calling fetchData.
+### Implementation
 
-### Issue 2: Email shows verified in admin but not for the user
+**New file: `src/components/analytics/DownloadReportDialog.tsx`**
+- Dialog with metric checkboxes (using existing Checkbox component)
+- Date range selector (reusing the same preset/calendar pattern from OverviewSection)
+- "Generate Report" button that:
+  1. Fetches pageview data for the selected period
+  2. Computes selected metrics (visitors, pageviews, bounce rate, etc.)
+  3. Computes breakdowns (sources, pages, countries) if selected
+  4. Opens a new window with a styled HTML report and triggers `window.print()` for PDF save
+- Report includes: site name, date range header, metric summary cards, breakdown tables
 
-**Root cause**: The `SitesTab.tsx` email verification check uses a fragile heuristic — it compares `email_confirmed_at` to `created_at` and if the gap is < 2 seconds, considers the email as "auto-confirmed" (i.e., not truly verified). When the admin verifies a user whose email was already auto-confirmed at signup, `updateUserById({ email_confirm: true })` may NOT update the `email_confirmed_at` timestamp if it's already set. So the original auto-confirmed timestamp persists, the delta remains < 2 seconds, and the user still appears unverified.
+**Edit: `src/pages/SiteAnalytics.tsx`**
+- Add a "Download Report" button (with `Download` icon) in the header bar next to "Sign out"
+- Import and render the `DownloadReportDialog` component
 
-**Fix**: Remove the `wasAutoConfirmed` heuristic entirely. Instead, simply check if `email_confirmed_at` is truthy — that means the email is confirmed. If the intent was to enforce real email verification (not auto-confirm), that should be configured at the auth level, not detected client-side with timestamp heuristics.
+## 2. Fix Plan Display - Show Millions Instead of Thousands
 
-### Issue 3: Coupon for Pro plan 6 months free — shows Free plan
+The `PlanTab.tsx` currently formats max_hits as `${(plan.max_hits / 1000).toFixed(0)}K pageviews` which shows e.g. "1000K" for 1 million. Fix to use smart formatting.
 
-**Root cause**: The DB actually shows this user IS on the Pro plan. The `create-payment` edge function correctly updates the subscription to Pro when a free_months coupon makes the price $0. However, the `current_period_end` is NOT extended to reflect the 6 free months — it uses the default (30 days). Additionally, if the user is referring to what the admin page showed before the fix, the plan dropdown may have shown stale data. The coupon free_months value is ignored when setting the subscription period.
+**Edit: `src/components/dashboard/PlanTab.tsx`**
+- Add a `formatHits` helper (same pattern already exists in `PricingSection.tsx`):
+  - >= 1,000,000: show as `1M`, `10M`, etc.
+  - >= 1,000: show as `10K`, `100K`, etc.
+  - Otherwise: raw number
+- Update line 136 from `${(plan.max_hits / 1000).toFixed(0)}K pageviews` to use `formatHits(plan.max_hits)` + " pageviews"
+- Also update the current usage display (line 98) to use the same formatter for consistency
 
-**Fix**: In `create-payment`, when a `free_months` coupon is used, set `current_period_end` to `now() + (free_months * 30 days)` instead of the default 30 days.
+## 3. End-to-End Polish and Fixes
 
----
+Based on codebase review, the following issues need attention:
 
-### Changes Required
+**a. SharedDashboard consistency**
+- Review and ensure the shared (public) dashboard has proper branding and works without auth
 
-**1. `src/components/dashboard/SitesTab.tsx`**
-- Remove the `wasAutoConfirmed` timestamp delta heuristic
-- Simply check `!!freshUser?.email_confirmed_at` to determine verification status
+**b. Navigation consistency**
+- The SiteAnalytics header has "Sign out" but no link back to dashboard (only in sidebar). Add a visible "Back to Dashboard" link in the main header for clarity.
 
-**2. `src/pages/admin/AdminUsers.tsx`**
-- Simplify `changePlan` to always use upsert with `onConflict: "user_id"`
-- Ensure consistent behavior regardless of whether `sub_id` exists
+**c. Supabase query limit awareness**
+- The pageview queries don't specify a limit, which means they default to Supabase's 1000-row limit. For sites with significant traffic, data will be silently truncated. Add `.limit(10000)` or paginated fetching for accuracy.
 
-**3. `supabase/functions/create-payment/index.ts`**
-- When coupon type is `free_months` and price is $0, calculate `current_period_end` as `now + (free_months * 30 days)` 
-- Update the subscription with the extended period end date
+### Technical Summary
+
+| File | Change |
+|------|--------|
+| `src/components/analytics/DownloadReportDialog.tsx` | New -- report config dialog with metric selection, date range, and PDF generation |
+| `src/pages/SiteAnalytics.tsx` | Add "Download Report" button in header |
+| `src/components/dashboard/PlanTab.tsx` | Fix hits formatting to show M for millions, add `formatHits` helper |
+| `src/components/analytics/OverviewSection.tsx` | Increase query limit to avoid silent data truncation |
+| `src/components/analytics/BreakdownPage.tsx` | Increase query limit to avoid silent data truncation |
+| `src/pages/SharedDashboard.tsx` | Review and ensure branding consistency |
 
