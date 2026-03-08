@@ -168,7 +168,7 @@ const SitesTab = () => {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="text-xs text-foreground/60">
                     Added {new Date(site.created_at).toLocaleDateString()}
                   </p>
                 </CardContent>
