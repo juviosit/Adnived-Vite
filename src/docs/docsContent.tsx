@@ -633,7 +633,7 @@ const TroubleshootAdblockers = () => (
 
 const PhoneClickTracking = () => (
   <>
-    <P>adnivedAnalytics automatically detects clicks on phone number links (<Code>tel:</Code>) and email links (<Code>mailto:</Code>) — no extra code required.</P>
+    <P>adnivedAnalytics automatically detects clicks on phone number links (<Code>tel:</Code>) and email links (<Code>mailto:</Code>), with no extra code required.</P>
 
     <H2>How it works</H2>
     <P>When a visitor clicks a link like <Code>&lt;a href="tel:+1234567890"&gt;Call us&lt;/a&gt;</Code>, the tracking script automatically fires a custom event called <strong>Phone Click</strong> with the phone number as a property.</P>
