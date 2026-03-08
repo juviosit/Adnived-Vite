@@ -22,8 +22,10 @@ import AdminUsers from "./pages/admin/AdminUsers";
 import AdminSites from "./pages/admin/AdminSites";
 import AdminPlans from "./pages/admin/AdminPlans";
 import AdminPaymentSettings from "./pages/admin/AdminPaymentSettings";
+import AdminClosureRequests from "./pages/admin/AdminClosureRequests";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
+import WhyNoSocial from "./pages/WhyNoSocial";
 import Docs from "./pages/Docs";
 import NotFound from "./pages/NotFound";
 
@@ -53,7 +55,9 @@ const App = () => (
               <Route path="/admin/sites" element={<AdminRoute><AdminSites /></AdminRoute>} />
               <Route path="/admin/plans" element={<AdminRoute><AdminPlans /></AdminRoute>} />
               <Route path="/admin/payments" element={<AdminRoute><AdminPaymentSettings /></AdminRoute>} />
+              <Route path="/admin/closure-requests" element={<AdminRoute><AdminClosureRequests /></AdminRoute>} />
               <Route path="/privacy" element={<Privacy />} />
+              <Route path="/why-no-social" element={<WhyNoSocial />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/docs" element={<Docs />} />
               <Route path="/docs/:slug" element={<Docs />} />
