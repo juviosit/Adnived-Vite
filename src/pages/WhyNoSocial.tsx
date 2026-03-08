@@ -87,7 +87,7 @@ const WhyNoSocial = () => {
         <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-16">
           <h2 className="mb-2 text-2xl font-bold text-foreground">How our platform works</h2>
           <p className="mb-8 text-muted-foreground">
-            When a visitor lands on a website running our script, here's exactly what happens — and what doesn't.
+            When a visitor lands on a website running our script, here's exactly what happens, and what doesn't.
           </p>
           <div className="grid gap-5 sm:grid-cols-2">
             {principles.map((p) => (
