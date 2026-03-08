@@ -19,9 +19,9 @@ const Footer = () => {
             <Link to="/utm-builder" className="transition-colors hover:text-foreground">UTM Builder</Link>
             <Link to="/docs" className="transition-colors hover:text-foreground">Docs</Link>
             <Link to="/why-no-social" className="transition-colors hover:text-foreground">Why no social?</Link>
+            <Link to="/refer" className="transition-colors hover:text-foreground">Refer & Earn</Link>
             <Link to="/privacy" className="transition-colors hover:text-foreground">Privacy</Link>
             <Link to="/terms" className="transition-colors hover:text-foreground">Terms</Link>
-            <Link to="/login" className="transition-colors hover:text-foreground">Log in</Link>
           </nav>
 
           <p className="text-sm text-muted-foreground">
