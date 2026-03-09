@@ -561,6 +561,164 @@ const IntegrationShopify = () => (
   </>
 );
 
+const IntegrationGTM = () => (
+  <>
+    <P>Use Google Tag Manager to deploy adnived without touching your site's code.</P>
+    <H2>Steps</H2>
+    <ol className="mb-4 space-y-2 pl-6 list-decimal text-sm text-muted-foreground">
+      <li>Open your GTM container and go to <strong>Tags → New</strong></li>
+      <li>Choose <strong>Custom HTML</strong> as the tag type</li>
+      <li>Paste the following code:</li>
+    </ol>
+    <CodeBlock title="GTM Custom HTML">{`<script defer data-domain="yoursite.com" src="https://t.adnived.com/script.js"></script>`}</CodeBlock>
+    <ol start={4} className="mb-4 space-y-2 pl-6 list-decimal text-sm text-muted-foreground">
+      <li>Set the trigger to <strong>All Pages</strong></li>
+      <li>Save and <strong>Publish</strong> your container</li>
+    </ol>
+    <Warning>Make sure the script tag includes the <Code>defer</Code> attribute so it doesn't block page rendering.</Warning>
+    <Tip>If you track a single-page app, GTM fires on every virtual page change automatically when paired with our SPA-aware script.</Tip>
+  </>
+);
+
+const IntegrationWooCommerce = () => (
+  <>
+    <P>WooCommerce runs on WordPress, so the setup is nearly identical to a standard WordPress installation with a few extra tips for e-commerce tracking.</P>
+    <H2>Install the script</H2>
+    <P>Follow the <DocLink to="integration-wordpress">WordPress guide</DocLink> to add the tracking script via your theme header or a header-injection plugin like WPCode.</P>
+    <H2>Track purchases as goals</H2>
+    <P>To track completed purchases, create a <DocLink to="goal-conversions">page-visit goal</DocLink> with the path <Code>/checkout/order-received</Code>. This is the default WooCommerce thank-you page path.</P>
+    <H2>Track "Add to Cart" clicks</H2>
+    <P>Fire a custom event when a customer adds a product to their cart:</P>
+    <CodeBlock title="JavaScript">{`document.addEventListener('click', function(e) {
+  if (e.target.closest('.single_add_to_cart_button')) {
+    window.insight('Add to Cart');
+  }
+});`}</CodeBlock>
+    <Tip>Combine page-visit goals with custom events to build a complete purchase funnel. See the <DocLink to="funnel-analysis">Funnel analysis</DocLink> guide.</Tip>
+  </>
+);
+
+const IntegrationSquarespace = () => (
+  <>
+    <P>Add adnived to any Squarespace site in under a minute.</P>
+    <H2>Steps</H2>
+    <ol className="mb-4 space-y-2 pl-6 list-decimal text-sm text-muted-foreground">
+      <li>In your Squarespace dashboard go to <strong>Settings → Advanced → Code Injection</strong></li>
+      <li>Paste the tracking script into the <strong>Header</strong> field</li>
+      <li>Click <strong>Save</strong></li>
+    </ol>
+    <Tip>Code Injection is available on Squarespace Business and Commerce plans.</Tip>
+  </>
+);
+
+const IntegrationWix = () => (
+  <>
+    <P>Add adnived tracking to your Wix website.</P>
+    <H2>Steps</H2>
+    <ol className="mb-4 space-y-2 pl-6 list-decimal text-sm text-muted-foreground">
+      <li>In your Wix dashboard, go to <strong>Settings → Custom Code</strong> (under Advanced)</li>
+      <li>Click <strong>Add Custom Code</strong></li>
+      <li>Paste the tracking script</li>
+      <li>Set placement to <strong>Head</strong> and apply to <strong>All pages</strong></li>
+      <li>Click <strong>Apply</strong></li>
+    </ol>
+    <Warning>Custom code injection requires a Wix Premium plan.</Warning>
+  </>
+);
+
+const IntegrationGhost = () => (
+  <>
+    <P>Ghost makes it easy to inject scripts site-wide.</P>
+    <H2>Steps</H2>
+    <ol className="mb-4 space-y-2 pl-6 list-decimal text-sm text-muted-foreground">
+      <li>Go to <strong>Settings → Code Injection</strong> in your Ghost admin panel</li>
+      <li>Paste the tracking script in the <strong>Site Header</strong> field</li>
+      <li>Click <strong>Save</strong></li>
+    </ol>
+  </>
+);
+
+const IntegrationHugo = () => (
+  <>
+    <P>Add adnived to your Hugo static site.</P>
+    <H2>Steps</H2>
+    <ol className="mb-4 space-y-2 pl-6 list-decimal text-sm text-muted-foreground">
+      <li>Open your base template, usually at <Code>layouts/partials/head.html</Code> or <Code>layouts/_default/baseof.html</Code></li>
+      <li>Add the script inside the <Code>&lt;head&gt;</Code> block:</li>
+    </ol>
+    <CodeBlock title="layouts/partials/head.html">{`<script defer data-domain="yoursite.com" src="https://t.adnived.com/script.js"></script>`}</CodeBlock>
+    <ol start={3} className="mb-4 space-y-2 pl-6 list-decimal text-sm text-muted-foreground">
+      <li>Rebuild and deploy your site</li>
+    </ol>
+    <Tip>If you use a theme, check its documentation for the correct partial to edit.</Tip>
+  </>
+);
+
+const IntegrationGatsby = () => (
+  <>
+    <P>Add adnived to your Gatsby site using the <Code>gatsby-ssr.js</Code> API.</P>
+    <H2>Steps</H2>
+    <P>Create or edit <Code>gatsby-ssr.js</Code> in your project root:</P>
+    <CodeBlock title="gatsby-ssr.js">{`const React = require("react");
+
+exports.onRenderBody = ({ setHeadComponents }) => {
+  setHeadComponents([
+    React.createElement("script", {
+      key: "adnived",
+      defer: true,
+      "data-domain": "yoursite.com",
+      src: "https://t.adnived.com/script.js",
+    }),
+  ]);
+};`}</CodeBlock>
+    <P>Rebuild and deploy. SPA navigation is tracked automatically.</P>
+  </>
+);
+
+const IntegrationDrupal = () => (
+  <>
+    <P>Add adnived to your Drupal site.</P>
+    <H2>Steps</H2>
+    <ol className="mb-4 space-y-2 pl-6 list-decimal text-sm text-muted-foreground">
+      <li>Go to <strong>Extend</strong> and enable the <strong>Asset Injector</strong> module (or any module that lets you add code to the head)</li>
+      <li>Navigate to <strong>Configuration → Development → Asset Injector → JS Injector</strong></li>
+      <li>Create a new injector and paste the script tag</li>
+      <li>Set it to load on all pages in the <Code>&lt;head&gt;</Code></li>
+    </ol>
+    <Tip>Alternatively, add the script directly to your theme's <Code>html.html.twig</Code> template inside the <Code>&lt;head&gt;</Code> region.</Tip>
+  </>
+);
+
+const IntegrationJoomla = () => (
+  <>
+    <P>Add adnived tracking to your Joomla site.</P>
+    <H2>Steps</H2>
+    <ol className="mb-4 space-y-2 pl-6 list-decimal text-sm text-muted-foreground">
+      <li>Go to <strong>Extensions → Templates → Your template → Edit</strong></li>
+      <li>Open <Code>index.php</Code></li>
+      <li>Paste the script just before <Code>&lt;/head&gt;</Code></li>
+      <li>Save</li>
+    </ol>
+  </>
+);
+
+const IntegrationCustom = () => (
+  <>
+    <P>You can add adnived to any website or web app by pasting a single script tag.</P>
+    <H2>The script</H2>
+    <CodeBlock title="HTML">{`<script defer data-domain="yoursite.com" src="https://t.adnived.com/script.js"></script>`}</CodeBlock>
+    <P>Place this in the <Code>&lt;head&gt;</Code> section of every page you want to track. Replace <Code>yoursite.com</Code> with the exact domain you registered in adnived (no <Code>https://</Code> or trailing slash).</P>
+    <H2>Custom events</H2>
+    <P>Trigger custom events from anywhere in your JavaScript:</P>
+    <CodeBlock title="JavaScript">{`// Simple event
+window.insight('Signup');
+
+// Event with properties
+window.insight('Purchase', { plan: 'pro', value: 29 });`}</CodeBlock>
+    <P>See the <DocLink to="custom-events">Custom Events</DocLink> guide for more details.</P>
+  </>
+);
+
 const IntegrationSPA = () => (
   <>
     <P>adnived automatically tracks client-side navigation in single-page applications.</P>
