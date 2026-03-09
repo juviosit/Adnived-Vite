@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
   ArrowLeft, BarChart3, Target, GitBranch, Menu, Radio, Settings,
-  Link2, Megaphone, FileText, Globe, Monitor, LayoutDashboard,
+  Link2, Megaphone, FileText, Globe, Monitor, LayoutDashboard, Code,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import GoalsPanel from "@/components/analytics/GoalsPanel";
