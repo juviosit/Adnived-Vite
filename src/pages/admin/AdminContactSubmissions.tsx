@@ -50,7 +50,7 @@ const AdminContactSubmissions = () => {
 
   return (
     <AdminLayout>
-      <SEO title="Contact Submissions - Admin" path="/admin/contact" />
+      <SEO title="Contact Submissions - Admin" description="Manage contact form submissions" path="/admin/contact" />
       <h1 className="mb-6 text-2xl font-bold text-foreground">Contact submissions</h1>
 
       {loading ? (

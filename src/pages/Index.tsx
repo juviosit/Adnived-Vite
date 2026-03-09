@@ -38,9 +38,11 @@ const Index = () => {
         <WhySwitchSection />
         <FeaturesSection />
         <SetupSection />
+        <PlatformLogosSection />
         <PrivacySection />
         <PricingSection />
         <TestimonialsSection />
+        <OnPremSection />
         <FAQSection />
         <CTASection />
       </main>
