@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { exportToCSV } from "@/lib/csv-export";
 import BreakdownDetails from "./BreakdownDetails";
 import WorldMap from "./WorldMap";
+import { ISO_TO_COUNTRY_NAME } from "./worldMapData";
 import type { DateRange } from "react-day-picker";
 
 type RangePreset = "realtime" | "today" | "yesterday" | "24h" | "48h" | "7d" | "14d" | "30d" | "3m" | "6m" | "12m" | "lifetime" | "custom";
