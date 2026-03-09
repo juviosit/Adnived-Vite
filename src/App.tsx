@@ -26,6 +26,7 @@ import AdminClosureRequests from "./pages/admin/AdminClosureRequests";
 import AdminCoupons from "./pages/admin/AdminCoupons";
 import AdminReferrals from "./pages/admin/AdminReferrals";
 import Referral from "./pages/Referral";
+import Contact from "./pages/Contact";
 import Privacy from "./pages/Privacy";
 import Terms from "./pages/Terms";
 import WhyNoSocial from "./pages/WhyNoSocial";
