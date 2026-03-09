@@ -271,7 +271,7 @@ Deno.serve(async (req) => {
     // Look up site by domain
     const { data: site } = await supabase
       .from("sites")
-      .select("id")
+      .select("id, domain")
       .eq("domain", domain)
       .single();
 
@@ -281,6 +281,28 @@ Deno.serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
+    // Validate that the request originates from the registered domain
+    const originHeader = req.headers.get("origin") || req.headers.get("referer") || "";
+    if (originHeader) {
+      try {
+        const originHost = new URL(originHeader).hostname.toLowerCase().replace(/^www\./, "");
+        const siteDomain = site.domain.toLowerCase().replace(/^www\./, "");
+        if (originHost !== siteDomain) {
+          return new Response(JSON.stringify({ error: "Origin mismatch" }), {
+            status: 403,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+      } catch {
+        // If origin can't be parsed, reject
+        return new Response(JSON.stringify({ error: "Invalid origin" }), {
+          status: 403,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+    }
+    // If no origin/referer header (e.g. server-side beacon fallback), allow but log as-is
 
     // Generate daily-rotating session hash from IP + User-Agent (privacy-friendly, no cookies)
     const userAgent = req.headers.get("user-agent") || "";
