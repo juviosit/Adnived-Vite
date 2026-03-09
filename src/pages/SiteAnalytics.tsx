@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import {
   ArrowLeft, BarChart3, Target, GitBranch, Menu, Radio, Settings,
-  Link2, Megaphone, FileText, Globe, Monitor, LayoutDashboard,
+  Link2, Megaphone, FileText, Globe, Monitor, LayoutDashboard, Code,
 } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import GoalsPanel from "@/components/analytics/GoalsPanel";
@@ -17,7 +17,7 @@ import BreakdownPage from "@/components/analytics/BreakdownPage";
 import { cn } from "@/lib/utils";
 
 
-type Section = "realtime" | "overview" | "sources" | "campaigns" | "pages" | "locations" | "technology" | "goals" | "funnels" | "settings";
+type Section = "realtime" | "overview" | "sources" | "campaigns" | "pages" | "locations" | "technology" | "goals" | "funnels" | "settings" | "tracking-code";
 
 const NAV_ITEMS: { section: Section; label: string; icon: React.ElementType; group: string }[] = [
   { section: "realtime", label: "Realtime", icon: Radio, group: "Traffic" },
@@ -31,6 +31,7 @@ const NAV_ITEMS: { section: Section; label: string; icon: React.ElementType; gro
   { section: "funnels", label: "Funnels", icon: GitBranch, group: "Behavior" },
   
   { section: "settings", label: "Settings", icon: Settings, group: "Site" },
+  { section: "tracking-code", label: "Tracking Code", icon: Code, group: "Site" },
 ];
 
 const SiteAnalytics = () => {
@@ -96,6 +97,15 @@ const SiteAnalytics = () => {
   }
 
   const handleNavClick = (section: Section) => {
+    if (section === "tracking-code") {
+      setActiveSection("settings");
+      setMobileOpen(false);
+      // Scroll to tracking snippet after render
+      setTimeout(() => {
+        document.getElementById("tracking-snippet")?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+      return;
+    }
     setActiveSection(section);
     setMobileOpen(false);
   };
