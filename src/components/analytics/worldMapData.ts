@@ -1,6 +1,9 @@
 // Country name → ISO alpha-2 / alpha-3 mapping for matching pageview country values
 // to world-atlas TopoJSON properties
 
+// ISO alpha-2 → full country name (reverse lookup)
+export const ISO_TO_COUNTRY_NAME: Record<string, string> = {};
+
 export const COUNTRY_NAME_TO_ISO: Record<string, string> = {
   // Common names → ISO A2
   "United States": "US", "USA": "US", "US": "US",
