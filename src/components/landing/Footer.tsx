@@ -25,6 +25,7 @@ const Footer = () => {
             <Link to="/ccpa-compliant-analytics" className="transition-colors hover:text-foreground">CCPA</Link>
             <Link to="/pecr-compliant-analytics" className="transition-colors hover:text-foreground">PECR</Link>
             <Link to="/privacy" className="transition-colors hover:text-foreground">Privacy</Link>
+            <Link to="/contact" className="transition-colors hover:text-foreground">Contact</Link>
             <Link to="/terms" className="transition-colors hover:text-foreground">Terms</Link>
           </nav>
 
