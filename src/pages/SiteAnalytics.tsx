@@ -31,6 +31,7 @@ const NAV_ITEMS: { section: Section; label: string; icon: React.ElementType; gro
   { section: "funnels", label: "Funnels", icon: GitBranch, group: "Behavior" },
   
   { section: "settings", label: "Settings", icon: Settings, group: "Site" },
+  { section: "tracking-code", label: "Tracking Code", icon: Code, group: "Site" },
 ];
 
 const SiteAnalytics = () => {
