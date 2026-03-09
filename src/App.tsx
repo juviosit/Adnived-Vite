@@ -69,7 +69,9 @@ const App = () => (
               <Route path="/admin/closure-requests" element={<AdminRoute><AdminClosureRequests /></AdminRoute>} />
               <Route path="/admin/coupons" element={<AdminRoute><AdminCoupons /></AdminRoute>} />
               <Route path="/admin/referrals" element={<AdminRoute><AdminReferrals /></AdminRoute>} />
+              <Route path="/admin/contact" element={<AdminRoute><AdminContactSubmissions /></AdminRoute>} />
               <Route path="/refer" element={<Referral />} />
+              <Route path="/contact" element={<Contact />} />
               <Route path="/features" element={<Features />} />
               <Route path="/pricing" element={<Pricing />} />
               <Route path="/privacy-first" element={<PrivacyFirst />} />

@@ -13,6 +13,7 @@ const navItems = [
   { label: "Coupons", to: "/admin/coupons", icon: Ticket },
   { label: "Closures", to: "/admin/closure-requests", icon: Trash2 },
   { label: "Referrals", to: "/admin/referrals", icon: Gift },
+  { label: "Contact", to: "/admin/contact", icon: MessageSquare },
 ];
 
 const AdminLayout = ({ children }: { children: React.ReactNode }) => {
