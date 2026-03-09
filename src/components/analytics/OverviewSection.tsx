@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { exportToCSV } from "@/lib/csv-export";
 import BreakdownDetails from "./BreakdownDetails";
 import WorldMap from "./WorldMap";
+import { ISO_TO_COUNTRY_NAME } from "./worldMapData";
 import type { DateRange } from "react-day-picker";
 
 type RangePreset = "realtime" | "today" | "yesterday" | "24h" | "48h" | "7d" | "14d" | "30d" | "3m" | "6m" | "12m" | "lifetime" | "custom";
@@ -317,7 +318,10 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
   const topBrowsers = useMemo(() => aggregate(filteredPageviews, "browser", "Unknown"), [filteredPageviews]);
   const topOS = useMemo(() => aggregate(filteredPageviews, "os", "Unknown"), [filteredPageviews]);
   const topDevices = useMemo(() => aggregate(filteredPageviews, "device_type", "Desktop"), [filteredPageviews]);
-  const topCountries = useMemo(() => aggregate(filteredPageviews, "country", "Unknown"), [filteredPageviews]);
+  const topCountries = useMemo(() => {
+    const raw = aggregate(filteredPageviews, "country", "Unknown");
+    return raw.map(([code, count]) => [ISO_TO_COUNTRY_NAME[code] || code, count] as [string, number]);
+  }, [filteredPageviews]);
   const topRegions = useMemo(() => aggregate(filteredPageviews, "region", "Unknown"), [filteredPageviews]);
   const topCities = useMemo(() => aggregate(filteredPageviews, "city", "Unknown"), [filteredPageviews]);
   const channels = useMemo(() => {

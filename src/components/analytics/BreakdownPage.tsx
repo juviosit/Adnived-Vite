@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { ISO_TO_COUNTRY_NAME } from "./worldMapData";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
@@ -117,7 +118,10 @@ export default function BreakdownPage({ siteId, breakdownType }: BreakdownPagePr
     }
     const map: Record<string, number> = {};
     filteredPVs.forEach((pv) => {
-      const val = pv[activeTab.key] || "(none)";
+      let val = pv[activeTab.key] || "(none)";
+      if (activeTab.key === "country" && typeof val === "string" && val !== "(none)") {
+        val = ISO_TO_COUNTRY_NAME[val] || val;
+      }
       map[val] = (map[val] || 0) + 1;
     });
     return Object.entries(map).sort(([, a], [, b]) => sortDir === "desc" ? b - a : a - b);

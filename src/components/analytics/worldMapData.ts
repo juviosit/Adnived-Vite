@@ -1,6 +1,9 @@
 // Country name → ISO alpha-2 / alpha-3 mapping for matching pageview country values
 // to world-atlas TopoJSON properties
 
+// ISO alpha-2 → full country name (reverse lookup)
+export const ISO_TO_COUNTRY_NAME: Record<string, string> = {};
+
 export const COUNTRY_NAME_TO_ISO: Record<string, string> = {
   // Common names → ISO A2
   "United States": "US", "USA": "US", "US": "US",
@@ -66,3 +69,21 @@ export const COUNTRY_NAME_TO_ISO: Record<string, string> = {
   "Hong Kong": "HK", "Macao": "MO",
   "Papua New Guinea": "PG", "Fiji": "FJ",
 };
+
+// Build reverse lookup: pick the longest (most descriptive) name for each ISO code
+const _preferred: Record<string, string> = {};
+Object.entries(COUNTRY_NAME_TO_ISO).forEach(([name, iso]) => {
+  if (!_preferred[iso] || name.length > _preferred[iso].length) {
+    _preferred[iso] = name;
+  }
+});
+// Override with clean canonical names
+const _canonical: Record<string, string> = {
+  US: "United States", GB: "United Kingdom", AE: "United Arab Emirates",
+  KR: "South Korea", KP: "North Korea", CD: "Democratic Republic of the Congo",
+  CG: "Republic of the Congo", CI: "Côte d'Ivoire", CZ: "Czech Republic",
+  MK: "North Macedonia", RU: "Russia", TR: "Turkey", CF: "Central African Republic",
+  BA: "Bosnia and Herzegovina", TT: "Trinidad and Tobago",
+};
+Object.assign(_preferred, _canonical);
+Object.assign(ISO_TO_COUNTRY_NAME, _preferred);
