@@ -318,7 +318,10 @@ export default function OverviewSection({ siteId, defaultPreset = "30d" }: Overv
   const topBrowsers = useMemo(() => aggregate(filteredPageviews, "browser", "Unknown"), [filteredPageviews]);
   const topOS = useMemo(() => aggregate(filteredPageviews, "os", "Unknown"), [filteredPageviews]);
   const topDevices = useMemo(() => aggregate(filteredPageviews, "device_type", "Desktop"), [filteredPageviews]);
-  const topCountries = useMemo(() => aggregate(filteredPageviews, "country", "Unknown"), [filteredPageviews]);
+  const topCountries = useMemo(() => {
+    const raw = aggregate(filteredPageviews, "country", "Unknown");
+    return raw.map(([code, count]) => [ISO_TO_COUNTRY_NAME[code] || code, count] as [string, number]);
+  }, [filteredPageviews]);
   const topRegions = useMemo(() => aggregate(filteredPageviews, "region", "Unknown"), [filteredPageviews]);
   const topCities = useMemo(() => aggregate(filteredPageviews, "city", "Unknown"), [filteredPageviews]);
   const channels = useMemo(() => {
