@@ -118,7 +118,10 @@ export default function BreakdownPage({ siteId, breakdownType }: BreakdownPagePr
     }
     const map: Record<string, number> = {};
     filteredPVs.forEach((pv) => {
-      const val = pv[activeTab.key] || "(none)";
+      let val = pv[activeTab.key] || "(none)";
+      if (activeTab.key === "country" && typeof val === "string" && val !== "(none)") {
+        val = ISO_TO_COUNTRY_NAME[val] || val;
+      }
       map[val] = (map[val] || 0) + 1;
     });
     return Object.entries(map).sort(([, a], [, b]) => sortDir === "desc" ? b - a : a - b);
