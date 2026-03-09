@@ -97,6 +97,15 @@ const SiteAnalytics = () => {
   }
 
   const handleNavClick = (section: Section) => {
+    if (section === "tracking-code") {
+      setActiveSection("settings");
+      setMobileOpen(false);
+      // Scroll to tracking snippet after render
+      setTimeout(() => {
+        document.getElementById("tracking-snippet")?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+      return;
+    }
     setActiveSection(section);
     setMobileOpen(false);
   };
