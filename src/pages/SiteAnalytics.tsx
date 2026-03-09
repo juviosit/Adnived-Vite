@@ -17,7 +17,7 @@ import BreakdownPage from "@/components/analytics/BreakdownPage";
 import { cn } from "@/lib/utils";
 
 
-type Section = "realtime" | "overview" | "sources" | "campaigns" | "pages" | "locations" | "technology" | "goals" | "funnels" | "settings";
+type Section = "realtime" | "overview" | "sources" | "campaigns" | "pages" | "locations" | "technology" | "goals" | "funnels" | "settings" | "tracking-code";
 
 const NAV_ITEMS: { section: Section; label: string; icon: React.ElementType; group: string }[] = [
   { section: "realtime", label: "Realtime", icon: Radio, group: "Traffic" },
