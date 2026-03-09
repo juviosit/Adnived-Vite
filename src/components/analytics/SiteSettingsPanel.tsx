@@ -68,7 +68,7 @@ export default function SiteSettingsPanel({ site, onUpdate }: SiteSettingsPanelP
   return (
     <div className="max-w-2xl space-y-6">
       {/* Tracking Snippet */}
-      <Card>
+      <Card id="tracking-snippet">
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
             <Code className="h-4 w-4" /> Tracking Snippet
