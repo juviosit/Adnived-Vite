@@ -25,6 +25,7 @@ import AdminPaymentSettings from "./pages/admin/AdminPaymentSettings";
 import AdminClosureRequests from "./pages/admin/AdminClosureRequests";
 import AdminCoupons from "./pages/admin/AdminCoupons";
 import AdminReferrals from "./pages/admin/AdminReferrals";
+import AdminContactSubmissions from "./pages/admin/AdminContactSubmissions";
 import Referral from "./pages/Referral";
 import Contact from "./pages/Contact";
 import Privacy from "./pages/Privacy";
