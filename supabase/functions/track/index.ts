@@ -1,10 +1,12 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { securityHeaders } from "../_shared/security-headers.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
   "Cache-Control": "public, max-age=86400",
+  ...securityHeaders,
 };
 
 // Lightweight tracking script (~900 bytes minified)
