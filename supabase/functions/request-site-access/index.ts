@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.97.0";
+import { securityHeaders } from "../_shared/security-headers.ts";
 
 function getCorsHeaders(req: Request) {
   const allowedOrigins = [
@@ -15,6 +16,7 @@ function getCorsHeaders(req: Request) {
     "Access-Control-Allow-Origin": allowedOrigin,
     "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
     "Access-Control-Allow-Credentials": "true",
+    ...securityHeaders,
   };
 }
 
