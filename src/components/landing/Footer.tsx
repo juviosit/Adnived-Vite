@@ -14,13 +14,9 @@ const Footer = () => {
           </div>
 
           <nav className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-muted-foreground">
-            <Link to="/features" className="transition-colors hover:text-foreground">Features</Link>
-            <Link to="/pricing" className="transition-colors hover:text-foreground">Pricing</Link>
-            <Link to="/privacy-first" className="transition-colors hover:text-foreground">Privacy-First</Link>
             <Link to="/utm-builder" className="transition-colors hover:text-foreground">UTM Builder</Link>
             <Link to="/docs" className="transition-colors hover:text-foreground">Docs</Link>
             <Link to="/why-no-social" className="transition-colors hover:text-foreground">Why no social?</Link>
-            <Link to="/refer" className="transition-colors hover:text-foreground">Refer & Earn</Link>
             <Link to="/gdpr-compliant-analytics" className="transition-colors hover:text-foreground">GDPR</Link>
             <Link to="/ccpa-compliant-analytics" className="transition-colors hover:text-foreground">CCPA</Link>
             <Link to="/pecr-compliant-analytics" className="transition-colors hover:text-foreground">PECR</Link>
