@@ -82,7 +82,6 @@ serve(async (req) => {
         });
       }
 
-      // Validate expiry and usage
       if (coupon.expires_at && new Date(coupon.expires_at) < new Date()) {
         return new Response(JSON.stringify({ error: "Coupon has expired" }), {
           status: 400,
@@ -109,9 +108,8 @@ serve(async (req) => {
       }
     }
 
-    // If final price is 0, activate plan directly
+    // If final price is 0 with coupon, activate plan directly
     if (finalPriceCents === 0 && plan.price_cents > 0) {
-      // Increment coupon usage
       if (couponData) {
         await supabase
           .from("coupons")
@@ -119,13 +117,11 @@ serve(async (req) => {
           .eq("id", couponData.id);
       }
 
-      // Calculate period end based on free_months coupon or default 30 days
       const freeMonths = couponData?.discount_type === "free_months" && couponData?.free_months > 0
         ? couponData.free_months
         : 1;
       const periodEnd = new Date(Date.now() + freeMonths * 30 * 24 * 60 * 60 * 1000).toISOString();
 
-      // Update user subscription to the paid plan
       const { data: existingSub } = await supabase
         .from("user_subscriptions")
         .select("id")
@@ -154,18 +150,16 @@ serve(async (req) => {
           });
       }
 
-      // Mark plan selected
       await supabase
         .from("profiles")
         .update({ plan_selected: true })
         .eq("id", user.id);
 
-      // Create a record of the transaction
       await supabase.from("payment_transactions").insert({
         user_id: user.id,
         plan_id: plan.id,
         amount_cents: 0,
-        currency: "LKR",
+        currency: "USD",
         order_reference: `COUPON-${Date.now()}`,
         status: "completed",
         coupon_id: couponData?.id || null,
@@ -185,60 +179,40 @@ serve(async (req) => {
       });
     }
 
-    // Get payment settings
-    const { data: settings, error: settingsError } = await supabase
-      .from("payment_settings")
-      .select("*")
-      .limit(1)
-      .single();
-
-    if (settingsError || !settings) {
+    // Get MaxelPay API key
+    const maxelPayApiKey = Deno.env.get("MAXELPAY_API_KEY");
+    if (!maxelPayApiKey) {
+      console.error("MAXELPAY_API_KEY not configured");
       return new Response(
         JSON.stringify({ error: "Payment gateway not configured" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    if (!settings.app_id || !settings.app_token || !settings.hash_salt) {
-      return new Response(
-        JSON.stringify({ error: "Payment gateway credentials incomplete" }),
-        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
-      );
-    }
-
-    const amount = (finalPriceCents / 100).toFixed(2);
-    const orderReference = `ORD-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`;
-
-    // Generate hash
-    const hashInput = settings.app_id + settings.currency + amount + settings.hash_salt;
-    const encoder = new TextEncoder();
-    const hashBuffer = await crypto.subtle.digest("SHA-256", encoder.encode(hashInput));
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hash = hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
-
-    // Get user profile
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("email, full_name")
-      .eq("id", user.id)
+    // Get payment settings for redirect/callback URLs
+    const { data: settings } = await supabase
+      .from("payment_settings")
+      .select("redirect_url, callback_url, currency")
+      .limit(1)
       .single();
 
-    const nameParts = (profile?.full_name || "Customer").split(" ");
-    const firstName = nameParts[0] || "Customer";
-    const lastName = nameParts.slice(1).join(" ") || "User";
+    const amount = finalPriceCents / 100;
+    const orderId = `ORD-${Date.now()}-${crypto.randomUUID().slice(0, 8)}`;
 
-    // NOTE: Coupon usage is incremented in the callback (onepay-callback) after payment is confirmed,
-    // not here, to avoid inflating usage if the user abandons payment.
+    const callbackUrl = settings?.callback_url ||
+      `${supabaseUrl}/functions/v1/maxelpay-webhook`;
+    const successUrl = settings?.redirect_url || "";
+    const cancelUrl = settings?.redirect_url || "";
 
-    // Create transaction record
+    // Create transaction record first
     const { data: transaction, error: txError } = await supabase
       .from("payment_transactions")
       .insert({
         user_id: user.id,
         plan_id: plan.id,
         amount_cents: finalPriceCents,
-        currency: settings.currency,
-        order_reference: orderReference,
+        currency: settings?.currency || "USD",
+        order_reference: orderId,
         coupon_id: couponData?.id || null,
         additional_data: JSON.stringify({ coupon_code: couponData?.code, plan_slug: plan.slug }),
       })
@@ -246,31 +220,59 @@ serve(async (req) => {
       .single();
 
     if (txError) {
+      console.error("Failed to create transaction:", txError);
       return new Response(JSON.stringify({ error: "Failed to create transaction" }), {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    const paymentData = {
-      appid: settings.app_id,
-      hashToken: hash,
-      amount: parseFloat(amount),
-      orderReference,
-      customerFirstName: firstName,
-      customerLastName: lastName,
-      customerPhoneNumber: "",
-      customerEmail: profile?.email || user.email || "",
-      transactionRedirectUrl: settings.redirect_url || "",
-      additionalData: transaction.id,
-      apptoken: settings.app_token,
-      currency: settings.currency,
-    };
-
-    return new Response(JSON.stringify({ paymentData, transactionId: transaction.id }), {
-      status: 200,
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
+    // Call MaxelPay API to create payment session
+    const maxelPayResponse = await fetch("https://api.maxelpay.com/api/v1/payments/sessions", {
+      method: "POST",
+      headers: {
+        "X-API-KEY": maxelPayApiKey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        orderId: orderId,
+        amount: amount,
+        currency: settings?.currency || "USD",
+        successUrl: successUrl,
+        cancelUrl: cancelUrl,
+        callbackUrl: callbackUrl,
+      }),
     });
+
+    const maxelPayData = await maxelPayResponse.json();
+
+    if (!maxelPayResponse.ok) {
+      console.error("MaxelPay API error:", JSON.stringify(maxelPayData));
+      // Mark transaction as failed
+      await supabase
+        .from("payment_transactions")
+        .update({ status: "failed" })
+        .eq("id", transaction.id);
+      return new Response(
+        JSON.stringify({ error: "Payment gateway error. Please try again." }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    // Store the MaxelPay session ID in the transaction
+    await supabase
+      .from("payment_transactions")
+      .update({ onepay_transaction_id: maxelPayData.sessionId || maxelPayData.id || null })
+      .eq("id", transaction.id);
+
+    return new Response(
+      JSON.stringify({
+        checkoutUrl: maxelPayData.checkoutUrl || maxelPayData.url,
+        sessionId: maxelPayData.sessionId || maxelPayData.id,
+        transactionId: transaction.id,
+      }),
+      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
   } catch (error) {
     console.error("Error creating payment:", error);
     return new Response(

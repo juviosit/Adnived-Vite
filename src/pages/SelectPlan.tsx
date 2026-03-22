@@ -10,12 +10,6 @@ import { Input } from "@/components/ui/input";
 import { Check, BarChart3, Zap, Loader2, Tag, X } from "lucide-react";
 import { toast } from "sonner";
 
-declare global {
-  interface Window {
-    onePayData?: Record<string, unknown>;
-  }
-}
-
 type Plan = {
   id: string;
   name: string;
@@ -84,27 +78,6 @@ const SelectPlan = () => {
       });
   }, [user, navigate]);
 
-  useEffect(() => {
-    const handleSuccess = async () => {
-      toast.success("Payment successful! Setting up your account...");
-      if (user) {
-        await supabase.from("profiles").update({ plan_selected: true }).eq("id", user.id);
-      }
-      setSelecting(null);
-      navigate("/dashboard", { replace: true });
-    };
-    const handleFail = () => {
-      toast.error("Payment failed. Please try again or choose a different plan.");
-      setSelecting(null);
-    };
-    window.addEventListener("onePaySuccess", handleSuccess);
-    window.addEventListener("onePayFail", handleFail);
-    return () => {
-      window.removeEventListener("onePaySuccess", handleSuccess);
-      window.removeEventListener("onePayFail", handleFail);
-    };
-  }, [user, navigate]);
-
   const applyCoupon = async (planId: string) => {
     if (!couponCode.trim()) return;
     setCouponLoading(true);
@@ -137,13 +110,10 @@ const SelectPlan = () => {
     setSelecting(plan.id);
 
     try {
-      // Check if coupon makes it free
       const isCouponFree = appliedCoupon && selectedPlanForCoupon === plan.id && appliedCoupon.discounted_price_cents === 0;
 
       if (plan.price_cents === 0 || isCouponFree) {
-        // Free plan or 100% discount — activate directly
         if (appliedCoupon && selectedPlanForCoupon === plan.id) {
-          // Increment coupon usage via create-payment with zero amount
           await supabase.functions.invoke("create-payment", {
             body: { plan_id: plan.id, coupon_id: appliedCoupon.coupon_id },
           });
@@ -170,16 +140,11 @@ const SelectPlan = () => {
           return;
         }
 
-        window.onePayData = data.paymentData;
-        const onePayContainer = document.getElementById("onepay-btn");
-        const sdkButton = onePayContainer?.querySelector("button");
-        if (sdkButton) {
-          onePayContainer!.style.pointerEvents = "auto";
-          sdkButton.click();
-          onePayContainer!.style.pointerEvents = "none";
+        // Redirect to MaxelPay hosted checkout
+        if (data?.checkoutUrl) {
+          window.location.href = data.checkoutUrl;
         } else {
-          console.error("OnePay SDK button not found in #onepay-btn");
-          toast.error("Payment gateway failed to load. Please refresh the page and try again.");
+          toast.error("Payment gateway returned an invalid response. Please try again.");
           setSelecting(null);
         }
       }
@@ -253,7 +218,6 @@ const SelectPlan = () => {
                 variant="outline"
                 className="rounded-xl shrink-0"
                 onClick={() => {
-                  // Apply to the first paid plan by default for validation
                   const paidPlan = plans.find((p) => p.price_cents > 0);
                   if (paidPlan) applyCoupon(paidPlan.id);
                 }}
