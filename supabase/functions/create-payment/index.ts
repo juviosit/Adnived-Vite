@@ -262,16 +262,57 @@ serve(async (req) => {
       );
     }
 
-    // Store the MaxelPay session ID in the transaction
+    const checkoutUrl =
+      maxelPayData?.checkoutUrl ||
+      maxelPayData?.checkout_url ||
+      maxelPayData?.url ||
+      maxelPayData?.paymentUrl ||
+      maxelPayData?.payment_url ||
+      maxelPayData?.redirectUrl ||
+      maxelPayData?.redirect_url ||
+      maxelPayData?.hostedUrl ||
+      maxelPayData?.hosted_url ||
+      maxelPayData?.data?.checkoutUrl ||
+      maxelPayData?.data?.checkout_url ||
+      maxelPayData?.data?.url ||
+      maxelPayData?.data?.paymentUrl ||
+      maxelPayData?.data?.payment_url ||
+      maxelPayData?.data?.redirectUrl ||
+      maxelPayData?.data?.redirect_url ||
+      maxelPayData?.data?.hostedUrl ||
+      maxelPayData?.data?.hosted_url ||
+      null;
+
+    const sessionId =
+      maxelPayData?.sessionId ||
+      maxelPayData?.session_id ||
+      maxelPayData?.id ||
+      maxelPayData?.data?.sessionId ||
+      maxelPayData?.data?.session_id ||
+      maxelPayData?.data?.id ||
+      null;
+
+    if (!checkoutUrl) {
+      console.error("MaxelPay success response missing redirect URL:", JSON.stringify(maxelPayData));
+      await supabase
+        .from("payment_transactions")
+        .update({ status: "failed", additional_data: JSON.stringify({ coupon_code: couponData?.code, plan_slug: plan.slug, maxelpay_response: maxelPayData }) })
+        .eq("id", transaction.id);
+      return new Response(
+        JSON.stringify({ error: "Payment gateway returned an invalid response. Please try again." }),
+        { status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
     await supabase
       .from("payment_transactions")
-      .update({ onepay_transaction_id: maxelPayData.sessionId || maxelPayData.id || null })
+      .update({ onepay_transaction_id: sessionId })
       .eq("id", transaction.id);
 
     return new Response(
       JSON.stringify({
-        checkoutUrl: maxelPayData.checkoutUrl || maxelPayData.url,
-        sessionId: maxelPayData.sessionId || maxelPayData.id,
+        checkoutUrl,
+        sessionId,
         transactionId: transaction.id,
       }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
