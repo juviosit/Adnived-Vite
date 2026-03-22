@@ -201,31 +201,11 @@ serve(async (req) => {
 
     const callbackUrl = settings?.callback_url ||
       `${supabaseUrl}/functions/v1/maxelpay-webhook`;
-    const successUrl = settings?.redirect_url || "";
-    const cancelUrl = settings?.redirect_url || "";
-
-    // Create transaction record first
-    const { data: transaction, error: txError } = await supabase
-      .from("payment_transactions")
-      .insert({
-        user_id: user.id,
-        plan_id: plan.id,
-        amount_cents: finalPriceCents,
-        currency: settings?.currency || "USD",
-        order_reference: orderId,
-        coupon_id: couponData?.id || null,
-        additional_data: JSON.stringify({ coupon_code: couponData?.code, plan_slug: plan.slug }),
-      })
-      .select("id")
-      .single();
-
-    if (txError) {
-      console.error("Failed to create transaction:", txError);
-      return new Response(JSON.stringify({ error: "Failed to create transaction" }), {
-        status: 500,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
+    
+    // Determine the site origin for redirect URLs
+    const origin = req.headers.get("origin") || req.headers.get("referer")?.replace(/\/[^/]*$/, "") || "";
+    const successUrl = settings?.redirect_url || `${origin}/dashboard`;
+    const cancelUrl = settings?.redirect_url || `${origin}/select-plan`;
 
     // Call MaxelPay API to create payment session
     const maxelPayResponse = await fetch("https://api.maxelpay.com/api/v1/payments/sessions", {
@@ -238,6 +218,7 @@ serve(async (req) => {
         orderId: orderId,
         amount: amount,
         currency: settings?.currency || "USD",
+        description: `${plan.name} Plan Subscription`,
         successUrl: successUrl,
         cancelUrl: cancelUrl,
         callbackUrl: callbackUrl,
