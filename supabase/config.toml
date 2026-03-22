@@ -3,7 +3,7 @@ project_id = "vyscrpvmxwlpcjqhwulo"
 [functions.create-payment]
 verify_jwt = false
 
-[functions.onepay-callback]
+[functions.maxelpay-webhook]
 verify_jwt = false
 
 [functions.update-payment-settings]
