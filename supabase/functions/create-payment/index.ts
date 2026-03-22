@@ -207,6 +207,29 @@ serve(async (req) => {
     const successUrl = settings?.redirect_url || `${origin}/dashboard`;
     const cancelUrl = settings?.redirect_url || `${origin}/select-plan`;
 
+    // Create transaction record first
+    const { data: transaction, error: txError } = await supabase
+      .from("payment_transactions")
+      .insert({
+        user_id: user.id,
+        plan_id: plan.id,
+        amount_cents: finalPriceCents,
+        currency: settings?.currency || "USD",
+        order_reference: orderId,
+        coupon_id: couponData?.id || null,
+        additional_data: JSON.stringify({ coupon_code: couponData?.code, plan_slug: plan.slug }),
+      })
+      .select("id")
+      .single();
+
+    if (txError) {
+      console.error("Failed to create transaction:", txError);
+      return new Response(JSON.stringify({ error: "Failed to create transaction" }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     // Call MaxelPay API to create payment session
     const maxelPayResponse = await fetch("https://api.maxelpay.com/api/v1/payments/sessions", {
       method: "POST",
@@ -229,7 +252,6 @@ serve(async (req) => {
 
     if (!maxelPayResponse.ok) {
       console.error("MaxelPay API error:", JSON.stringify(maxelPayData));
-      // Mark transaction as failed
       await supabase
         .from("payment_transactions")
         .update({ status: "failed" })
