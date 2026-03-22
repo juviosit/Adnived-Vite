@@ -65,8 +65,9 @@ const PlanTab = () => {
         return;
       }
       // Redirect to MaxelPay hosted checkout
-      if (data?.checkoutUrl) {
-        window.location.href = data.checkoutUrl;
+      const redirectUrl = data?.checkoutUrl || data?.redirectUrl || data?.url;
+      if (redirectUrl) {
+        window.location.href = redirectUrl;
       } else {
         toast.error("Payment gateway returned an invalid response. Please refresh and try again.");
         setProcessingPlanId(null);
