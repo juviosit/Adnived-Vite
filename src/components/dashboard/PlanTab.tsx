@@ -8,13 +8,6 @@ import { Progress } from "@/components/ui/progress";
 import { Check, Zap, Loader2, Clock, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 
-declare global {
-  interface Window {
-    onePayData?: Record<string, unknown>;
-    onePay?: () => void;
-  }
-}
-
 type Plan = {
   id: string;
   name: string;
@@ -62,24 +55,6 @@ const PlanTab = () => {
 
   useEffect(() => { fetchData(); }, [user]);
 
-  useEffect(() => {
-    const handleSuccess = () => {
-      toast.success("Payment successful! Your plan will be upgraded shortly.");
-      setProcessingPlanId(null);
-      setTimeout(() => window.location.reload(), 3000);
-    };
-    const handleFail = () => {
-      toast.error("Payment failed. Please try again.");
-      setProcessingPlanId(null);
-    };
-    window.addEventListener("onePaySuccess", handleSuccess);
-    window.addEventListener("onePayFail", handleFail);
-    return () => {
-      window.removeEventListener("onePaySuccess", handleSuccess);
-      window.removeEventListener("onePayFail", handleFail);
-    };
-  }, []);
-
   const handleUpgrade = async (planId: string) => {
     setProcessingPlanId(planId);
     try {
@@ -89,11 +64,11 @@ const PlanTab = () => {
         setProcessingPlanId(null);
         return;
       }
-      window.onePayData = data.paymentData;
-      if (typeof window.onePay === "function") {
-        window.onePay();
+      // Redirect to MaxelPay hosted checkout
+      if (data?.checkoutUrl) {
+        window.location.href = data.checkoutUrl;
       } else {
-        toast.error("Payment gateway failed to load. Please refresh and try again.");
+        toast.error("Payment gateway returned an invalid response. Please refresh and try again.");
         setProcessingPlanId(null);
       }
     } catch {
@@ -151,13 +126,11 @@ const PlanTab = () => {
 
   return (
     <div className="space-y-8">
-      {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-foreground tracking-tight">Your Plan</h1>
         <p className="mt-1 text-sm text-foreground/50">Manage your subscription and usage</p>
       </div>
 
-      {/* Scheduled downgrade banner */}
       {scheduledPlan && subscription && (
         <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50/50 px-4 py-3 dark:border-amber-500/30 dark:bg-amber-500/5">
           <Clock className="mt-0.5 h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" />
@@ -175,7 +148,6 @@ const PlanTab = () => {
         </div>
       )}
 
-      {/* Current usage card */}
       {currentPlan && (
         <Card>
           <CardHeader className="pb-4">
@@ -217,7 +189,6 @@ const PlanTab = () => {
         </Card>
       )}
 
-      {/* Plan comparison */}
       <div className="grid gap-4 md:grid-cols-3">
         {plans.map((plan) => {
           const isCurrent = plan.id === subscription?.plan_id;

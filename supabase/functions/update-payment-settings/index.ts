@@ -56,7 +56,7 @@ serve(async (req) => {
     }
 
     const body = await req.json();
-    const { id, app_id, app_token, hash_salt, currency, is_test_mode, redirect_url, callback_url } = body;
+    const { id, currency, redirect_url, callback_url } = body;
 
     if (!id) {
       return new Response(JSON.stringify({ error: "Settings ID is required" }), {
@@ -65,22 +65,11 @@ serve(async (req) => {
       });
     }
 
-    // Build update object — only include secrets if provided (non-empty)
     const updateData: Record<string, unknown> = {
-      app_id: app_id ?? "",
-      currency: currency ?? "LKR",
-      is_test_mode: is_test_mode ?? true,
+      currency: currency ?? "USD",
       redirect_url: redirect_url ?? "",
       callback_url: callback_url ?? "",
     };
-
-    // Only update secrets if a new value was provided
-    if (app_token && app_token.trim() !== "") {
-      updateData.app_token = app_token;
-    }
-    if (hash_salt && hash_salt.trim() !== "") {
-      updateData.hash_salt = hash_salt;
-    }
 
     const { error } = await supabase
       .from("payment_settings")

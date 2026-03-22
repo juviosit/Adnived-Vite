@@ -5,7 +5,7 @@ import { securityHeaders } from "../_shared/security-headers.ts";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+    "authorization, x-client-info, apikey, content-type",
   ...securityHeaders,
 };
 
@@ -20,51 +20,57 @@ serve(async (req) => {
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
     const body = await req.json();
-    // OnePay callback payload: { transaction_id, status, status_message, additional_data }
-    const { transaction_id, status, status_message, additional_data } = body;
+    console.log("MaxelPay webhook received:", JSON.stringify(body));
 
-    console.log("OnePay callback received:", JSON.stringify(body));
+    // MaxelPay sends: { event, data: { sessionId, orderId, status, ... } }
+    const event = body.event || body.type;
+    const data = body.data || body;
+    const orderId = data.orderId || data.order_id;
+    const sessionId = data.sessionId || data.session_id;
+    const paymentStatus = data.status;
 
-    if (!additional_data) {
-      return new Response(JSON.stringify({ error: "Missing transaction reference" }), {
+    if (!orderId) {
+      console.error("Missing orderId in webhook payload");
+      return new Response(JSON.stringify({ error: "Missing orderId" }), {
         status: 400,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // additional_data contains our internal transaction ID
-    const internalTxId = additional_data;
-
-    // Get the transaction
+    // Find the transaction by order_reference
     const { data: tx, error: txError } = await supabase
       .from("payment_transactions")
       .select("id, user_id, plan_id, status, coupon_id")
-      .eq("id", internalTxId)
+      .eq("order_reference", orderId)
       .single();
 
     if (txError || !tx) {
-      console.error("Transaction not found:", internalTxId);
+      console.error("Transaction not found for orderId:", orderId);
       return new Response(JSON.stringify({ error: "Transaction not found" }), {
         status: 404,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // status 1 = SUCCESS in OnePay
-    const newStatus = status === 1 ? "success" : "failed";
+    // Determine status
+    const isSuccess = event === "payment.completed" ||
+      paymentStatus === "completed" ||
+      paymentStatus === "success" ||
+      paymentStatus === "COMPLETED";
+    const newStatus = isSuccess ? "completed" : "failed";
 
     // Update transaction
     await supabase
       .from("payment_transactions")
       .update({
         status: newStatus,
-        onepay_transaction_id: transaction_id || null,
+        onepay_transaction_id: sessionId || null,
       })
-      .eq("id", internalTxId);
+      .eq("id", tx.id);
 
     // If payment succeeded, upgrade user's subscription
-    if (newStatus === "success") {
-      // Increment coupon usage if a coupon was used
+    if (isSuccess) {
+      // Increment coupon usage
       if (tx.coupon_id) {
         const { data: coupon } = await supabase
           .from("coupons")
@@ -79,12 +85,11 @@ serve(async (req) => {
         }
       }
 
-      // Check if user already has an active subscription
+      // Update or create subscription
       const { data: existingSub } = await supabase
         .from("user_subscriptions")
         .select("id")
         .eq("user_id", tx.user_id)
-        .eq("status", "active")
         .single();
 
       if (existingSub) {
@@ -104,7 +109,7 @@ serve(async (req) => {
         });
       }
 
-      // Mark plan as selected (for first-time purchasers)
+      // Mark plan as selected
       await supabase
         .from("profiles")
         .update({ plan_selected: true })
@@ -118,9 +123,9 @@ serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error("Callback error:", error);
+    console.error("Webhook error:", error);
     return new Response(
-      JSON.stringify({ error: "Payment callback processing failed." }),
+      JSON.stringify({ error: "Webhook processing failed" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
