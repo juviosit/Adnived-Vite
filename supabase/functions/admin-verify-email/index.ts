@@ -72,7 +72,8 @@ Deno.serve(async (req) => {
     });
 
     if (error) {
-      return new Response(JSON.stringify({ error: error.message }), {
+      console.error('[admin-verify-email] updateUser error:', error);
+      return new Response(JSON.stringify({ error: "Internal server error" }), {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
